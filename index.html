@@ -234,6 +234,7 @@
 			
 			function pageComplete () {
 				window.addEventListener("beforeinstallprompt", (e) => {
+					e.preventDefault();
 					deferredEvent = e;
 				});
 				if(storage) {
