@@ -63,7 +63,7 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("message", (e) => {
 	if(e.data && e.data.type == "get-version") {
-		sendMsg({type: 'version', version: "1.1.10"});
+		sendMsg({type: 'version', version: "1.1.11"});
 	} 
 	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
