@@ -127,7 +127,7 @@
 			<header class="menu_header">
 				<div class="menu_header_back_icon"></div>
 				<div class="menu_header_icon">Mi List</div>
-				<div class="menu_header_version">Version: 1.1.11</div>
+				<div class="menu_header_version">Version: 1.1.1</div>
 			</header>
 			<section class="menu_body">
 				<div class="menu_body_item_theme menu_body_item" value="theme">
@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.11";
+			var version = "1.1.20";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -244,6 +244,7 @@
 						$(".load").classList.toggle("dark_theme");
 					} 
 				} 
+				$(".menu_header_version").textContent = "Version: 1.1.20";
 				const link = $$$("link");
 				const script = $$$("script");
 				
@@ -318,16 +319,24 @@
 				} 
 				else if(msg.data.type == "version") {
 					if(msg.data.version != version) {
-						navigator.serviceWorker.register("./sw.js").then(res => {
-							window.onload = pageComplete();
-						}).catch(error => {
-							window.onload = pageComplete();
-						});
+						RegisterServiceWorker();
 					} 
 					else {
 						pageComplete();
 					} 
 				} 
+			} 
+			
+			const RegisterServiceWorker = () => {
+				navigator.serviceWorker.register("./sw.js").then(res => {
+					window.onload = pageComplete();
+				}).catch(error => {
+					window.onload = pageComplete();
+				});
+				
+				navigator.serviceWorker.ready.then(() => {
+					sendMsg({type: "set-version", version});
+				});
 			} 
 			
 			//window.onload = pageComplete();
@@ -337,11 +346,7 @@
 						sendMsg({type: "get-version"});
 					} 
 					else {
-						navigator.serviceWorker.register("./sw.js").then((reg) => {
-							pageComplete();
-						}).catch((error) => {
-							pageComplete();
-						});
+						RegisterServiceWorker();
 					} 
 				});
 			} 
