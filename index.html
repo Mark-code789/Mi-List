@@ -318,7 +318,6 @@
 					Events.list = msg.data.list;
 				} 
 				else if(msg.data.type == "version") {
-					console.log(msg.data.version);
 					if(msg.data.version != version) {
 						RegisterServiceWorker();
 					} 
