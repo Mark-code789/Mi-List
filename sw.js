@@ -124,7 +124,7 @@ self.addEventListener("notificationclick", (e) => {
 		} 
 	} 
 	else {
-		clients.openWindow(self.location.origin + "./Mi List/index.html");
+		clients.openWindow(self.location.origin + "/Mi-List/");
 	} 
 	notification.close();
 });
