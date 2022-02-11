@@ -93,6 +93,7 @@ const LoadingDone = () => {
 			$(".add").style.display = "none";
 	});
 	$(".add_body_form .add_btn").addEventListener("click", Events.add, false);
+	
 	navigator.serviceWorker.onmessage = Message;
 	SendMsg({type: "get-version"});
 	
