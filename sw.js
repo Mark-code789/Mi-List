@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let notification = false;
 let running = false;
-let version = "1.1.11";
+let version = "1.1.26";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
