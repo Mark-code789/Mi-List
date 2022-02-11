@@ -68,7 +68,7 @@ self.addEventListener("message", (e) => {
 	} 
 	else if(e.data && e.data.type == "set-version") {
 		version = e.data.version;
-	) 
+	} 
 	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
 		if(list.length > 0 && !running)
