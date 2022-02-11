@@ -94,9 +94,6 @@ const LoadingDone = () => {
 	});
 	$(".add_body_form .add_btn").addEventListener("click", Events.add, false);
 	
-	navigator.serviceWorker.onmessage = Message;
-	SendMsg({type: "get-version"});
-	
 	// retrieve settings
 	if(storage) {
 		let theme = storage.getItem("theme");
@@ -124,7 +121,6 @@ const LoadingDone = () => {
 	$(".main").style.display = "block";
 	
 	if(deferredEvent) {
-		console.log(deferredEvent);
 		ShowInstallPrompt();
 	} 
 } 
