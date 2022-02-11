@@ -582,7 +582,7 @@ const Message = (msg) => {
 		Events.list = msg.data.list;
 	} 
 	else {
-		console.log(msg.data);
+		//console.log(msg.data);
 	} 
 } 
 

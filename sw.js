@@ -151,7 +151,7 @@ function startTimer () {
 			let diff = event.ms - Date.now();
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let options = {
-					body: "Take action with this list item.", 
+					body: event.desc, 
 					icon: "./src/images/black logo.png", 
 					badge: "./src/images/black logo.png", 
 					vibrate: [100, 50, 100], 
