@@ -316,6 +316,14 @@
 				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
+					
+					if(Events.list.length == 0) {
+						let list = storage.getItem("list");
+						if(list) {
+							Events.list = JSON.parse(list);
+							Events.retrieve();
+						} 
+					} 
 				} 
 				else if(msg.data.type == "version") {
 					if(msg.data.version != version) {
