@@ -267,8 +267,8 @@
 				load();
 			} 
 			
-			const SendMsg = (msg) => {
-				let reg = navigator.serviceWorker.getRegistration();
+			const SendMsg = async (msg) => {
+				let reg = await navigator.serviceWorker.getRegistration();
 				
 				if(reg) {
 					navigator.serviceWorker.controller.postMessage(msg);
