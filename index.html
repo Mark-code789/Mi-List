@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.20";
+			var version = "1.1.26";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -249,8 +249,8 @@
 				const script = $$$("script");
 				
 				link.rel = "stylesheet";
-				link.href = "./index.css?=" + version;
-				script.src = "./index.js?=" + version;
+				link.href = "./index.css?v=" + version;
+				script.src = "./index.js?v=" + version;
 				
 				script.onload = scriptLoaded;
 				
@@ -318,6 +318,7 @@
 					Events.list = msg.data.list;
 				} 
 				else if(msg.data.type == "version") {
+					console.log(msg.data.version);
 					if(msg.data.version != version) {
 						RegisterServiceWorker();
 					} 
@@ -328,22 +329,23 @@
 			} 
 			
 			const RegisterServiceWorker = () => {
-				navigator.serviceWorker.register("./sw.js").then(res => {
+				navigator.serviceWorker.register("./sw.js?v=" + version).then(res => {
 					window.onload = pageComplete();
 				}).catch(error => {
 					window.onload = pageComplete();
 				});
 				
 				navigator.serviceWorker.ready.then(() => {
-					sendMsg({type: "set-version", version});
+					SendMsg({type: "set-version", version});
 				});
 			} 
 			
 			//window.onload = pageComplete();
 			if("serviceWorker" in navigator) {
-				navigator.serviceWorker.getRegistration("./sw.js").then((reg) => {
+				navigator.serviceWorker.onmessage = Message;
+				navigator.serviceWorker.getRegistration().then((reg) => {
 					if(reg) {
-						sendMsg({type: "get-version"});
+						SendMsg({type: "get-version"});
 					} 
 					else {
 						RegisterServiceWorker();
