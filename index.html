@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+		<link rel="manifest" href="./manifest.webmanifest">
+        <link rel="icon" href="./src/images/black logo.ico" type="image/x-icon">
+        <link rel="icon" href="./src/images/black favicon16.png" type="image/png" sizes="16x16">
+        <link rel="icon" href="./src/images/black favicon32.png" type="image/png" sizes="32x32">
+        <link rel="icon" href="./src/images/black favicon96.png" type="image/png" sizes="96x96">
+        <style>
+        	*, *:before, *:after {
+        		box-sizing: border-box;
+        		-webkit-user-select: none;
+        		-moz-user-select: none;
+        		user-select: none;
+        		font-family: Arial;
+        		overflow: hidden;
+        	} 
+        	body {
+        		margin: 0;
+        		padd_bodying: 0;
+        		height: 100vh;
+        		width: 100vw;
+        	} 
+        	.load {
+        		display: block;
+        		position: absolute;
+        		height: 100vh;
+        		width: 100vw;
+        		background: #E5DFF8;
+        	} 
+        	.load_icon {
+        		position: absolute;
+        		top: 50%;
+        		left: 50%;
+        		transform: translate(-50%, -50%);
+        		height: 30vmin;
+        		width: 30vmin;
+        		max-height: 500px;
+        		max-width: 500px;
+        		background-image: url("./src/images/white logo.png");
+        		background-repeat: no-repeat;
+        		background-size: cover;
+        		background-position: center;
+        	} 
+        	.dark_theme.load {
+        		background: #262050 !important;
+        	} 
+        	.dark_theme.load .load_icon {
+        		background-image: url("./src/images/black logo.png") !important;
+        	} 
+        </style>
+	</head>
+	<body>
+		<article class="install" hidden>
+			<section class="install_body">
+				<div class="install_body_header">
+					<div class="install_body_header_icon">Mi List</div>
+				</div>
+				<div class="install_body_text">Install Mi List and make it accessible even while offline.</div>
+				<div class="install_body_btn_cont">
+					<div class="install_body_btn_cancel" onclick="HideInstallPrompt()">Cancel</div>
+					<div class="install_body_btn_install" onclick="InstallApp()">Install</div>
+				</div>
+			</section>
+		</article>
+		<article class="load" hidden>
+			<div class="load_icon"></div>
+		</article>
+		<section onanimationend="End(event)" id="pop-up-note" hidden></section>
+		<article class="main" hidden>
+			<header class="main_header">
+				<div class="main_header_icon">Mi List</div>
+				<div class="main_header_menu"><div/>
+			</header>
+			<section class="main_body">
+				<div class="main_body_day_events" value="2022-02-05">
+					<div class="main_body_date" value="2022-02-05">Today</div>
+					<div class="main_body_empty_list">You have no events on this day</div>
+					<!--<div class="main_body_event_cont" value="2022-02-05">
+						<div class="main_body_event_text_cont">
+							<div class="main_body_event_time" value="08:00">08:00 AM<span class="main_body_event_expander"></span></div>
+							<div class="main_body_event_title" value="Code Mi List application.">Code Mi List application</div>
+							<div class="main_body_event_desc" value="Do both UI and functionality.">Do both UI and functionality</div>
+						</div>
+						<div class="main_body_event_ctrl_cont">
+							<div class="main_body_event_ctrl_edit"></div>
+							<div class="main_body_event_ctrl_del"></div>
+							<div class="main_body_event_ctrl_check"></div>
+						</div>
+					</div>-->
+				</div>
+			</section>
+			<div class="add_btn">+</div>
+			<footer class="main_footer">
+				<div class="main_footer_text">— Mark Codes —</div>
+			</footer>
+		</article>
+		<article class="add" hidden>
+			<section class="add_body">
+				<div class="add_body_back_icon"></div>
+				<div class="add_body_icon"></div>
+				<h2 class="add_body_header">Add Event</h2>
+				<form class="add_body_form">
+					<div class="add_body_form_date_cont" hidden>
+						<label for="add_body_form_date">Date of the event</label>
+						<input type="date" id="add_body_form_date" required>
+					</div>
+					<div class="add_body_form_time_cont">
+						<label for="add_body_form_time">Time of the event</label>
+						<input type="time" id="add_body_form_time" required>
+					</div>
+					<div class="add_body_form_title_cont">
+						<label for="add_body_form_title">Event title</label>
+						<input type="text" id="add_body_form_title" placeholder="e.g go to work" required>
+					</div>
+					<div class="add_body_form_desc_cont">
+						<label for="add_body_form_desc">Event description (Additional Information)</label>
+						<textarea id="add_body_form_desc" placeholder="what to do in that event"></textarea>
+					</div>
+					<input type="submit" class="add_btn" value="">
+				</form>
+			</section>
+		</article>
+		<article class="menu" hidden>
+			<header class="menu_header">
+				<div class="menu_header_back_icon"></div>
+				<div class="menu_header_icon">Mi List</div>
+				<div class="menu_header_version">Version: 1.1.1</div>
+			</header>
+			<section class="menu_body">
+				<div class="menu_body_item_theme menu_body_item" value="theme">
+					<div class="menu_body_item_theme_cont">
+						<div class="menu_body_item_title">Dark theme</div>
+						<div class="menu_body_item_desc">Choose your preferred theme for the app.</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item_notification menu_body_item" value="notification">
+					<div class="menu_body_item_notification_cont">
+						<div class="menu_body_item_title">Notifications</div>
+						<div class="menu_body_item_desc">Choose whether to receive reminder notifications.</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item_multiple_day menu_body_item" value="multiple day">
+					<div class="menu_body_item_multiple_day_cont">
+						<div class="menu_body_item_title">Multiple day list</div>
+						<div class="menu_body_item_desc">Choose whether to keep multiple day to-do list.</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item_share menu_body_item" value="share">
+					<div class="menu_body_item_title">Share</div>
+					<div class="menu_body_item_desc">Share this app with friends and family.</div>
+				</div>
+				<div class="menu_body_item_developer menu_body_item" value="developer">
+					<div class="menu_body_item_title">Developer</div>
+					<div class="menu_body_item_desc">&copy; 2020 - 2022 Mark Codes.</div>
+				</div>
+				<div class="menu_body_item_feedback menu_body_item" value="feedback">
+					<div class="menu_body_item_title">Feedback</div>
+					<div class="menu_body_item_desc">Report any issue with this app.</div>
+				</div>
+				<div class="menu_body_item_follow menu_body_item" value="follow">
+					<div class="menu_body_item_title">Follow</div>
+					<div class="menu_body_item_desc">Follow mark codes for more apps.</div>
+				</div>
+			</section>
+			<footer class="menu_footer">
+				<div class="menu_footer_text">— Mark Codes —</div>
+			</footer>
+		</article>
+		<script>
+			const ShowInstallPrompt = () => {
+				$(".install").style.display = "block";
+                $(".install_body").classList.remove("hide_install_prompt");
+                $(".install_body").classList.add("show_install_prompt");
+            } 
+			
+			const HideInstallPrompt = () => {
+                $(".install_body").classList.remove("show_install_prompt");
+                $(".install_body").classList.add("hide_install_prompt");
+                setTimeout(() => {$(".install").style.display = "none"}, 600);
+            } 
+            
+            const InstallApp = async () => {
+                HideInstallPrompt();
+                deferredEvent.prompt();
+                const {outcome} = await deferredEvent.userChoice;
+                deferredEvent = null;
+            } 
+            
+			function $ (elem) {
+				return document.querySelector(elem);
+			} 
+			
+			function $$ (elem) {
+				return document.querySelectorAll(elem);
+			} 
+			
+			function $$$ (elem, attrs = []) {
+				elem = document.createElement(elem);
+				for(let i = 0; i < attrs.length; i+=2) {
+					let name = attrs[i];
+					let value = attrs[i+1];
+					if(/^textContent|innerHTML$/gi.test(name))
+						elem[name] = value;
+					else
+						elem.setAttribute(name, value);
+				} 
+					
+				return elem;
+			} 
+			
+			function _$ (elem, property) {
+				let value = window.getComputedStyle(elem, null).getPropertyValue(property);
+				return value;
+			} 
+			
+			Element.prototype.$ = function (elem) {
+				return this.querySelector(elem);
+			} 
+			
+			Element.prototype.$$ = function (elem) {
+				return this.querySelectorAll(elem);
+			} 
+			
+			var deferredEvent;
+			var storage;
+			if(localStorage) 
+				storage = localStorage;
+			
+			function pageComplete () {
+				window.addEventListener("beforeinstallprompt", (e) => {
+					deferredEvent = e;
+				});
+				if(storage) {
+					let theme = storage.getItem("theme");
+					if(theme && JSON.parse(theme)) {
+						$(".load").classList.toggle("dark_theme");
+					} 
+				} 
+				const link = $$$("link");
+				const script = $$$("script");
+				
+				link.rel = "stylesheet";
+				link.href = "./index.css";
+				script.src = "./index.js";
+				
+				script.onload = scriptLoaded;
+				
+				document.head.appendChild(link);
+				document.head.appendChild(script);
+				
+				let date = new Date().toLocaleDateString().split("/");
+				let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
+				$(".main_body_day_events").setAttribute("value", str);
+				$(".main_body_date").setAttribute("value", str);
+			} 
+			
+			function scriptLoaded () {
+				load();
+			} 
+			
+			//window.onload = pageComplete();
+			if("serviceWorker" in navigator) {
+				navigator.serviceWorker.register("./sw.js").then(res => {
+					window.onload = pageComplete();
+				}).catch(error => {
+					window.onload = pageComplete();
+				});
+			} 
+		</script>
+	</body>
+</html>

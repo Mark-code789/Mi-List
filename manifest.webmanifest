@@ -1,0 +1,43 @@
+{
+    "short_name": "Mi List",
+    "name": "Mi List",
+    "description": "Standalone Frontend to-do list app",
+    "icons": [
+        {
+            "src": "./src/images/black favicon48.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        },
+        {
+            "src": "./src/images/black favicon96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "./src/images/black favicon144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "./src/images/black favicon192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        }, 
+        {
+            "src": "./src/images/black favicon256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }, 
+        {
+            "src": "./src/images/black favicon512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "./index.html", 
+    "display": "standalone",
+    "orientation": "natural",
+    "theme_color": "#262050",
+    "background_color": "#262050", 
+    "prefer_related_applications": false
+}
