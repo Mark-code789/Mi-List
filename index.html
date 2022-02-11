@@ -227,6 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
+			var version = Date.now();
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -247,8 +248,8 @@
 				const script = $$$("script");
 				
 				link.rel = "stylesheet";
-				link.href = "./index.css";
-				script.src = "./index.js";
+				link.href = "./index.css?=" + version;
+				script.src = "./index.js?=" + version;
 				
 				script.onload = scriptLoaded;
 				
