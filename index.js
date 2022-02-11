@@ -93,7 +93,7 @@ const LoadingDone = () => {
 			$(".add").style.display = "none";
 	});
 	$(".add_body_form .add_btn").addEventListener("click", Events.add, false);
-	
+	SendMsg({type: "get-list"});
 	// retrieve settings
 	if(storage) {
 		let theme = storage.getItem("theme");
@@ -107,15 +107,8 @@ const LoadingDone = () => {
 		let multipleDay = storage.getItem("multiple-day");
 		if(multipleDay && JSON.parse(multipleDay))
 			$(".menu_body_item_multiple_day").click();
-			
-		let list = storage.getItem("list");
-		if(list) {
-			Events.list = JSON.parse(list);
-			Events.retrieve();
-		} 
 	} 
 	
-	SendMsg({type: "get-list"});
 	history.pushState(null, "", "");
 	$(".load").style.display = "none";
 	$(".main").style.display = "block";
