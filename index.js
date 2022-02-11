@@ -531,61 +531,6 @@ const End = (event) => {
     } 
 } 
 
-const SendMsg = (msg) => {
-	let reg = navigator.serviceWorker.getRegistration();
-	
-	if(reg) {
-		navigator.serviceWorker.controller.postMessage(msg);
-	} 
-} 
-
-const Message = (msg) => {
-	if(msg.data.type == "check") {
-		Events.list = msg.data.list;
-		if(storage) storage.setItem("list", JSON.stringify(Events.list));
-		let event = msg.data.event;
-		for(let item of $$(".main_body_event_cont")) {
-			let date = item.getAttribute("value");
-			let time = item.$(".main_body_event_time").getAttribute("value");
-			let title = item.$(".main_body_event_title").getAttribute("value");
-			let desc = item.$(".main_body_event_desc").getAttribute("value");
-			
-			if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-				item.$(".main_body_event_ctrl_check").classList.add("checked");
-				item.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
-				item.$(".main_body_event_ctrl_edit").classList.add("disable");
-				break;
-			} 
-		} 
-	} 
-	else if(msg.data.type == "delete") {
-		Events.list = msg.data.event;
-		if(storage) storage.setItem("list", JSON.stringify(Events.list));
-		let event = msg.data.event;
-		for(let item of $$(".main_body_event_cont")) {
-			let date = item.getAttribute("value");
-			let time = item.$(".main_body_event_time").getAttribute("value");
-			let title = item.$(".main_body_event_title").getAttribute("value");
-			let desc = item.$(".main_body_event_desc").getAttribute("value");
-			
-			if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-				item.classList.remove("added");
-				setTimeout(() => {
-					item.parentNode.removeChild(item);
-					Events.removeEmptyLists();
-				}, 500);
-				break;
-			} 
-		} 
-	} 
-	else if(msg.data.type == "update-list") {
-		Events.list = msg.data.list;
-	} 
-	else {
-		//console.log(msg.data);
-	} 
-} 
-
 const convertTo = (time, to, includeSec = false) => {
 	let hr = parseInt(time.split(":")[0]);
 	let min = time.split(" ")[0].split(":")[1];
