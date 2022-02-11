@@ -2,6 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let notification = false;
 let running = false;
+let version = "1.1.11";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -63,8 +64,11 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("message", (e) => {
 	if(e.data && e.data.type == "get-version") {
-		sendMsg({type: 'version', version: "1.1.11"});
+		sendMsg({type: 'version', version});
 	} 
+	else if(e.data && e.data.type == "set-version") {
+		version = e.data.version;
+	) 
 	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
 		if(list.length > 0 && !running)
