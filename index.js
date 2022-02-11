@@ -68,7 +68,7 @@ async function load (i = 0) {
     } 
 }
 
-const LoadingDone = () => {
+const LoadingDone = () => { try {
 	for(let item of $$(".menu_body_item")) {
 		item.addEventListener("click", Menu, false);
 	} 
@@ -117,6 +117,7 @@ const LoadingDone = () => {
 	if(deferredEvent) {
 		ShowInstallPrompt();
 	} 
+	} catch (error) {alert(error)}
 } 
 
 async function Menu (e) {
