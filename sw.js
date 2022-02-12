@@ -142,7 +142,7 @@ function startTimer () {
 				let options = {
 					body: event.desc, 
 					icon: './src/images/black logo.png', 
-					badge: 'https://mark-code789.github.io/src/images/favicon.ico', 
+					badge: './src/images/favicon.ico', 
 					vibrate: [100, 50, 100], 
 					data: {
 						event
