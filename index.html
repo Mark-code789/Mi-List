@@ -299,7 +299,7 @@
 					} 
 				} 
 				else if(msg.data.type == "delete") {
-					Events.list = msg.data.event;
+					Events.list = msg.data.list;
 					if(storage) storage.setItem("list", JSON.stringify(Events.list));
 					let event = msg.data.event;
 					for(let item of $$(".main_body_event_cont")) {
