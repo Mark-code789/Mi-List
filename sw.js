@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.45";
+let version = "1.1.46";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -108,6 +108,13 @@ self.addEventListener("notificationclick", (e) => {
 		} 
 	} 
 	else {
+		let event = notification.data.event;
+		for(let item of list) {
+			if(item.ms == event.ms && item.title == event.title && item.desc == event.desc) {
+				item.notified = true;
+				break;
+			} 
+		} 
 		clients.openWindow(self.location.origin + "/Mi-List/");
 	} 
 	notification.close();
