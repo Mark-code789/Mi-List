@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.33";
+			var version = "1.1.34";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -323,6 +323,7 @@
 							Events.list = JSON.parse(list);
 						} 
 						Events.retrieve();
+					} 
 					else {
 						Events.retrieve();
 					} 
