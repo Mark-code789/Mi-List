@@ -1,8 +1,8 @@
 let cacheName = "Mi List";
 let timer;
 let list = [];
-let showNotification = true;
-let version = "1.1.64";
+let showNotification = false;
+let version = "1.1.65";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -139,6 +139,7 @@ function startTimer () {
 	timer = setInterval(() => {
 		for(let event of list) {
 			let diff = event.ms - Date.now();
+			sendMsg({type: "report", content: showNotification});
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let options = {
 					body: event.desc, 
