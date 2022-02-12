@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.44";
+let version = "1.1.45";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -71,8 +71,6 @@ self.addEventListener("message", (e) => {
 	} 
 	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
-		
-		sendMsg("list updated");
 	} 
 	else if(e.data && e.data.type == "notification") {
 		showNotification = e.data.notification;
@@ -148,9 +146,11 @@ function startTimer () {
 						{action: "delete", title: "DELETE"}
 					]
 				} 
-				self.registration.showNotification(event.title, options);
-				event.notified = true;
-				sendMsg({type: "update-list", list});
+				if(showNotification) {
+					self.registration.showNotification(event.title, options);
+					event.notified = true;
+					sendMsg({type: "update-list", list});
+				} 
 			} 
 		} 
 	}, 1000);
