@@ -319,7 +319,7 @@
 					
 					if(Events.list.length == 0 && storage) {
 						let list = storage.getItem("list");
-						console.log(list);
+						alert(list);
 						if(list && isArray(JSON.parse(list))) {
 							Events.list = JSON.parse(list);
 						} 
