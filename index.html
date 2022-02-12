@@ -351,6 +351,7 @@
 			} 
 			
 			const RegisterServiceWorker = () => {
+				alert("online: " + navigator.onLine);
 				if(navigator.onLine) {
 					navigator.serviceWorker.register("./sw.js?v=" + version).then(res => {
 						window.onload = pageComplete();
