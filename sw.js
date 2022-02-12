@@ -100,7 +100,7 @@ self.addEventListener("message", (e) => {
 			sendMsg("already started");
 	} 
 	else if(e.data && e.data.type == "get-list") {
-		sendMsg({type: "update-list", list});
+		sendMsg({type: "list", list});
 	} 
 });
 
