@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.58";
+let version = "1.1.59";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -151,12 +151,12 @@ function startTimer () {
 						{
 							action: "check", 
 							title: "CHECK", 
-							icon: "./src/images/check.png"
+							icon: "./src/images/check icon.png"
 						}, 
 						{
 							action: "delete", 
 							title: "DELETE", 
-							icon: "./src/images/delete.png"
+							icon: "./src/images/delete icon.png"
 						}
 					]
 				} 
