@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.57";
+let version = "1.1.58";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -157,7 +157,7 @@ function startTimer () {
 							action: "delete", 
 							title: "DELETE", 
 							icon: "./src/images/delete.png"
-						}, 
+						}
 					]
 				} 
 				if(showNotification) {
