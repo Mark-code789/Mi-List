@@ -287,7 +287,6 @@
 						let desc = item.$(".main_body_event_desc").getAttribute("value");
 						
 						if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-							alert("Check");
 							item.$(".main_body_event_ctrl_check").classList.add("checked");
 							item.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
 							item.$(".main_body_event_ctrl_edit").classList.add("disable");
