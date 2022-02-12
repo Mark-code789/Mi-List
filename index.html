@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.49";
+			var version = "1.1.50";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -340,6 +340,7 @@
 					Notify("Report: " + msg.data.content);
 				} 
 				else if(msg.data.type == "version") {
+					alert(version, msg.data.version);
 					if(msg.data.version != version) {
 						RegisterServiceWorker();
 					} 
