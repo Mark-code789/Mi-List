@@ -333,8 +333,11 @@
 						Events.retrieve();
 					} 
 				} 
-				else if(msg.data.type == "list") {
+				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
+				} 
+				else if(msg.data.type == "report") {
+					Notify("Report: ", msg.data.content);
 				} 
 				else if(msg.data.type == "version") {
 					if(msg.data.version != version) {
