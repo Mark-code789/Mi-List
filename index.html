@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.50";
+			var version = "1.1.51";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -351,15 +351,20 @@
 			} 
 			
 			const RegisterServiceWorker = () => {
-				navigator.serviceWorker.register("./sw.js?v=" + version).then(res => {
+				if(navigator.onLine) {
+					navigator.serviceWorker.register("./sw.js?v=" + version).then(res => {
+						window.onload = pageComplete();
+					}).catch(error => {
+						window.onload = pageComplete();
+					});
+					
+					navigator.serviceWorker.ready.then(() => {
+						SendMsg({type: "set-version", version});
+					});
+				} 
+				else {
 					window.onload = pageComplete();
-				}).catch(error => {
-					window.onload = pageComplete();
-				});
-				
-				navigator.serviceWorker.ready.then(() => {
-					SendMsg({type: "set-version", version});
-				});
+				} 
 			} 
 			
 			//window.onload = pageComplete();
@@ -370,7 +375,7 @@
 						SendMsg({type: "get-version"});
 					} 
 					else {
-						RegisterServiceWorker();
+						RegisterServiceWorker(false);
 					} 
 				});
 			} 
