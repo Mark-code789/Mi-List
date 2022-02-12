@@ -135,7 +135,7 @@ function sendMsg(msg) {
 } 
 
 function startTimer () {
-	sendMsg({type: "report", content: "timer started"});
+	//sendMsg({type: "report", content: "timer started"});
 	timer = setInterval(() => {
 		for(let event of list) {
 			let diff = event.ms - Date.now();
