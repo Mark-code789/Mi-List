@@ -259,7 +259,7 @@ class Events {
 		e.target.style.pointerEvents = "none";
 		parent.$(".main_body_event_ctrl_edit").classList.add("disable");
 	} 
-	static add = (e) => {
+	static add = (e) => { try {
 		let addDate = $("#add_body_form_date").value;
 		let time = $("#add_body_form_time").value;
 		let title = $("#add_body_form_title").value;
@@ -381,6 +381,7 @@ class Events {
 		this.removeEmptyLists();
 		this.editingEvent = null;
 		$(".add_body_back_icon").click();
+		} catch (error) {alert(error)}
 	} 
 	static retrieve = () => {
 		for(let event of this.list) {
