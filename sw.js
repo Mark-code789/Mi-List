@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.61";
+let version = "1.1.62";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -125,12 +125,10 @@ self.addEventListener("notificationclose", (e) => {
 });
 
 function sendMsg(msg) {
-	self.clients.matchAll({includeUncontrolled: true, type: 'window'}).
+	self.clients.matchAll({includeUncontrolled: true, type: 'all'}).
 	then((clients) => {
-		if(clients && clients.length) {
-			for(let client of clients) {
-				client.postMessage(msg);
-			} 
+		for(let client of clients) {
+			client.postMessage(msg);
 		} 
 	});
 } 
