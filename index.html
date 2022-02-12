@@ -316,9 +316,10 @@
 				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
-					alert(Events.list.length);
+					
 					if(Events.list.length == 0 && storage) {
 						let list = storage.getItem("list");
+						alert(list + "\n" + isArray(JSON.parse(list)));
 						if(list && isArray(JSON.parse(list))) {
 							Events.list = JSON.parse(list);
 							alert(Events.list);
