@@ -3,7 +3,7 @@ let timer;
 let list = [];
 let notification = false;
 let running = false;
-let version = "1.1.29";
+let version = "1.1.30";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
