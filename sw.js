@@ -2,7 +2,6 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let running = false;
 let version = "1.1.44";
 let appShellFiles = [
 	"./src/images/black logo.png",
@@ -72,32 +71,14 @@ self.addEventListener("message", (e) => {
 	} 
 	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
-		if(list.length > 0 && !running)
-			startTimer();
-		else if(list.length == 0 && running) {
-			running = false;
-			clearInterval(timer);
-			sendMsg({type: "report", content: "timer stopped"});
-		} 
 		
 		sendMsg("list updated");
 	} 
 	else if(e.data && e.data.type == "notification") {
 		showNotification = e.data.notification;
-		if(showNotification && list.length && !running) {
-			startTimer();
-		} 
-		else if(running && list.length == 0 || running && !showNotification) {
-			running = false;
-			clearInterval(timer);
-			sendMsg({type: "report", content: "timer stopped"});
-		} 
 	} 
 	else if(e.data && e.data.type == "start-timer") {
-		if(!running && showNotification && list.length) 
-			startTimer();
-		else if(running)
-			sendMsg({type: "report", content: "already started"});
+		startTimer();
 	} 
 	else if(e.data && e.data.type == "get-list") {
 		sendMsg({type: "list", list});
@@ -150,7 +131,6 @@ function sendMsg(msg) {
 
 function startTimer () {
 	sendMsg({type: "report", content: "timer started"});
-	running = true;
 	timer = setInterval(() => {
 		for(let event of list) {
 			let diff = event.ms - Date.now();
