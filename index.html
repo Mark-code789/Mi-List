@@ -267,6 +267,10 @@
 				load();
 			} 
 			
+			function reportError (error) {
+				alert("ERROR\n\nWe are sorry for this error. We have taken note of the it.\n\nError: " + error);
+			} 
+			
 			const SendMsg = async (msg) => {
 				let reg = await navigator.serviceWorker.getRegistration();
 				
