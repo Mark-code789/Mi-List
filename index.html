@@ -353,7 +353,7 @@
 			const RegisterServiceWorker = () => {
 				alert("online: " + navigator.onLine);
 				if(navigator.onLine) {
-					navigator.serviceWorker.register("./sw.js?v=" + version).then(res => {
+					navigator.serviceWorker.register("./sw.js).then(res => {
 						window.onload = pageComplete();
 					}).catch(error => {
 						window.onload = pageComplete();
