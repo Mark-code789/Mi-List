@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.40";
+			var version = "1.1.41";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -314,7 +314,7 @@
 						} 
 					} 
 				} 
-				else if(msg.data.type == "update-list") {
+				else if(msg.data.type == "list") {
 					Events.list = msg.data.list;
 					
 					if(Events.list.length == 0 && storage) {
@@ -328,6 +328,9 @@
 					else {
 						Events.retrieve();
 					} 
+				} 
+				else if(msg.data.type == "list") {
+					Events.list = msg.data.list;
 				} 
 				else if(msg.data.type == "version") {
 					if(msg.data.version != version) {
