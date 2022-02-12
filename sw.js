@@ -77,7 +77,7 @@ self.addEventListener("message", (e) => {
 		else if(list.length == 0 && running) {
 			running = false;
 			clearInterval(timer);
-			sendMsg("timer stopped");
+			sendMsg({type: "report", content: "timer stopped"});
 		} 
 		
 		sendMsg("list updated");
@@ -90,14 +90,14 @@ self.addEventListener("message", (e) => {
 		else if(running && list.length == 0 || running && !showNotification) {
 			running = false;
 			clearInterval(timer);
-			sendMsg("timer stopped");
+			sendMsg({type: "report", content: "timer stopped"});
 		} 
 	} 
 	else if(e.data && e.data.type == "start-timer") {
 		if(!running && showNotification && list.length) 
 			startTimer();
 		else if(running)
-			sendMsg("already started");
+			sendMsg({type: "report", content: "already started"});
 	} 
 	else if(e.data && e.data.type == "get-list") {
 		sendMsg({type: "list", list});
@@ -149,7 +149,7 @@ function sendMsg(msg) {
 } 
 
 function startTimer () {
-	sendMsg("timer started");
+	sendMsg({type: "report", content: "timer started"});
 	running = true;
 	timer = setInterval(() => {
 		for(let event of list) {
