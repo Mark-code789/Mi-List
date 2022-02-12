@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = true;
-let version = "1.1.63";
+let version = "1.1.64";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -114,7 +114,7 @@ self.addEventListener("notificationclick", (e) => {
 				break;
 			} 
 		} 
-		clients.openWindow(self.location.origin + "/Mi-List/");
+		clients.openWindow(self.location.origin + "/Mi-List/index.html");
 	} 
 	notification.close();
 });
@@ -135,6 +135,7 @@ function sendMsg(msg) {
 
 function startTimer () {
 	//sendMsg({type: "report", content: "timer started"});
+	clearInterval(timer);
 	timer = setInterval(() => {
 		for(let event of list) {
 			let diff = event.ms - Date.now();
