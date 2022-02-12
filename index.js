@@ -69,6 +69,7 @@ async function load (i = 0) {
 }
 
 const LoadingDone = () => { try {
+	if(storage) storage.clear();
 	for(let item of $$(".menu_body_item")) {
 		item.addEventListener("click", Menu, false);
 	} 
