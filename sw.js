@@ -148,8 +148,16 @@ function startTimer () {
 						event
 					}, 
 					actions: [
-						{action: "check", title: "MARK CHECKED"}, 
-						{action: "delete", title: "DELETE"}
+						{
+							action: "check", 
+							title: "CHECK", 
+							icon: "./src/images/check.png"
+						}, 
+						{
+							action: "delete", 
+							title: "DELETE", 
+							icon: "./src/images/delete.png"
+						}, 
 					]
 				} 
 				if(showNotification) {
