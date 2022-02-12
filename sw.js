@@ -143,7 +143,7 @@ function startTimer () {
 				let options = {
 					body: event.desc, 
 					icon: "./src/images/black logo.png", 
-					badge: "./src/images/black logo.png", 
+					badge: "./src/images/favicon.ico", 
 					vibrate: [100, 50, 100], 
 					data: {
 						event
