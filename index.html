@@ -227,7 +227,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.55";
+			var version = "1.1.56";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -340,7 +340,6 @@
 					Notify("Report: " + msg.data.content);
 				} 
 				else if(msg.data.type == "version") {
-					alert(version + ", " + msg.data.version);
 					if(msg.data.version != version) {
 						RegisterServiceWorker();
 					} 
@@ -351,7 +350,6 @@
 			} 
 			
 			const RegisterServiceWorker = () => {
-				alert("online: " + navigator.onLine);
 				if(navigator.onLine) {
 					navigator.serviceWorker.register("./sw.js").then(res => {
 						window.onload = pageComplete();
