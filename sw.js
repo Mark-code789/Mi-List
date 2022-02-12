@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.51";
+let version = "1.1.54";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -141,8 +141,8 @@ function startTimer () {
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let options = {
 					body: event.desc, 
-					icon: "./src/images/black logo.png", 
-					badge: "./src/images/favicon.ico", 
+					icon: './src/images/black logo.png', 
+					badge: 'https://mark-code789.github.io/src/images/favicon.ico', 
 					vibrate: [100, 50, 100], 
 					data: {
 						event
