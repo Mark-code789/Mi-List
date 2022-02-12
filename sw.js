@@ -1,9 +1,9 @@
 let cacheName = "Mi List";
 let timer;
 let list = [];
-let notification = false;
+let showNotification = false;
 let running = false;
-let version = "1.1.41";
+let version = "1.1.42";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -83,18 +83,18 @@ self.addEventListener("message", (e) => {
 		sendMsg("list updated");
 	} 
 	else if(e.data && e.data.type == "notification") {
-		notification = e.data.notification;
-		if(notification && list.length && !running) {
+		showNotification = e.data.notification;
+		if(showNotification && list.length && !running) {
 			startTimer();
 		} 
-		else if(running && list.length == 0 || running && !notification) {
+		else if(running && list.length == 0 || running && !showNotification) {
 			running = false;
 			clearInterval(timer);
 			sendMsg("timer stopped");
 		} 
 	} 
 	else if(e.data && e.data.type == "start-timer") {
-		if(!running && notification && list.length) 
+		if(!running && showNotification && list.length) 
 			startTimer();
 		else if(running)
 			sendMsg("already started");
