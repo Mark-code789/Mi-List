@@ -378,6 +378,9 @@
 					else {
 						RegisterServiceWorker(false);
 					} 
+				}).catch((error) => {
+					reportError(error);
+					window.onload = pageComplete();
 				});
 			} 
 			else {
