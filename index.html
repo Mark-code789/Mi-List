@@ -316,7 +316,7 @@
 				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
-					alert(Event.list.length);
+					alert(Events.list.length);
 					if(Events.list.length == 0) {
 						let list = storage.getItem("list");
 						if(list) {
