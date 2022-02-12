@@ -317,12 +317,15 @@
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
 					alert(Events.list.length);
-					if(Events.list.length == 0) {
+					if(Events.list.length == 0 && storage) {
 						let list = storage.getItem("list");
 						if(list) {
 							Events.list = JSON.parse(list);
 							Events.retrieve();
 						} 
+					}
+					else {
+						Events.retrieve();
 					} 
 				} 
 				else if(msg.data.type == "version") {
