@@ -250,7 +250,15 @@
 					window.addEventListener("beforeinstallprompt", (e) => {
 						e.preventDefault();
 						deferredEvent = e;
-					});
+					}); 
+					
+					
+					if(storage) {
+						let theme = storage.getItem("theme");
+						if(theme) {
+							storage.clear(); // freeing up space
+						} 
+					} 
 					if(storage) {
 						let theme = storage.getItem("ML-theme");
 						if(theme && JSON.parse(theme)) {
