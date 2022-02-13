@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.62.10.71";
+let version = "1.63.10.72";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -141,8 +141,9 @@ function startTimer () {
 			let diff = event.ms - Date.now();
 			sendMsg({type: "report", content: showNotification});
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
+				let desc = event.desc.length? event.desc: "The event time is up.";
 				let options = {
-					body: (event.desc.length? event.desc: "The event time is up."), 
+					body: desc, 
 					icon: './src/images/black favicon512.png', 
 					badge: './src/images/badge500.png', 
 					vibrate: [100, 50, 100], 
