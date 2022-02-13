@@ -9,6 +9,9 @@
         <link rel="icon" href="./src/images/black favicon32.png" type="image/png" sizes="32x32">
         <link rel="icon" href="./src/images/black favicon96.png" type="image/png" sizes="96x96">
         <style>
+        	html {
+        		font-size: 0.9em;
+        	} 
         	*, *:before, *:after {
         		box-sizing: border-box;
         		-webkit-user-select: none;
@@ -22,6 +25,7 @@
         		padd_bodying: 0;
         		height: 100vh;
         		width: 100vw;
+        		background: #262050;
         	} 
         	.load {
         		display: block;
@@ -140,7 +144,7 @@
 				<div class="menu_body_item_notification menu_body_item" value="notification">
 					<div class="menu_body_item_notification_cont">
 						<div class="menu_body_item_title">Notifications</div>
-						<div class="menu_body_item_desc">Choose whether to receive reminder notifications.<br>Remember to add this app in ignore list to receive notification even after closing the app.</div>
+						<div class="menu_body_item_desc">Choose whether to receive reminder notifications. For effective performance of this feature, add this app in ignore list and  do not close it. You will be notified of any event even when phone is locked.</div>
 					</div>
 					<div class="menu_body_item_toggle"></div>
 				</div>
@@ -227,13 +231,19 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.1.65";
+			var version = "1.1.69";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
 				storage = localStorage;
 			
 			function pageComplete () {
+				document.addEventListener("visibilitychange", (e) => {
+					if(document.visibilityState == "visible") {
+						SendMsg({type: "update-list", list: Events.list});
+						SendMsg({type: "start-timer"});
+					} 
+				});
 				window.addEventListener("beforeinstallprompt", (e) => {
 					e.preventDefault();
 					deferredEvent = e;
@@ -333,11 +343,28 @@
 						Events.retrieve();
 					} 
 				} 
+				else if(msg.data.type == "time-up") {
+					Events.list = msg.data.list;
+					let event = msg.data.event;
+					for(let item of $$(".main_body_event_cont")) {
+						let date = item.getAttribute("value");
+						let time = item.$(".main_body_event_time").getAttribute("value");
+						let title = item.$(".main_body_event_title").getAttribute("value");
+						let desc = item.$(".main_body_event_desc").getAttribute("value");
+						//alert(date + " " + time + " " + title + " " + desc + "\n" + event.date + " " + event.time + " " + event.title + " " + event.desc);
+						if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
+							item.$(".main_body_event_ctrl_edit").classList.add("disable");
+							Notify(title + " event is up.");
+							break;
+						} 
+					} 
+				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
 				} 
 				else if(msg.data.type == "report") {
-					Notify("Report: " + msg.data.content);
+					//Notify("Report: " + msg.data.content);
+					SendMsg({type: "report", content: "Got it"});
 				} 
 				else if(msg.data.type == "version") {
 					if(msg.data.version != version) {

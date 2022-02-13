@@ -2,7 +2,7 @@ let cacheName = "Mi List";
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.1.65";
+let version = "1.1.69";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -164,9 +164,9 @@ function startTimer () {
 				} 
 				if(showNotification) {
 					self.registration.showNotification(event.title, options);
-					event.notified = true;
-					sendMsg({type: "update-list", list});
 				} 
+				event.notified = true;
+				sendMsg({type: "time-up", event, list});
 			} 
 		} 
 	}, 1000);

@@ -91,7 +91,7 @@ const LoadingDone = () => {
 			$("#add_body_form_date").value = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
 			$("#add_body_form_date").min = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
 			$("#add_body_form_time").value = time.split(":").slice(0,2).join(":");;
-			$(".add").style.display = "flex";
+			$(".add").style.display = "grid";
 		});
 		$(".add").addEventListener("click", (event) => {
 			if(event.target.matches(".add") || event.target.matches(".add_body_back_icon")) 
@@ -154,7 +154,7 @@ async function Menu (e) {
 							storage.setItem("notification", notification);
 							
 						if(notification) {
-							//alert("Remember to add Mi List in ignore list to be able to receive notifications even while the app is closed.");
+							//alert("TIP\n\nFor effective performance ");
 							Notify("Event motifications enabled");
 						} 
 						else
