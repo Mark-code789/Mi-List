@@ -142,7 +142,7 @@ function startTimer () {
 			sendMsg({type: "report", content: showNotification});
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let options = {
-					body: event.desc, 
+					body: (event.desc.length? event.desc: "The event time is up."), 
 					icon: './src/images/black favicon512.png', 
 					badge: './src/images/badge500.png', 
 					vibrate: [100, 50, 100], 
