@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.60.10.70";
+			var version = "1.61.10.71";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -240,8 +240,11 @@
 			function pageComplete () {
 				document.addEventListener("visibilitychange", (e) => {
 					if(document.visibilityState == "visible") {
+						let notification = $(".menu_body_item_notification .menu_body_item_toggle").classList.contains("switch"));
+						SendMsg({type: "notification", notification});
 						SendMsg({type: "update-list", list: Events.list});
 						SendMsg({type: "start-timer"});
+						Notify(notification);
 					} 
 				});
 				window.addEventListener("beforeinstallprompt", (e) => {
