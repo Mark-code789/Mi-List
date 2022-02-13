@@ -1,4 +1,4 @@
-let version = "1.68.10.76";
+let version = "1.68.10.77";
 let cacheName = "Mi List" + version;
 let timer;
 let list = [];
@@ -97,6 +97,7 @@ self.addEventListener("message", (e) => {
 self.addEventListener("notificationclick", (e) => {
 	let notification = e.notification;
 	let action = e.action;
+	notification.close();
 	
 	if(action == "check") {
 		let event = notification.data.event;
@@ -126,9 +127,16 @@ self.addEventListener("notificationclick", (e) => {
 				break;
 			} 
 		} 
-		clients.openWindow(self.location.origin + "/Mi-List/index.html");
+		e.waitUntil(self.clients.matchAll({type: "window"}).
+		then((clients) => {
+			for(let client of clients) {
+				if(client.url == '/' && 'focus' in client) 
+					return client.focus();
+			} 
+			if(clients.openWindow)
+				return clients.openWindow('/');
+		});
 	} 
-	notification.close();
 });
 
 self.addEventListener("notificationclose", (e) => {
@@ -137,7 +145,7 @@ self.addEventListener("notificationclose", (e) => {
 });
 
 function sendMsg(msg) {
-	self.clients.matchAll({includeUncontrolled: true, type: 'all'}).
+	self.clients.matchAll({type: 'window'}).
 	then((clients) => {
 		for(let client of clients) {
 			client.postMessage(msg);
