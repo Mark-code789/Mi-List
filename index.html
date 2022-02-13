@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.64.10.72";
+			var version = "1.65.10.72";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -241,11 +241,11 @@
 				try {
 					document.addEventListener("visibilitychange", (e) => {
 						if(document.visibilityState == "visible") {
-							let notification = $(".menu_body_item_notification .menu_body_item_toggle").classList.contains("switch");
+							let notification = $(".menu_body_item_notification").classList.contains("switch");
 							SendMsg({type: "notification", notification});
 							SendMsg({type: "update-list", list: Events.list});
 							SendMsg({type: "start-timer"});
-							Notify($(".menu_body_item_notification .menu_body_item_toggle").className);
+							Notify($(notification);
 						} 
 					});
 					window.addEventListener("beforeinstallprompt", (e) => {
