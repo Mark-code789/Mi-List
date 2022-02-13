@@ -231,49 +231,53 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.62.10.71";
+			var version = "1.63.10.71";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
 				storage = localStorage;
 			
 			function pageComplete () {
-				document.addEventListener("visibilitychange", (e) => {
-					if(document.visibilityState == "visible") {
-						let notification = $(".menu_body_item_notification .menu_body_item_toggle").classList.contains("switch");
-						SendMsg({type: "notification", notification});
-						SendMsg({type: "update-list", list: Events.list});
-						SendMsg({type: "start-timer"});
-						Notify(notification);
+				try {
+					document.addEventListener("visibilitychange", (e) => {
+						if(document.visibilityState == "visible") {
+							let notification = $(".menu_body_item_notification .menu_body_item_toggle").classList.contains("switch");
+							SendMsg({type: "notification", notification});
+							SendMsg({type: "update-list", list: Events.list});
+							SendMsg({type: "start-timer"});
+							Notify(notification);
+						} 
+					});
+					window.addEventListener("beforeinstallprompt", (e) => {
+						e.preventDefault();
+						deferredEvent = e;
+					});
+					if(storage) {
+						let theme = storage.getItem("theme");
+						if(theme && JSON.parse(theme)) {
+							$(".load").classList.toggle("dark_theme");
+						} 
 					} 
-				});
-				window.addEventListener("beforeinstallprompt", (e) => {
-					e.preventDefault();
-					deferredEvent = e;
-				});
-				if(storage) {
-					let theme = storage.getItem("theme");
-					if(theme && JSON.parse(theme)) {
-						$(".load").classList.toggle("dark_theme");
-					} 
+					$(".menu_header_version").textContent = "Version: " + version;
+					const link = $$$("link");
+					const script = $$$("script");
+					
+					link.rel = "stylesheet";
+					link.href = "./index.css?v=" + version;
+					script.src = "./index.js?v=" + version;
+					
+					script.onload = scriptLoaded;
+					
+					document.head.appendChild(link);
+					document.head.appendChild(script);
+					
+					let date = new Date().toLocaleDateString().split("/");
+					let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
+					$(".main_body_day_events").setAttribute("value", str);
+					$(".main_body_date").setAttribute("value", str);
+				} catch (error) {
+					reportError(error);
 				} 
-				$(".menu_header_version").textContent = "Version: " + version;
-				const link = $$$("link");
-				const script = $$$("script");
-				
-				link.rel = "stylesheet";
-				link.href = "./index.css?v=" + version;
-				script.src = "./index.js?v=" + version;
-				
-				script.onload = scriptLoaded;
-				
-				document.head.appendChild(link);
-				document.head.appendChild(script);
-				
-				let date = new Date().toLocaleDateString().split("/");
-				let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
-				$(".main_body_day_events").setAttribute("value", str);
-				$(".main_body_date").setAttribute("value", str);
 			} 
 			
 			function scriptLoaded () {
