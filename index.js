@@ -101,17 +101,17 @@ const LoadingDone = () => {
 		
 		// retrieve settings
 		if(storage) {
-			let theme = storage.getItem("theme");
+			let theme = storage.getItem("ML-theme");
 			if(theme && JSON.parse(theme)) 
 				$(".menu_body_item_theme").click();
 			
-			let notification = storage.getItem("notification");
+			let notification = storage.getItem("ML-notification");
 			if(notification && JSON.parse(notification)) {
 				$(".menu_body_item_notification").click();
 				SendMsg({type: "notification", notification: JSON.parse(notification)});
 			} 
 			
-			let multipleDay = storage.getItem("multiple-day");
+			let multipleDay = storage.getItem("ML-multiple-day");
 			if(multipleDay && JSON.parse(multipleDay))
 				$(".menu_body_item_multiple_day").click();
 		} 
@@ -139,7 +139,7 @@ async function Menu (e) {
 				$(".menu").classList.toggle("dark_theme");
 				$(".install").classList.toggle("dark_theme");
 				if(storage) 
-					storage.setItem("theme", e.target.classList.contains("switch"));
+					storage.setItem("ML-theme", e.target.classList.contains("switch"));
 				break;
 			
 			case "notification":
@@ -153,7 +153,7 @@ async function Menu (e) {
 						let notification = e.target.classList.contains("switch");
 						SendMsg({type: "notification", notification});
 						if(storage) 
-							storage.setItem("notification", notification);
+							storage.setItem("ML-notification", notification);
 							
 						if(notification) {
 							//alert("TIP\n\nFor effective performance ");
@@ -175,7 +175,7 @@ async function Menu (e) {
 				e.target.classList.toggle("switch");
 				$(".add_body_form_date_cont").style.display = e.target.classList.contains("switch")? "block": "none";
 				if(storage) 
-					storage.setItem("multiple-day", e.target.classList.contains("switch"));
+					storage.setItem("ML-multiple-day", e.target.classList.contains("switch"));
 				break;
 				
 			case "share":
@@ -247,7 +247,7 @@ class Events {
 				} 
 			} 
 			if(storage) 
-				storage.setItem("list", JSON.stringify(this.list));
+				storage.setItem("ML-list", JSON.stringify(this.list));
 				
 			SendMsg({type: "update-list", list: this.list});
 			parent.classList.remove("added");
@@ -274,7 +274,7 @@ class Events {
 				} 
 			} 
 			if(storage) 
-				storage.setItem("list", JSON.stringify(this.list));
+				storage.setItem("ML-list", JSON.stringify(this.list));
 			SendMsg({type: "update-list", list: this.list});
 				
 			e.target.classList.add("checked");
@@ -341,7 +341,7 @@ class Events {
 			} 
 					
 			if(storage) {
-				storage.setItem("list", JSON.stringify(this.list));
+				storage.setItem("ML-list", JSON.stringify(this.list));
 			} 
 			SendMsg({type: "update-list", list: this.list});
 			
