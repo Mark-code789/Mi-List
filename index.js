@@ -114,12 +114,19 @@ const LoadingDone = () => {
 			let multipleDay = storage.getItem("ML-multiple-day");
 			if(multipleDay && JSON.parse(multipleDay))
 				$(".menu_body_item_multiple_day").click();
+				
+			let list = storage.getItem("ML-list");
+						
+			if(list && Array.isArray(JSON.parse(list))) {
+				Events.list = JSON.parse(list);
+			} 
 		} 
 		
 		SendMsg({type: "get-list"});
 		history.pushState(null, "", "");
 		$(".load").style.display = "none";
 		$(".main").style.display = "block";
+		Events.retrieve();
 		
 		if(deferredEvent) {
 			ShowInstallPrompt();
