@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.65.10.72";
+			var version = "1.66.10.72";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -245,7 +245,7 @@
 							SendMsg({type: "notification", notification});
 							SendMsg({type: "update-list", list: Events.list});
 							SendMsg({type: "start-timer"});
-							Notify($(notification);
+							Notify(notification);
 						} 
 					});
 					window.addEventListener("beforeinstallprompt", (e) => {
