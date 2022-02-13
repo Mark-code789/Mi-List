@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.68.10.76";
+			var version = "1.69.10.77";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -391,26 +391,26 @@
 			} 
 			
 			const RegisterServiceWorker = () => {
-				if(navigator.onLine) {
+				//if(navigator.onLine) {
 					navigator.serviceWorker.register("./sw.js").then(res => {
 						window.onload = pageComplete();
 					}).catch(error => {
 						window.onload = pageComplete();
 					});
 					
-					navigator.serviceWorker.ready.then(() => {
+					/*navigator.serviceWorker.ready.then(() => {
 						SendMsg({type: "set-version", version});
-					});
-				} 
+					});*/
+				/*} 
 				else {
 					window.onload = pageComplete();
-				} 
+				} */
 			} 
 			
 			//window.onload = pageComplete();
 			if("serviceWorker" in navigator) {
 				navigator.serviceWorker.onmessage = Message;
-				navigator.serviceWorker.getRegistration("./sw.js").then((reg) => {
+				/*navigator.serviceWorker.getRegistration("./sw.js").then((reg) => {
 					if(reg) {
 						SendMsg({type: "get-version"});
 					} 
@@ -420,7 +420,8 @@
 				}).catch((error) => {
 					reportError(error);
 					window.onload = pageComplete();
-				});
+				});*/
+				RegisterServiceWorker();
 			} 
 			else {
 				alert("This browser doesn't support one of fundamental aspect of application. Please use another one or update this one.");
