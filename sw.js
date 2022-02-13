@@ -1,8 +1,8 @@
-let cacheName = "Mi List";
+let version = "1.68.10.76";
+let cacheName = "Mi List" + version;
 let timer;
 let list = [];
 let showNotification = false;
-let version = "1.68.10.75";
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
