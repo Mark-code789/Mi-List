@@ -106,8 +106,10 @@ const LoadingDone = () => {
 				$(".menu_body_item_theme").click();
 			
 			let notification = storage.getItem("notification");
-			if(notification && JSON.parse(notification))
+			if(notification && JSON.parse(notification)) {
 				$(".menu_body_item_notification").click();
+				SendMsg({type: "notification", notification: JSON.parse(notification)});
+			} 
 			
 			let multipleDay = storage.getItem("multiple-day");
 			if(multipleDay && JSON.parse(multipleDay))
