@@ -146,6 +146,7 @@ function startTimer () {
 					icon: './src/images/black favicon512.png', 
 					badge: './src/images/badge500.png', 
 					vibrate: [100, 50, 100], 
+					requireInteraction: true, 
 					data: {
 						event
 					}, 
