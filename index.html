@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			var version = "1.67.10.72";
+			var version = "1.68.10.73";
 			var deferredEvent;
 			var storage;
 			if(localStorage) 
@@ -252,7 +252,7 @@
 						deferredEvent = e;
 					});
 					if(storage) {
-						let theme = storage.getItem("theme");
+						let theme = storage.getItem("ML-theme");
 						if(theme && JSON.parse(theme)) {
 							$(".load").classList.toggle("dark_theme");
 						} 
@@ -298,7 +298,7 @@
 			const Message = (msg) => {
 				if(msg.data.type == "check") {
 					Events.list = msg.data.list;
-					if(storage) storage.setItem("list", JSON.stringify(Events.list));
+					if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 					let event = msg.data.event;
 					for(let item of $$(".main_body_event_cont")) {
 						let date = item.getAttribute("value");
@@ -316,7 +316,7 @@
 				} 
 				else if(msg.data.type == "delete") {
 					Events.list = msg.data.list;
-					if(storage) storage.setItem("list", JSON.stringify(Events.list));
+					if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 					let event = msg.data.event;
 					for(let item of $$(".main_body_event_cont")) {
 						let date = item.getAttribute("value");
@@ -338,7 +338,7 @@
 					Events.list = msg.data.list;
 					
 					if(Events.list.length == 0 && storage) {
-						let list = storage.getItem("list");
+						let list = storage.getItem("ML-list");
 						
 						if(list && Array.isArray(JSON.parse(list))) {
 							Events.list = JSON.parse(list);
