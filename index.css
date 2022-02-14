@@ -90,6 +90,23 @@ article {
 	margin-bottom: 20px !important;
 } 
 
+.install_body_text {
+	max-width: 70vw;
+	width: fit-content;
+} 
+
+.install_body_text strong {
+	display: inline-block;
+	margin: 0 0 15px 0;
+	font-size: 1.2rem;
+	font-weight: 500;
+} 
+
+.install_body_text em {
+	font-size: 0.9rem;
+	font-weight: 300;
+} 
+
 .install_body_btn_cont {
 	padding: 40px 0 10px 0;
 	display: flex;
