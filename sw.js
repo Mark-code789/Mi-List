@@ -1,5 +1,5 @@
-let version = "1.69.10.77";
-let cacheName = "Mi List" + version;
+let version = "77";
+let cacheName = "Mi List|" + version;
 let timer;
 let list = [];
 let showNotification = false;
@@ -42,7 +42,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res1) => {
-			if(navigator.onLine && /(?<!min).(html|css|js)(.*?)$/g.test(e.request.url) || !res1) {
+			if(!res1) {
                 return fetch(e.request).then((res2) => {
                     return caches.open(cacheName).then((cache) => {
                         cache.put(e.request, res2.clone());
@@ -74,13 +74,7 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("message", (e) => {
-	if(e.data && e.data.type == "get-version") {
-		sendMsg({type: 'version', version});
-	} 
-	else if(e.data && e.data.type == "set-version") {
-		version = e.data.version;
-	} 
-	else if(e.data && e.data.type == "update-list") {
+	if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
 	} 
 	else if(e.data && e.data.type == "notification") {
@@ -159,7 +153,6 @@ function startTimer () {
 	timer = setInterval(() => {
 		for(let event of list) {
 			let diff = event.ms - Date.now();
-			sendMsg({type: "report", content: showNotification});
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let desc = event.desc.length? event.desc: "Event time is up.";
 				let options = {
