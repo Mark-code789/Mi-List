@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "29.6.5.38";
+			let version = "30.6.5.39";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -401,7 +401,6 @@
 				if("serviceWorker" in navigator) {
 					navigator.serviceWorker.onmessage = Message;
 					const reg = await navigator.serviceWorker.register("sw.js");
-					alert(reg);
 					if(reg.waiting) {
 						await InvokeSWUpdate(reg);
 					} 
