@@ -1,5 +1,5 @@
-let version = "77";
-let cacheName = "Mi List|" + version;
+let version = "35";
+let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
 let showNotification = false;
@@ -71,11 +71,17 @@ self.addEventListener("activate", (e) => {
             }))
         })
     )
+    
+    //self.clients.claim();
 });
 
 self.addEventListener("message", (e) => {
-	if(e.data && e.data.type == "update-list") {
+	if(e.data && e.data.type == "skip-waiting") {
+		self.skipWaiting();
+	} 
+	else if(e.data && e.data.type == "update-list") {
 		list = e.data.list;
+		//sendMsg({type: "report", content: showNotification});
 	} 
 	else if(e.data && e.data.type == "notification") {
 		showNotification = e.data.notification;
@@ -129,7 +135,7 @@ self.addEventListener("notificationclick", (e) => {
 			} 
 			if(clients.openWindow)
 				return clients.openWindow('/');
-		});
+		}));
 	} 
 });
 
@@ -148,7 +154,6 @@ function sendMsg(msg) {
 } 
 
 function startTimer () {
-	//sendMsg({type: "report", content: "timer started"});
 	clearInterval(timer);
 	timer = setInterval(() => {
 		for(let event of list) {
