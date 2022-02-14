@@ -106,27 +106,18 @@ const LoadingDone = () => {
 				$(".menu_body_item_theme").click();
 			
 			let notification = storage.getItem("ML-notification");
-			if(notification && JSON.parse(notification)) {
+			if(notification && JSON.parse(notification))
 				$(".menu_body_item_notification").click();
-				SendMsg({type: "notification", notification: JSON.parse(notification)});
-			} 
 			
 			let multipleDay = storage.getItem("ML-multiple-day");
 			if(multipleDay && JSON.parse(multipleDay))
 				$(".menu_body_item_multiple_day").click();
-				
-			let list = storage.getItem("ML-list");
-						
-			if(list && Array.isArray(JSON.parse(list))) {
-				Events.list = JSON.parse(list);
-			} 
 		} 
 		
 		SendMsg({type: "get-list"});
 		history.pushState(null, "", "");
 		$(".load").style.display = "none";
 		$(".main").style.display = "block";
-		Events.retrieve();
 		
 		if(deferredEvent) {
 			ShowInstallPrompt();
