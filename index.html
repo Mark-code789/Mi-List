@@ -401,7 +401,7 @@
 				if("serviceWorker" in navigator) {
 					navigator.serviceWorker.onmessage = Message;
 					const reg = await navigator.serviceWorker.register("sw.js");
-					
+					alert(reg);
 					if(reg.waiting) {
 						await InvokeSWUpdate(reg);
 					} 
