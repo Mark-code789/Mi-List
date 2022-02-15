@@ -231,7 +231,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "32.6.5.40";
+			let version = "32.6.5.41";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -398,7 +398,6 @@
 			} 
 			
 			window.addEventListener("load", async () => {
-				alert("load complete");
 				if("serviceWorker" in navigator) {
 					navigator.serviceWorker.onmessage = Message;
 					const reg = await navigator.serviceWorker.register("./sw.js");
