@@ -1,4 +1,4 @@
-let version = "39";
+let version = "40";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -28,7 +28,8 @@ let appShellFiles = [
 	"./src/images/badge500.png", 
 	"./index.js",
 	"./index.css", 
-	"./index.html"
+	"./index.html", 
+	"./"
 ];
 
 self.addEventListener("install", (e) => {
