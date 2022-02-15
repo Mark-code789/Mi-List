@@ -1,4 +1,4 @@
-let version = "42";
+let version = "43";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -43,7 +43,6 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res1) => {
-			console.log(res1);
 			if(!res1) {
                 return fetch(e.request).then((res2) => {
                     return caches.open(cacheName).then((cache) => {
@@ -56,6 +55,9 @@ self.addEventListener("fetch", (e) => {
              }
              else if(res1) {
              	return res1;
+             } 
+             else {
+             	console.log(res1.toString());
              } 
 		})
 	)
