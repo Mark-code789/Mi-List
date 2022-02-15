@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "34.6.6.43";
+			let version = "35.6.6.44";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -402,6 +402,7 @@
 				if("serviceWorker" in navigator) {
 					navigator.serviceWorker.onmessage = Message;
 					const reg = await navigator.serviceWorker.register("./sw.js");
+					reg.update();
 					if(reg.waiting) {
 						await InvokeSWUpdate(reg);
 					} 
