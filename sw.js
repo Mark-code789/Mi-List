@@ -29,6 +29,7 @@ let appShellFiles = [
 	"./index.js",
 	"./index.css", 
 	"./index.html", 
+	"./manifest.webmanifest", 
 	"./"
 ];
 
