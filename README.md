@@ -1,5 +1,7 @@
 # Mi-List
-This application is a standard web application that is used to manage personal to do list. 
+to-do list application
+## Purpose 
+This application is a standard web application that is used to manage personal to-do list. 
 It is purely assembled in vanilla javascript with no libraries. 
 ## Pros
 - Able to send custom device reminder notifications. 
