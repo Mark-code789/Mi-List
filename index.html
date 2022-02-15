@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "33.6.5.42";
+			let version = "34.6.6.43";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -378,7 +378,7 @@
 			} 
 			
 			const InvokeSWUpdateFlow = async (reg) => {
-				let refresh = await confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\nDo you want to refresh?");
+				let refresh = await confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
 				if(refresh) {
 					await reg.waiting.postMessage({type: "skip-waiting"});
 				} 
