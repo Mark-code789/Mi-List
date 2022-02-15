@@ -449,10 +449,12 @@ class Events {
 				if(!oldDate) {
 					let today = new Date();
 					let tomorrow = new Date();
+					let yesterday = new Date();
 					tomorrow.setDate(today.getDate() + 1);
+					yesterday.setDate(today.getDate() - 1);
 					let date = new Date(addDate);
 					let str = date.toLocaleDateString('en-US', {weekday: "long", month: "short", year: "numeric"}).split(" ");
-					dateDiv.textContent = date.toDateString() == today.toDateString()? "Today": date.toDateString() == tomorrow.toDateString()? "Tomorrow": str[2] + ", " + date.getDate() + " " + str[0] + " " + str[1];
+					dateDiv.textContent = date.toDateString() == yesterday.toDateString()? "Yesterday": date.toDateString() == today.toDateString()? "Today": date.toDateString() == tomorrow.toDateString()? "Tomorrow": str[2] + ", " + date.getDate() + " " + str[0] + " " + str[1];
 					
 					dayDiv.appendChild(dateDiv);
 				} 
