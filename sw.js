@@ -1,4 +1,4 @@
-let version = "41";
+let version = "42";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -29,8 +29,7 @@ let appShellFiles = [
 	"./index.js",
 	"./index.css", 
 	"./index.html", 
-	"./manifest.webmanifest", 
-	"./"
+	"./manifest.webmanifest"
 ];
 
 self.addEventListener("install", (e) => {
@@ -44,6 +43,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res1) => {
+			console.log(res1);
 			if(!res1) {
                 return fetch(e.request).then((res2) => {
                     return caches.open(cacheName).then((cache) => {
@@ -54,7 +54,7 @@ self.addEventListener("fetch", (e) => {
                 	return res1;
                 })
              }
-             else {
+             else if(res1) {
              	return res1;
              } 
 		})
