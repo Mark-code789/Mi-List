@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "44.6.12.58";
+			let version = "46.6.12.59";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -306,9 +306,8 @@
 					try {
 						Events.list = msg.data.list;
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
-						let event = msg.data.event;
-						let id = Events.list.indexOf(event);
-						let contDiv = $(".main_body_event_cont[id='" + id +"']");
+						let tag = msg.data.tag;
+						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 						contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
 						contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
@@ -320,12 +319,36 @@
 					try {
 						Events.list = msg.data.list;
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
-						let event = msg.data.event;
-						let id = Events.list.indexOf(event);
-						let contDiv = $(".main_body_event_cont[id='" + id +"']");
+						let tag = msg.data.tag;
+						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
 						contDiv.parentNode.removeChild(contDiv);
 					} catch (error) {
 						alert(error);
+					} 
+				} 
+				else if(msg.data.type == "time-up") {
+					try {
+						Events.list = msg.data.list;
+						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						let tag = msg.data.tag;
+						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
+						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
+					} catch (error) {
+						alert(error);
+					} 
+				} 
+				else if(msg.data.type == "expired") {
+					try {
+						Events.list = msg.data.list;
+						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						let tag = msg.data.tag;
+						let event = msg.data.event;
+						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
+						contDiv.parentNode.removeChild(contDiv);
+						
+						Notify(event.title + " expired");
+					} catch (error) {
+						reportError(error);
 					} 
 				} 
 				else if(msg.data.type == "list") {
@@ -340,18 +363,6 @@
 					} 
 					
 					Events.retrieve();
-				} 
-				else if(msg.data.type == "time-up") {
-					try {
-						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
-						let event = msg.data.event;
-						let id = Events.list.indexOf(event);
-						let contDiv = $(".main_body_event_cont[id='" + id +"']");
-						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
-					} catch (error) {
-						alert(error);
-					} 
 				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
