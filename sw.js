@@ -1,4 +1,4 @@
-let version = "56";
+let version = "57";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -161,6 +161,7 @@ function sendMsg(msg) {
 function startTimer () {
 	clearInterval(timer);
 	timer = setInterval(() => {
+		sendMsg({type: "report", content: "counting"});
 		for(let event of list) {
 			let diff = event.ms - Date.now();
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
