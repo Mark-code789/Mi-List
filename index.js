@@ -320,7 +320,7 @@ class Events {
 				checkDiv.addEventListener("click", this.check, false);
 				
 			let event = {date: addDate, time, title, desc, ms: new Date(addDate + "T" + convertTo(time, 24)).getTime()};
-			let similarEvent = JSON.stringify(this.editingEvent).includes(JSON.stringify(event));
+			let similarEvent = JSON.stringify(this.list).includes(JSON.stringify(event));
 			if(this.editingEvent) {
 				this.list[parseInt(this.editingEvent.id)] = event;
 			} 
