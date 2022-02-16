@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "39.6.12.54";
+			let version = "40.6.12.55";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -310,11 +310,10 @@
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						alert(contDiv);
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
-						contDiv.$(".main_body_event_ctrl_edit").classList.add("checked");
-						contDiv.$(".main_body_event_ctrl_edit").style.pointerEvents = "none";
+						contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
+						contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
 					} catch (error) {
-						reportError(error);
-						alert(id);
+						alert(error);
 					} 
 				} 
 				else if(msg.data.type == "delete") { 
@@ -323,12 +322,10 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
-						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.parentNode.removeChild(contDiv);
 					} catch (error) {
-						reportError(error);
-						alert(id);
+						alert(error);
 					} 
 				} 
 				else if(msg.data.type == "list") {
@@ -354,8 +351,7 @@
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 					} catch (error) {
-						reportError(error);
-						alert(id);
+						alert(error);
 					} 
 				} 
 				else if(msg.data.type == "update-list") {
