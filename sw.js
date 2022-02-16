@@ -185,8 +185,9 @@ function startTimer () {
 				sendMsg({type: "time-up", event, list});
 			} 
 			else if(diff <= -86400000) {
-				sendMsg({type: "expired", tag: list.indexOf(event), list});
-				list.splice(list.indexOf(event), 1);
+				let tag = list.indexOf(event);
+				list.splice(tag, 1);
+				sendMsg({type: "expired", tag, event, list});
 			} 
 		} 
 	}, 1000);
