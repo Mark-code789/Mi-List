@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "43.6.12.57";
+			let version = "44.6.12.58";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -405,11 +405,12 @@
 						if(!refreshing) {
 							location.reload();
 							refreshing = true;
-							if(refreshing) {
-								alert("CONGRATULATIONS!\n\nApp Updated\Version: " + version + "\n\nMi-List updated successfully.");
-							} 
 						} 
 					});
+					
+					if(refreshing) {
+						alert("CONGRATULATIONS!\n\nApp Updated\nVersion: " + version + "\n\nMi-List updated successfully.");
+					} 
 					
 					if(reg.active) {
 						pageComplete();
