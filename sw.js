@@ -154,6 +154,7 @@ function startTimer () {
 		sendMsg({type: "report", content: "counting"});
 		for(let event of list) {
 			let diff = event.ms - Date.now();
+			let tag = list.indexOf(event);
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let desc = event.desc.length? event.desc: "Event time is up.";
 				let options = {
@@ -164,7 +165,7 @@ function startTimer () {
 					data: {
 						event
 					}, 
-					tag: list.indexOf(event), 
+					tag, 
 					actions: [
 						{
 							action: "check", 
@@ -182,10 +183,9 @@ function startTimer () {
 					self.registration.showNotification(event.title, options);
 				} 
 				event.notified = true;
-				sendMsg({type: "time-up", event, list});
+				sendMsg({type: "time-up", tag, event, list});
 			} 
 			else if(diff <= -86400000) {
-				let tag = list.indexOf(event);
 				list.splice(tag, 1);
 				sendMsg({type: "expired", tag, event, list});
 			} 
