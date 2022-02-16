@@ -320,22 +320,16 @@ class Events {
 				checkDiv.addEventListener("click", this.check, false);
 				
 			let event = {date: addDate, time, title, desc, ms: new Date(addDate + "T" + convertTo(time, 24)).getTime()};
-			let similarEvent = null;
-			for(let item of this.list) {
-				if(item.date == addDate && item.time == time && item.title == title && item.desc == desc) {
-					similarEvent = item;
-					break;
-				} 
-			} 
-			
-			if(this.editingEvent && similarEvent) {
-				this.list[this.list.indexOf(similarEvent)] = event;
+			let similarEvent = JSON.stringify(this.editingEvent).includes(JSON.stringify(event));
+			if(this.editingEvent) {
+				this.list[parseInt(this.editingEvent.id)] = event;
 			} 
 			else if(similarEvent) {
 				return Notify("Similar Event exists.");
 			} 
 			else {
 				this.list.push(event);
+				contDiv.setAttribute("id", this.list.length-1);
 			} 
 					
 			if(storage) {
@@ -411,7 +405,8 @@ class Events {
 	} 
 	static retrieve = () => {
 		try {
-			for(let event of this.list) {
+			for(let i = 0; i < this.list.length; i++) {
+				let event = this.list[i];
 				let addDate = event.date;
 				let time = event.time
 				let title = event.title;
@@ -423,7 +418,7 @@ class Events {
 				let mainBody = $(".main_body");
 				let dayDiv = $(".main_body_day_events[value='" + addDate + "']") || $$$("div", ["class", "main_body_day_events", "value", addDate]), 
 					dateDiv = $$$("div", ["class", "main_body_date", "value", addDate]), 
-					contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate]), 
+					contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate, "id", i]), 
 					timeDiv = $$$("div", ["class", "main_body_event_time", "value", convertTo(time, 24), "textContent", time]),
 					expanderDiv = $$$("div", ["class", "main_body_event_expander"]), 
 					titleDiv = $$$("div", ["class", "main_body_event_title", "value", title, "innerHTML", title]), 
