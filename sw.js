@@ -1,4 +1,4 @@
-let version = "58";
+let version = "59";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -106,32 +106,22 @@ self.addEventListener("notificationclick", (e) => {
 	
 	if(action == "check") {
 		let event = notification.data.event;
-		for(let item of list) {
-			if(item.ms == event.ms && item.title == event.title && item.desc == event.desc) {
-				item.checked = true;
-				sendMsg({type: "check", list, event: item});
-				break;
-			} 
-		} 
+		let tag = notification.tag;
+		list[tag].checked = true;
+		sendMsg({type: "check", list, event, tag});
 	} 
 	else if(action == "delete") {
 		let event = notification.data.event;
-		for(let item of list) {
-			if(item.ms == event.ms && item.title == event.title && item.desc == event.desc) {
-				list.splice(list.indexOf(item), 1);
-				sendMsg({type: "delete", list, event: item});
-				break;
-			} 
-		} 
+		let tag = notification.tag;
+		list.splice(tag, 1);
+		sendMsg({type: "delete", list, event, tag});
 	} 
 	else {
 		let event = notification.data.event;
-		for(let item of list) {
-			if(item.ms == event.ms && item.title == event.title && item.desc == event.desc) {
-				item.notified = true;
-				break;
-			} 
-		} 
+		let tag = notification.tag;
+		list[tag].notified = true;
+		sendMsg({type: "check", list, event, tag});
+		
 		e.waitUntil(self.clients.matchAll({type: "window"}).
 		then((clients) => {
 			for(let client of clients) {
@@ -174,6 +164,7 @@ function startTimer () {
 					data: {
 						event
 					}, 
+					tag: list.indexOf(event);
 					actions: [
 						{
 							action: "check", 
