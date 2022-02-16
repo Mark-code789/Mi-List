@@ -164,7 +164,7 @@ function startTimer () {
 					data: {
 						event
 					}, 
-					tag: list.indexOf(event);
+					tag: list.indexOf(event), 
 					actions: [
 						{
 							action: "check", 
@@ -183,6 +183,10 @@ function startTimer () {
 				} 
 				event.notified = true;
 				sendMsg({type: "time-up", event, list});
+			} 
+			else if(diff <= -86400000) {
+				sendMsg({type: "expired", tag: list.indexOf(event), list});
+				list.splice(list.indexOf(event), 1);
 			} 
 		} 
 	}, 1000);
