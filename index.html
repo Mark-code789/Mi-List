@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "38.6.12.53";
+			let version = "39.6.12.54";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -307,8 +307,8 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
-						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
+						alert(contDiv);
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("checked");
 						contDiv.$(".main_body_event_ctrl_edit").style.pointerEvents = "none";
@@ -411,10 +411,11 @@
 							location.reload();
 							refreshing = true;
 						} 
-						else {
-							alert("CONGRATULATIONS!\n\nApp Updated\Version: " + version + "\n\nMi-List updated successfully.");
-						} 
 					});
+					
+					if(refreshing) {
+						alert("CONGRATULATIONS!\n\nApp Updated\Version: " + version + "\n\nMi-List updated successfully.");
+					} 
 					
 					if(reg.active) {
 						pageComplete();
