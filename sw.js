@@ -1,4 +1,4 @@
-let version = "52";
+let version = "53";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -103,7 +103,7 @@ self.addEventListener("notificationclick", (e) => {
 	let notification = e.notification;
 	let action = e.action;
 	notification.close();
-	
+	console.log(action);
 	if(action == "check") {
 		let event = notification.data.event;
 		for(let item of list) {
