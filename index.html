@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "37.6.12.52";
+			let version = "38.6.12.52";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -307,6 +307,7 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
+						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("checked");
@@ -322,6 +323,7 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
+						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.parentNode.removeChild(contDiv);
 					} catch (error) {
@@ -348,6 +350,7 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
+						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 					} catch (error) {
