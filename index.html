@@ -406,12 +406,11 @@
 						if(!refreshing) {
 							location.reload();
 							refreshing = true;
+							if(refreshing) {
+								alert("CONGRATULATIONS!\n\nApp Updated\Version: " + version + "\n\nMi-List updated successfully.");
+							} 
 						} 
 					});
-					
-					if(refreshing) {
-						alert("CONGRATULATIONS!\n\nApp Updated\Version: " + version + "\n\nMi-List updated successfully.");
-					} 
 					
 					if(reg.active) {
 						pageComplete();
