@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "35.6.11.50";
+			let version = "36.6.12.51";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -305,39 +305,19 @@
 					Events.list = msg.data.list;
 					if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 					let event = msg.data.event;
-					for(let item of $$(".main_body_event_cont")) {
-						let date = item.getAttribute("value");
-						let time = item.$(".main_body_event_time").getAttribute("value");
-						let title = item.$(".main_body_event_title").getAttribute("value");
-						let desc = item.$(".main_body_event_desc").getAttribute("value");
-						//alert(date + " " + time + " " + title + " " + desc + "\n" + event.date + " " + event.time + " " + event.title + " " + event.desc);
-						if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-							item.$(".main_body_event_ctrl_check").classList.add("checked");
-							item.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
-							item.$(".main_body_event_ctrl_edit").classList.add("disable");
-							break;
-						} 
-					} 
+					let id = Events.list.indexOf(event);
+					let contDiv = $(".main_body_event_cont[id='" + id +"']");
+					contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
+					contDiv.$(".main_body_event_ctrl_edit").classList.add("checked");
+					contDiv.$(".main_body_event_ctrl_edit").style.pointerEvents = "none";
 				} 
 				else if(msg.data.type == "delete") {
 					Events.list = msg.data.list;
 					if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 					let event = msg.data.event;
-					for(let item of $$(".main_body_event_cont")) {
-						let date = item.getAttribute("value");
-						let time = item.$(".main_body_event_time").getAttribute("value");
-						let title = item.$(".main_body_event_title").getAttribute("value");
-						let desc = item.$(".main_body_event_desc").getAttribute("value");
-						
-						if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-							item.classList.remove("added");
-							setTimeout(() => {
-								item.parentNode.removeChild(item);
-								Events.removeEmptyLists();
-							}, 500);
-							break;
-						} 
-					} 
+					let id = Events.list.indexOf(event);
+					let contDiv = $(".main_body_event_cont[id='" + id +"']");
+					contDiv.parentNode.removeChild(contDiv);
 				} 
 				else if(msg.data.type == "list") {
 					Events.list = msg.data.list;
@@ -354,19 +334,11 @@
 				} 
 				else if(msg.data.type == "time-up") {
 					Events.list = msg.data.list;
+					if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 					let event = msg.data.event;
-					for(let item of $$(".main_body_event_cont")) {
-						let date = item.getAttribute("value");
-						let time = item.$(".main_body_event_time").getAttribute("value");
-						let title = item.$(".main_body_event_title").getAttribute("value");
-						let desc = item.$(".main_body_event_desc").getAttribute("value");
-						
-						if(date == event.date && time == convertTo(event.time, 24) && title == event.title && desc == event.desc) {
-							item.$(".main_body_event_ctrl_edit").classList.add("disable");
-							Notify(title + " event is up.");
-							break;
-						} 
-					} 
+					let id = Events.list.indexOf(event);
+					let contDiv = $(".main_body_event_cont[id='" + id +"']");
+					contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 				} 
 				else if(msg.data.type == "update-list") {
 					Events.list = msg.data.list;
