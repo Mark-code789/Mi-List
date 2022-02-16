@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "41.6.12.56";
+			let version = "42.6.12.56";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -308,7 +308,6 @@
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
-						alert(contDiv.$(".main_body_event_ctrl_check").className);
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 						contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
 						contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
@@ -347,7 +346,6 @@
 						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
 						let event = msg.data.event;
 						let id = Events.list.indexOf(event);
-						alert(id);
 						let contDiv = $(".main_body_event_cont[id='" + id +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
 					} catch (error) {
