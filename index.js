@@ -233,17 +233,9 @@ class Events {
 	static del = (e) => {
 		try {
 			let parent = e.target.parentNode.parentNode;
-			let date = parent.getAttribute("value");
-			let time = parent.$(".main_body_event_time").getAttribute("value");
-			let title = parent.$(".main_body_event_title").getAttribute("value");
-			let desc = parent.$(".main_body_event_desc").getAttribute("value");
-			time = convertTo(time, 12);
-			for(let item of this.list) {
-				if(item.date == date && item.time == time && item.title == title && item.desc == desc) {
-					this.list.splice(this.list.indexOf(item), 1);
-					break;
-				} 
-			} 
+			let id = parseInt(parent.id);
+			this.list.splice(id, 1);
+			
 			if(storage) 
 				storage.setItem("ML-list", JSON.stringify(this.list));
 				
@@ -260,17 +252,8 @@ class Events {
 	static check = (e) => {
 		try {
 			let parent = e.target.parentNode.parentNode;
-			let date = parent.getAttribute("value");
-			let time = parent.$(".main_body_event_time").getAttribute("value");
-			let title = parent.$(".main_body_event_title").getAttribute("value");
-			let desc = parent.$(".main_body_event_desc").getAttribute("value");
-			time = convertTo(time, 12);
-			for(let item of this.list) {
-				if(item.date == date && item.time == time && item.title == title && item.desc == desc) {
-					item.checked = true;
-					break;
-				} 
-			} 
+			let id = parseInt(parent.id);
+			this.list[id].checked = true;
 			if(storage) 
 				storage.setItem("ML-list", JSON.stringify(this.list));
 			SendMsg({type: "update-list", list: this.list});
