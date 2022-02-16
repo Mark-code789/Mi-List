@@ -1,4 +1,4 @@
-let version = "44";
+let version = "45";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -50,7 +50,8 @@ self.addEventListener("fetch", (e) => {
                         return res2;
                     })
                 }).catch((error) => {
-                	return res1;
+                	//return res1;
+                	console.log(res1.toString());
                 })
              }
              else if(res1) {
