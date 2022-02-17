@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "46.6.12.66";
+			let version = "47.6.13.67";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -305,7 +305,7 @@
 				if(msg.data.type == "check") {
 					try {
 						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
 						let tag = msg.data.tag;
 						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
@@ -318,7 +318,7 @@
 				else if(msg.data.type == "delete") { 
 					try {
 						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
 						let tag = msg.data.tag;
 						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
 						contDiv.parentNode.removeChild(contDiv);
@@ -329,7 +329,7 @@
 				else if(msg.data.type == "time-up") {
 					try {
 						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
 						let tag = msg.data.tag;
 						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
 						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
@@ -340,7 +340,7 @@
 				else if(msg.data.type == "expired") {
 					try {
 						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", JSON.stringify(Events.list));
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
 						let tag = msg.data.tag;
 						let event = msg.data.event;
 						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
@@ -354,11 +354,11 @@
 				else if(msg.data.type == "list") {
 					Events.list = msg.data.list;
 					
-					if(Events.list.length == 0 && storage) {
+					if(Events.list.size == 0 && storage) {
 						let list = storage.getItem("ML-list");
 						
 						if(list && Array.isArray(JSON.parse(list))) {
-							Events.list = JSON.parse(list);
+							Events.list = parse(list);
 						} 
 					} 
 					
