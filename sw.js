@@ -1,7 +1,7 @@
-let version = "66";
+let version = "67";
 let cacheName = "Mi List-v:" + version;
 let timer;
-let list = [];
+let list = new Map();
 let showNotification = false;
 let appShellFiles = [
 	"./src/images/black logo.png",
@@ -114,19 +114,19 @@ self.addEventListener("notificationclick", (e) => {
 	if(action == "check") {
 		let event = notification.data.event;
 		let tag = notification.tag;
-		list[tag].checked = true;
+		list.get(tag).checked = true;
 		sendMsg({type: "check", list, event, tag});
 	} 
 	else if(action == "delete") {
 		let event = notification.data.event;
 		let tag = notification.tag;
-		list.splice(tag, 1);
+		list.delete(tag);
 		sendMsg({type: "delete", list, event, tag});
 	} 
 	else {
 		let event = notification.data.event;
 		let tag = notification.tag;
-		list[tag].notified = true;
+		list.get(tag).notified = true;
 		sendMsg({type: "check", list, event, tag});
 		
 		e.waitUntil(self.clients.matchAll({type: "window"}).
@@ -143,7 +143,7 @@ self.addEventListener("notificationclick", (e) => {
 
 self.addEventListener("notificationclose", (e) => {
 	let notification = e.notification;
-	let event = notification.data.event;
+	notification.renotify()
 });
 
 function sendMsg(msg) {
@@ -159,9 +159,8 @@ function startTimer () {
 	clearInterval(timer);
 	timer = setInterval(() => {
 		sendMsg({type: "report", content: "counting"});
-		for(let event of list) {
+		for(let [tag, event] of list) {
 			let diff = event.ms - Date.now();
-			let tag = list.indexOf(event);
 			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
 				let desc = event.desc.length? event.desc: "Event time is up.";
 				let options = {
@@ -193,7 +192,7 @@ function startTimer () {
 				sendMsg({type: "time-up", tag, event, list});
 			} 
 			else if(diff <= -86400000) {
-				list.splice(tag, 1);
+				list.delete(tag);
 				sendMsg({type: "expired", tag, event, list});
 			} 
 		} 
