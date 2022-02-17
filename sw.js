@@ -1,4 +1,4 @@
-let version = "63";
+let version = "64";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -59,12 +59,13 @@ self.addEventListener("fetch", (e) => {
                 caches.open(cacheName).then((cache) => {
                     cache.put(e.request, res2.clone());
                 }).cstch((error) => {
-					console.log(error);
+					console.log("Put error: ", error);
 				});
                 
                 return res2;
             }).catch((error) => {
-            	return res;
+            	console.log("Fetch error: ", error)
+            	//return res;
             });
 		})
 	)
