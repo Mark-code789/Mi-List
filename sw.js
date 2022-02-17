@@ -1,4 +1,4 @@
-let version = "60";
+let version = "61";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -29,7 +29,8 @@ let appShellFiles = [
 	"./index.js",
 	"./index.css", 
 	"./index.html", 
-	"./manifest.webmanifest"
+	"./manifest.webmanifest", 
+	"./"
 ];
 
 self.addEventListener("install", (e) => {
