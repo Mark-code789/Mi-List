@@ -1,4 +1,4 @@
-let version = "59";
+let version = "60";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = [];
@@ -42,24 +42,29 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
-		caches.match(e.request, {ignoreSearch: true}).then((res1) => {
-			if(!res1) {
-                return fetch(e.request).then((res2) => {
-                    return caches.open(cacheName).then((cache) => {
-                        cache.put(e.request, res2.clone());
-                        return res2;
-                    })
-                }).catch((error) => {
-                	//return res1;
-                	console.log(res1.toString());
-                })
-             }
-             else if(res1) {
-             	return res1;
-             } 
-             else {
-             	console.log(res1.toString());
-             } 
+		caches.match(e.request, {ignoreSearch: true}).then((res) => {
+			if(res) {
+            	return res;
+            }
+            else {
+            	console.log(e.request.url);
+            } 
+            
+            return fetch(e.request).then((res) => {
+            	if(!res || res.status != 200) {
+            		return res;
+            	} 
+            	
+                caches.open(cacheName).then((cache) => {
+                    cache.put(e.request, res.clone());
+                }).cstch((error) => {
+					console.log(error);
+				});
+                
+                return res;
+            }).catch((error) => {
+            	return res;
+            });
 		})
 	)
 });
