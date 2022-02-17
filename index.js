@@ -211,7 +211,7 @@ async function Menu (e) {
 
 class Events {
 	static event = null;
-	static list = [];
+	static list = new Map();
 	static edit = (e) => {
 		try {
 			let parent = e.target.parentNode.parentNode;
@@ -234,10 +234,10 @@ class Events {
 		try {
 			let parent = e.target.parentNode.parentNode;
 			let id = parseInt(parent.id);
-			this.list.splice(id, 1);
+			this.list.delete(id);
 			
 			if(storage) 
-				storage.setItem("ML-list", JSON.stringify(this.list));
+				storage.setItem("ML-list", stringify(this.list));
 				
 			SendMsg({type: "update-list", list: this.list});
 			parent.classList.remove("added");
@@ -253,9 +253,10 @@ class Events {
 		try {
 			let parent = e.target.parentNode.parentNode;
 			let id = parseInt(parent.id);
-			this.list[id].checked = true;
+			this.list.get(id).checked = true;
+			
 			if(storage) 
-				storage.setItem("ML-list", JSON.stringify(this.list));
+				storage.setItem("ML-list", stringify(this.list));
 			SendMsg({type: "update-list", list: this.list});
 				
 			e.target.classList.add("checked");
@@ -303,20 +304,23 @@ class Events {
 				checkDiv.addEventListener("click", this.check, false);
 				
 			let event = {date: addDate, time, title, desc, ms: new Date(addDate + "T" + convertTo(time, 24)).getTime()};
-			let similarEvent = JSON.stringify(this.list).includes(JSON.stringify(event));
+			let similarEvent = JSON.stringify(Array.from(this.list.values())).includes(JSON.stringify(event));
+			
 			if(this.editingEvent) {
-				this.list[parseInt(this.editingEvent.id)] = event;
+				let id = this.editingEvent.id;
+				this.list.set(id, event);
 			} 
 			else if(similarEvent) {
 				return Notify("Similar Event exists.");
 			} 
 			else {
-				this.list.push(event);
-				contDiv.setAttribute("id", this.list.length-1);
+				let id = getKey(this.list);
+				this.list.set(id, event);
+				contDiv.setAttribute("id", id);
 			} 
 					
 			if(storage) {
-				storage.setItem("ML-list", JSON.stringify(this.list));
+				storage.setItem("ML-list", stringify(this.list));
 			} 
 			SendMsg({type: "update-list", list: this.list});
 			
@@ -388,8 +392,7 @@ class Events {
 	} 
 	static retrieve = () => {
 		try {
-			for(let i = 0; i < this.list.length; i++) {
-				let event = this.list[i];
+			for(let [id, event] of this.list) {
 				let addDate = event.date;
 				let time = event.time
 				let title = event.title;
@@ -401,7 +404,7 @@ class Events {
 				let mainBody = $(".main_body");
 				let dayDiv = $(".main_body_day_events[value='" + addDate + "']") || $$$("div", ["class", "main_body_day_events", "value", addDate]), 
 					dateDiv = $$$("div", ["class", "main_body_date", "value", addDate]), 
-					contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate, "id", i]), 
+					contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate, "id", id]), 
 					timeDiv = $$$("div", ["class", "main_body_event_time", "value", convertTo(time, 24), "textContent", time]),
 					expanderDiv = $$$("div", ["class", "main_body_event_expander"]), 
 					titleDiv = $$$("div", ["class", "main_body_event_title", "value", title, "innerHTML", title]), 
@@ -548,6 +551,23 @@ const End = (event) => {
 	} catch (error) {
 		reportError(error);
 	} 
+} 
+
+const getKey = (map) => {
+	let keys = [];
+	for(let i = 0; i <= map.size; i++) keys.push(i);
+	for(let key of keys) {
+		if(!map.has(key))
+			return key;
+	} 
+} 
+
+const stringify = (map) => {
+	return JSON.stringify(Array.from(map.entries()));
+} 
+
+const parse = (mapString) => {
+	return new Map(JSON.parse(mapString));
 } 
 
 const convertTo = (time, to, includeSec = false) => {
