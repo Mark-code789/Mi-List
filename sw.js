@@ -1,4 +1,4 @@
-let version = "68";
+let version = "69";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -114,7 +114,7 @@ self.addEventListener("notificationclick", (e) => {
 	if(action == "check") {
 		let event = notification.data.event;
 		let tag = notification.tag;
-		console.log(tag);
+		console.log(tag, list.get(tag));
 		list.get(tag).checked = true;
 		sendMsg({type: "check", list, event, tag});
 	} 
