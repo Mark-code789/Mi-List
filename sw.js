@@ -1,4 +1,4 @@
-let version = "72";
+let version = "73";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -52,10 +52,6 @@ self.addEventListener("fetch", (e) => {
             } 
             
             return fetch(e.request).then((res2) => {
-            	if(!res2 || res2.status != 200) {
-            		return res2;
-            	} 
-            	
                 return caches.open(cacheName).then((cache) => {
                     cache.put(e.request, res2.clone());
                     return res2;
