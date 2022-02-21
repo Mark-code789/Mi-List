@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "48.6.14.73";
+			let version = "48.6.15.73";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -247,10 +247,6 @@
 						SendMsg({type: "update-list", list: Events.list});
 						SendMsg({type: "start-timer"});
 					} 
-				});
-				window.addEventListener("beforeinstallprompt", (e) => {
-					e.preventDefault();
-					deferredEvent = e;
 				});
 				
 				if(storage) {
@@ -288,7 +284,7 @@
 			} 
 			
 			function reportError (error) {
-				alert("ERROR\n\nWe are sorry for this error. We have taken note of the it.\n\nError: " + error);
+				alert("ERROR\n\nWe are sorry for this error. We have taken note of it,\n Please try to close and restart the app or refresh the page. If the error persist please contact us through: email: markcodes789@gmail.com or WhatsApp: +254 798 916984\n\nError: " + error);
 			} 
 			
 			const SendMsg = async (msg) => {
@@ -393,6 +389,11 @@
 					location.reload();
 				} 
 			} 
+			
+			window.addEventListener("beforeinstallprompt", (e) => {
+				e.preventDefault();
+				deferredEvent = e;
+			});
 			
 			window.addEventListener("load", async () => {
 				if("serviceWorker" in navigator) {
