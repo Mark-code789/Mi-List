@@ -518,7 +518,7 @@ class Events {
 				if(list.children.length < 2) {
 					let eventDate = new Date(list.getAttribute("value"));
 					if(today.toDateString() == eventDate.toDateString())
-						list.appendChild($$$("div", ["class", "main_body_empty_list", "textContent", "You have no events on this day"]));
+						list.appendChild($$$("div", ["class", "main_body_empty_list", "textContent", "You have no event today."]));
 					else
 						list.parentNode.removeChild(list);
 				} 
