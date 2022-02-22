@@ -1,4 +1,4 @@
-let version = "74";
+let version = "75";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -157,7 +157,7 @@ function startTimer () {
 		sendMsg({type: "report", content: "counting"});
 		for(let [tag, event] of list) {
 			let diff = event.ms - Date.now();
-			if(diff <= 0 && diff >= -600000 && !event.notified && !event.checked) {// 10 mins 
+			if(diff <= 0 && diff >= -86400000 && !event.notified && !event.checked) {// 10 mins 
 				let desc = event.desc.length? event.desc: "Event time is up.";
 				let options = {
 					body: desc, 
@@ -181,7 +181,12 @@ function startTimer () {
 						}
 					]
 				} 
-				if(showNotification) {
+				if(showNotification && diff >= -600_000) { // 10 mins
+					self.registration.showNotification(event.title, options);
+					event.notified = true;
+				} 
+				else if(showNotification) {
+					desc = "Missed event.";
 					self.registration.showNotification(event.title, options);
 					event.notified = true;
 				} 
