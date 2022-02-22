@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "48.6.17.81";
+			let version = "48.6.18.82";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -322,6 +322,32 @@
 						alert(error);
 					} 
 				} 
+				else if(msg.data.type == "check-unattended") {
+					try {
+						for(let [tag, event] of Events.list) {
+							let contDiv = $(".main_body_event_cont[id='" + tag +"']");
+							contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
+							contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
+							contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
+							event.checked = true;
+						} 
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
+					} catch (error) {
+						alert(error);
+					} 
+				} 
+				else if(msg.data.type == "delete-unattended") {
+					try {
+						for(let [tag, event] of Events.list) {
+							let contDiv = $(".main_body_event_cont[id='" + tag +"']");
+							contDiv.parentNode.removeChild(contDiv);
+							Events.list.delete(tag);
+						} 
+						if(storage) storage.setItem("ML-list", stringify(Events.list));
+					} catch (error) {
+						alert(error);
+					} 
+				} 
 				else if(msg.data.type == "time-up") {
 					try {
 						Events.list = msg.data.list;
@@ -370,7 +396,7 @@
 			} 
 			
 			const InvokeSWUpdateFlow = (reg) => {
-				let refresh = await confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
+				let refresh = confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
 				if(refresh) {
 					reg.waiting.postMessage({type: "skip-waiting"});
 				} 
