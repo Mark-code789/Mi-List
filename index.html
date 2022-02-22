@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "48.6.16.80";
+			let version = "48.6.17.81";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -369,17 +369,17 @@
 				} 
 			} 
 			
-			const InvokeSWUpdateFlow = async (reg) => {
+			const InvokeSWUpdateFlow = (reg) => {
 				let refresh = await confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
 				if(refresh) {
-					await reg.waiting.postMessage({type: "skip-waiting"});
+					reg.waiting.postMessage({type: "skip-waiting"});
 				} 
 			} 
 			
-			const FinishInstalling = async (reg) => {
+			const FinishInstalling = (reg) => {
 				if(reg.waiting) {
 					if(navigator.serviceWorker.controller) {
-						await InvokeSWUpdateFlow(reg);
+						InvokeSWUpdateFlow(reg);
 					} 
 					else {
 						console.log("Service initialized for the first time");
