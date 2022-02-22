@@ -233,7 +233,7 @@
 			} 
 			
 			let timer;
-			let version = "48.6.15.78";
+			let version = "48.6.16.79";
 			let deferredEvent;
 			let storage;
 			if(localStorage) 
@@ -344,7 +344,7 @@
 						
 						Notify(event.title + " expired");
 					} catch (error) {
-						reportError(error);
+						alert(error);
 					} 
 				} 
 				else if(msg.data.type == "list") {
