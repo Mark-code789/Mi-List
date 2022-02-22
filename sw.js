@@ -1,4 +1,4 @@
-let version = "75";
+let version = "76";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -186,7 +186,7 @@ function startTimer () {
 					event.notified = true;
 				} 
 				else if(showNotification) {
-					desc = "Missed event.";
+					options.body = "Missed event.";
 					self.registration.showNotification(event.title, options);
 					event.notified = true;
 				} 
