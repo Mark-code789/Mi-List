@@ -1,4 +1,4 @@
-let version = "79";
+let version = "80";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -123,12 +123,12 @@ self.addEventListener("notificationclick", (e) => {
 		let event = notification.data.event;
 		let tag = parseInt(notification.tag);
 		list.get(tag).notified = true;
-		sendMsg({type: "check", list, event, tag});
+		sendMsg({type: "update-list", list});
 		
 		e.waitUntil(self.clients.matchAll({type: "window"}).
 		then((clients) => {
 			for(let client of clients) {
-				if(client.url == '/' && 'focus' in client) 
+				if(/.\/(index.html)?\/?$/gi.test(client.url) && 'focus' in client) 
 					return client.focus();
 			} 
 			if(clients.openWindow)
