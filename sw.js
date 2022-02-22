@@ -1,4 +1,4 @@
-let version = "80";
+let version = "81";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
