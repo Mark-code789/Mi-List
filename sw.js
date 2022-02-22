@@ -157,6 +157,7 @@ function startTimer () {
 		sendMsg({type: "report", content: "counting"});
 		for(let [tag, event] of list) {
 			let diff = event.ms - Date.now();
+			console.log(diff);
 			if(diff <= 0 && diff >= -86400000 && !event.notified && !event.checked) {// 10 mins 
 				let desc = event.desc.length? event.desc: "Event time is up.";
 				let options = {
