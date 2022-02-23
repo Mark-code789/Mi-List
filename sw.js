@@ -211,7 +211,7 @@ function startTimer () {
 				sendMsg({type: "time-up", tag, event, list});
 			} 
 			else if(diff <= 0 && diff >= -600_000 && event.notified && !event.checked) {
-				unattended += "<strong>" event.time + "</strong> " + event.title + "\n";
+				unattended += "<strong>" + event.time + "</strong> " + event.title + "\n";
 			} 
 			else if(diff <= -86400000) {
 				list.delete(tag);
