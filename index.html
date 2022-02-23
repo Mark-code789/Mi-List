@@ -232,7 +232,7 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "49.6.19.85";
+			let version = "49.6.20.85";
 			let deferredEvent;
 			let storage;
 			let timeout;
@@ -412,6 +412,7 @@
 						} 
 					} 
 				} 
+				reg.waiting.postMessage({type: "get-version"});
 				timeout = setTimeout(() => {
 					let refresh = confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
 					if(refresh) {
