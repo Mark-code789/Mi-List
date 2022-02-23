@@ -211,7 +211,7 @@ function startTimer () {
 				sendMsg({type: "time-up", tag, event, list});
 			} 
 			else if(diff <= 0 && diff >= -600_000 && event.notified && !event.checked) {
-				unattended += "<strong>" + event.time + "</strong> " + event.title + "\n";
+				unattended += event.time + " " + event.title + "\n";
 			} 
 			else if(diff <= -86400000) {
 				list.delete(tag);
@@ -222,7 +222,7 @@ function startTimer () {
 		if(unattended.length > 0 && !showingUnattended) {
 			showingUnattened = true;
 			let options = {
-				body: `the following event${unattended > 1? 's':''} are unattended to:\n${unattended}`, 
+				body: `The following event${unattended > 1? 's':''} are unattended to:\n${unattended}`, 
 				icon: './src/images/black favicon512.png', 
 				badge: './src/images/badge500.png', 
 				vibrate: [100, 50, 100], 
