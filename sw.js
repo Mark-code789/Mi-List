@@ -1,4 +1,4 @@
-let version = "85";
+let version = "86";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -99,9 +99,6 @@ self.addEventListener("message", (e) => {
 	} 
 	else if(e.data && e.data.type == "get-list") {
 		sendMsg({type: "list", list});
-	} 
-	else if(e.data && e.data.type == "get-version") {
-		sendMsg({type: "update-version", version: "49.6.20.85"});
 	} 
 });
 
