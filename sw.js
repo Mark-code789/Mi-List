@@ -1,9 +1,8 @@
-let version = "84";
+let version = "85";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
 let showNotification = false;
-let showingUnattended = false;
 let appShellFiles = [
 	"./src/images/black logo.png",
 	"./src/images/white logo.png",
@@ -101,6 +100,9 @@ self.addEventListener("message", (e) => {
 	else if(e.data && e.data.type == "get-list") {
 		sendMsg({type: "list", list});
 	} 
+	else if(e.data && e.data.type == "get-version") {
+		sendMsg({type: "update-version", version: "49.6.19.85"});
+	} 
 });
 
 self.addEventListener("notificationclick", (e) => {
@@ -119,22 +121,6 @@ self.addEventListener("notificationclick", (e) => {
 		let tag = parseInt(notification.tag);
 		list.delete(tag);
 		sendMsg({type: "delete", list, event, tag});
-	} 
-	else if(action == "check-all") {
-		for(let [tag, event] of list.entries()) {
-			if(event.notified && !event.checked)
-				event.checked = true;
-		} 
-		showingUnattened = false;
-		sendMsg({type: "check-unattended"});
-	} 
-	else if(action == "delete-all") {
-		for(let [tag, event] of list.entries()) {
-			if(event.notified && !event.checked)
-				list.delete(tag);
-		} 
-		showingUnattened = false;
-		sendMsg({type: "delete-unattended"});
 	} 
 	else {
 		e.waitUntil(self.clients.matchAll({type: "window"}).
@@ -172,7 +158,6 @@ function startTimer () {
 	clearInterval(timer);
 	timer = setInterval(() => {
 		sendMsg({type: "report", content: "counting"});
-		let unattended = "";
 		for(let [tag, event] of list) {
 			let diff = event.ms - Date.now();
 			if(diff <= 0 && diff >= -86400000 && !event.notified && !event.checked) {// 10 mins 
@@ -210,37 +195,10 @@ function startTimer () {
 				} 
 				sendMsg({type: "time-up", tag, event, list});
 			} 
-			else if(diff <= 0 && diff >= -600_000 && event.notified && !event.checked) {
-				unattended += event.time + " " + event.title + "\n";
-			} 
 			else if(diff <= -86400000) {
 				list.delete(tag);
 				sendMsg({type: "expired", tag, event, list});
 			} 
-		} 
-		
-		if(unattended.length > 0 && !showingUnattended) {
-			showingUnattened = true;
-			let options = {
-				body: `The following event${unattended > 1? 's':''} are unattended to:\n${unattended}`, 
-				icon: './src/images/black favicon512.png', 
-				badge: './src/images/badge500.png', 
-				vibrate: [100, 50, 100], 
-				tag: "unattended", 
-				actions: [
-					{
-						action: "check-all", 
-						title: "CHECK ALL", 
-						icon: "./src/images/check icon.png"
-					}, 
-					{
-						action: "delete-all", 
-						title: "DELETE ALL", 
-						icon: "./src/images/check icon.png"
-					}
-				]
-			} 
-			self.registration.showNotification("Action needed", options);
 		} 
 	}, 1000);
 } 
