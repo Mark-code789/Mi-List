@@ -232,10 +232,9 @@
 				return this.querySelectorAll(elem);
 			} 
 			
-			let version = "49.6.20.85";
+			let version = "49.6.21.86";
 			let deferredEvent;
 			let storage;
-			let timeout;
 			if(localStorage) 
 				storage = localStorage;
 			
@@ -393,32 +392,13 @@
 					//Notify("Report: " + msg.data.content);
 					SendMsg({type: "report", content: "Got it"});
 				} 
-				else if(msg.data.type == "update-version") {
-					clearTimeout(timeout);
-					let refresh = confirm("APP UPDATE\nVersion: " + msg.data.version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
-					if(refresh) {
-						reg.waiting.postMessage({type: "skip-waiting"});
-					} 
-				} 
 			} 
 			
 			const InvokeSWUpdateFlow = (reg) => {
-				reg.waiting.onmessage = (msg) => {
-					if(msg.data && msg.data.type == "update-version") {
-						clearTimeout(timeout);
-						let refresh = confirm("APP UPDATE\nVersion: " + msg.data.version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
-						if(refresh) {
-							reg.waiting.postMessage({type: "skip-waiting"});
-						} 
-					} 
+				let refresh = confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
+				if(refresh) {
+					reg.waiting.postMessage({type: "skip-waiting"});
 				} 
-				reg.waiting.postMessage({type: "get-version"});
-				timeout = setTimeout(() => {
-					let refresh = confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
-					if(refresh) {
-						reg.waiting.postMessage({type: "skip-waiting"});
-					} 
-				}, 60000);
 			} 
 			
 			const FinishInstalling = (reg) => {
