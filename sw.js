@@ -1,4 +1,4 @@
-let version = "83";
+let version = "84";
 let cacheName = "Mi List-v:" + version;
 let timer;
 let list = new Map();
@@ -219,7 +219,7 @@ function startTimer () {
 			} 
 		} 
 		
-		if(unattended > 0 && !showingUnattended) {
+		if(unattended.length > 0 && !showingUnattended) {
 			showingUnattened = true;
 			let options = {
 				body: `the following event${unattended > 1? 's':''} are unattended to:\n${unattended}`, 
