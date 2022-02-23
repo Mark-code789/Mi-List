@@ -101,7 +101,7 @@ self.addEventListener("message", (e) => {
 		sendMsg({type: "list", list});
 	} 
 	else if(e.data && e.data.type == "get-version") {
-		sendMsg({type: "update-version", version: "49.6.19.85"});
+		sendMsg({type: "update-version", version: "49.6.20.85"});
 	} 
 });
 
