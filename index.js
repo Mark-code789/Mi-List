@@ -66,10 +66,7 @@ let reg;
 function pageComplete () {
 	document.addEventListener("visibilitychange", (e) => {
 		if(document.visibilityState == "visible") {
-			/*let notification = $(".menu_body_item_notification").classList.contains("switch");
-			SendMsg({type: "notification", notification});
-			SendMsg({type: "update-list", list: Tasks.list});
-			SendMsg({type: "start-timer"});*/
+			SendMsg({type: "get-due-tasks"});
 		} 
 	});
 	
@@ -142,7 +139,7 @@ const Message = async (msg) => {
 	} 
 	else if(msg.data.type == "due") {
 		if(Settings.voice) {
-			navigator.vibrate(1000);
+			//navigator.vibrate(1000);
 			await new Sleep().wait(4);
 			let text = msg.data.task.type == "quick"? msg.data.task.title.value: msg.data.task.task.value;
 			Settings.speech.text = text + " at " + convertTo(msg.data.task.time.value, 12);
