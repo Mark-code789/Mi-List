@@ -2,60 +2,13 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-		<meta name="theme-color" content="#262050">
+		<meta name="viewport" content="width=device-width initial-scale=1">
 		<link rel="manifest" href="./manifest.webmanifest">
         <link rel="icon" href="./src/images/favicon badge.ico" type="image/x-icon">
         <link rel="icon" href="./src/images/black favicon16.png" type="image/png" sizes="16x16">
         <link rel="icon" href="./src/images/black favicon32.png" type="image/png" sizes="32x32">
         <link rel="icon" href="./src/images/black favicon96.png" type="image/png" sizes="96x96">
-        <style>
-        	html {
-        		font-size: 0.9em;
-        	} 
-        	*, *:before, *:after {
-        		box-sizing: border-box;
-        		-webkit-user-select: none;
-        		-moz-user-select: none;
-        		user-select: none;
-        		font-family: Arial;
-        		overflow: hidden;
-        	} 
-        	body {
-        		margin: 0;
-        		padd_bodying: 0;
-        		height: 100vh;
-        		width: 100vw;
-        		background: #262050;
-        	} 
-        	.load {
-        		display: block;
-        		position: absolute;
-        		height: 100vh;
-        		width: 100vw;
-        		background: #E5DFF8;
-        	} 
-        	.load_icon {
-        		position: absolute;
-        		top: 50%;
-        		left: 50%;
-        		transform: translate(-50%, -50%);
-        		height: 30vmin;
-        		width: 30vmin;
-        		max-height: 500px;
-        		max-width: 500px;
-        		background-image: url("./src/images/white logo.png");
-        		background-repeat: no-repeat;
-        		background-size: cover;
-        		background-position: center;
-        	} 
-        	.dark_theme.load {
-        		background: #262050 !important;
-        	} 
-        	.dark_theme.load .load_icon {
-        		background-image: url("./src/images/black logo.png") !important;
-        	} 
-        </style>
+        <link rel="stylesheet" href="./index.css"/>
 	</head>
 	<body>
 		<article class="install" hidden>
@@ -74,385 +27,349 @@
 			<div class="load_icon"></div>
 		</article>
 		<section onanimationend="End(event)" id="pop-up-note" hidden></section>
+		<article id="notification-window" hidden>
+            <section id="note">
+                <div class="note_header"></div>
+                <div class="close_btn" onclick="NotificationClick(this)"></div>
+                <img class="note_img">
+                <div class="note_body"></div>
+                <section class="note_footer">
+                    <button class="note_left_btn" onclick="NotificationClick(this)"></button>
+                    <button class="note_center_btn" onclick="NotificationClick(this)"></button>
+                    <button class="note_right_btn" onclick="NotificationClick(this)"></button>
+                <section>
+            </section>
+        </article>
 		<article class="main" hidden>
 			<header class="main_header">
-				<div class="main_header_icon">Mi List</div>
-				<div class="main_header_menu"><div/>
+				<div class="main_header_icon"></div>
+				<div class="main_header_categories" tabindex='0'>
+					<span value="all" class="showing_category">All</span>
+					<div class="main_header_categories_options">
+						<div class="task_categories">
+							<div value="all" class="selected"><span>All</span><span></span></div>
+							<div class="create_new"><span>Create new</span></div>
+						</div>
+						<div value="quick" class="quick_tasks"></span>Quick</span><span></span></div>
+						<div value="finished" class="finished_tasks"></span>Finished</span><span></span></div>
+					</div>
+				</div>
+				<div class="main_header_search"></div>
+				<div class="main_header_menu" tabindex="0">
+					<div class="main_header_menu_options">
+						<div value="task categories">Task categories</div>
+						<div value="feedback">Give feedback</div>
+						<div value="share">Spread the joy</div>
+						<div value="follow">Follow</div>
+						<div value="settings">Settings</div>
+					</div>
+				<div/>
+			</header>
+			<header class="main_search">
+				<div>
+					<div class="main_search_back_icon"></div>
+					<label for="main_search_input"></label>
+					<input type="text" id="main_search_input" placeholder="Search">
+					<button class="main_search_input_clear"></button>
+				</div>
 			</header>
 			<section class="main_body">
-				<div class="main_body_day_events" value="2022-02-05">
-					<div class="main_body_date" value="2022-02-05">Today</div>
-					<div class="main_body_empty_list">You have no event today.</div>
-					<!--<div class="main_body_event_cont" value="2022-02-05">
-						<div class="main_body_event_text_cont">
-							<div class="main_body_event_time" value="08:00">08:00 AM<span class="main_body_event_expander"></span></div>
-							<div class="main_body_event_title" value="Code Mi List application.">Code Mi List application</div>
-							<div class="main_body_event_desc" value="Do both UI and functionality.">Do both UI and functionality</div>
-						</div>
-						<div class="main_body_event_ctrl_cont">
-							<div class="main_body_event_ctrl_edit"></div>
-							<div class="main_body_event_ctrl_del"></div>
-							<div class="main_body_event_ctrl_check"></div>
-						</div>
-					</div>-->
+				<div class="main_body_item_cont"></div>
+				<div class="main_body_item_empty"></div>
+				<div class="add_choice add_btn" tabindex="0">
+					<div class="add_choice_quick">Quick task</div>|
+					<div class="add_choice_default">Default task</div>
 				</div>
+				<div class="add_btn"></div>
 			</section>
-			<div class="add_btn">+</div>
 			<footer class="main_footer">
 				<div class="main_footer_text">— Mark Codes —</div>
 			</footer>
 		</article>
+		<article class="categories" hidden>
+			<header class="categories_header">
+				<div class="categories_header_back_icon"></div>
+				<div class="categories_header_icon">Categories</div>
+				<div class="categories_header_add"></div>
+			</header>
+			<section class="categories_body"></section>
+			<footer class="categories_footer">
+				<div class="categories_footer_text">— Mark Codes —</div>
+			</footer>
+		</article>
 		<article class="add" hidden>
-			<section class="add_body">
-				<div class="add_body_back_icon"></div>
-				<div class="add_body_icon"></div>
-				<h2 class="add_body_header">Add Event</h2>
+			<header class="add_header">
+				<div class="add_header_back_icon"></div>
+				<div class="add_header_icon">Add Task</div>
+			</header>
+			<section class="default_task add_body">
 				<form class="add_body_form">
-					<div class="add_body_form_date_cont" hidden>
-						<label for="add_body_form_date">Date of the event</label>
-						<input type="date" id="add_body_form_date" required>
+					<div class="add_body_form_desc_cont">
+						<label for="add_body_form_desc">What's to be done?</label>
+						<textarea id="add_body_form_desc" value="" placeholder="Enter task here" required></textarea>
+						<div class="add_body_form_height_finder">Enter task here</div>
+					</div>
+					<div class="add_body_form_date_cont">
+						<label for="add_body_form_date">Due Date</label>
+						<input type="date" id="add_body_form_date" valStr="" placeholder="Date not set" required>
+						<button type="button" class="add_body_form_clear_button"></button>
 					</div>
 					<div class="add_body_form_time_cont">
-						<label for="add_body_form_time">Time of the event</label>
-						<input type="time" id="add_body_form_time" required>
+						<label for="add_body_form_time">Due Time</label>
+						<input type="time" id="add_body_form_time" valStr="" placeholder="Time not set" required>
+						<button type="button" class="add_body_form_clear_button"></button>
 					</div>
-					<div class="add_body_form_title_cont">
-						<label for="add_body_form_title">Event title</label>
-						<input type="text" id="add_body_form_title" placeholder="e.g go to work" required>
+					<div class="add_body_form_notification_cont">
+						<label for="add_body_form_notification">Notification</label>
+						<select id="add_body_form_notification">
+							<option value="0">On time</option>
+							<option value="5">5 minutes before</option>
+							<option value="15">15 minutes before</option>
+							<option value="30">30 minutes before</option>
+							<option value="60">1 hour before</option>
+							<option value="120">2 hours before</option>
+							<option value="180">3 hours before</option>
+						</select>
+						<button type="button" class="add_body_form_notification_custom"></button>
 					</div>
-					<div class="add_body_form_desc_cont">
-						<label for="add_body_form_desc">Event description (Additional Information)</label>
-						<textarea id="add_body_form_desc" placeholder="what to do in that event"></textarea>
+					<div class="add_body_form_category_cont">
+						<label for="add_body_form_category">Task category</label>
+						<select id="add_body_form_category"></select>
+						<button type="button" class="add_body_form_category_custom"></button>
 					</div>
-					<input type="submit" class="add_btn" value="">
+					<div class="add_body_form_repeat_cont">
+						<label for="add_body_form_repeat">Task repeat</label>
+						<select id="add_body_form_repeat">
+							<option value="no repeat">No repeat</option>
+							<option value="daily">Daily</option>
+							<option value="weekdays">Week days (Mon-Friday)</option>
+							<option value="weekly">Weekly</option>
+							<option value="monthly">Monthly</option>
+							<option value="yearly">Yearly</option>
+						</select>
+						<button type="button" class="add_body_form_repeat_custom"></button>
+					</div>
+					<button class="add_btn"></button>
 				</form>
+			</section>
+			<section class="quick_task add_body">
+				<form class="add_body_form">
+					<div class="add_body_form_title_cont">
+						<label for="add_body_form_title">Title of the quick tasks</label>
+						<input type="text" id="add_body_form_title" placeholder="Enter title here" required/>
+					</div>
+					<fieldset>
+						<legend>Tasks</legend>
+						<ol class="add_body_form_quick_tasks"></ol>
+					</fieldset>
+					<div class="add_body_form_task_cont">
+						<label for="add_body_form_quick_input">What are to be done?</label>
+						<input type="text" id="add_body_form_quick_input" placeholder="Enter task here"/>
+						<button type="button" class="add_body_form_quick_add">E<span>+</span></button>
+					</div>
+					<button class="add_btn"></button>
+				</form>
+			</section>
+			<footer class="add_footer">
+				<div class="add_footer_text">— Mark Codes —</div>
+			</footer>
+		</article>
+		<article class="custom" value="cancel" hidden>
+			<section class="slider">
+				<h2>Task notification time</h2>
+				<label for="slider_input" value="1 minute">Notification time: 1 minute</label>
+				<div class="slider_cont">
+					<button value="-">—</button>
+					<input type="range" id="slider_input" value="1" min="1" max="180">
+					<button value="+">+</button>
+				</div>
+				<div class="custom_footer_cont">
+					<button value="cancel">Cancel</button>
+					<button value="ok">OK</button>
+				</div>
+			</section>
+			<section class="text">
+				<h2>Task category name</h2>
+				<label for="text_input">Enter the name of category below</label>
+				<input type="text" id="text_input" placeholder="Enter category name">
+				<div class="custom_footer_cont">
+					<button value="cancel">Cancel</button>
+					<button value="ok">OK</button>
+				</div>
+			</section>
+			<section class="number">
+				<h2>Task repetition time</h2>
+				<label for="number_input" value="2 days">Repeat in: 2 days</label>
+				<div class="number_cont">
+					<input type="number" id="number_input" value="2" max="365" min="2">
+					<div>
+						<select type="text" id="string_input">
+							<option value="days">days</option>
+							<option value="weeks">weeks</option>
+							<option value="months">months</option>
+							<option value="years">years</option>
+						</select>
+					</div>
+				</div>
+				<div class="custom_footer_cont">
+					<button value="cancel">Cancel</button>
+					<button value="ok">OK</button>
+				</div>
+			</section>
+			<section class="choice">
+				<h2>Follow on</h2>
+				<div class="choices"></div>
 			</section>
 		</article>
 		<article class="menu" hidden>
 			<header class="menu_header">
 				<div class="menu_header_back_icon"></div>
-				<div class="menu_header_icon">Mi List</div>
-				<div class="menu_header_version">Version: 1.1.1</div>
+				<div class="menu_header_icon">Settings</div>
 			</header>
 			<section class="menu_body">
-				<div class="menu_body_item_theme menu_body_item" value="theme">
-					<div class="menu_body_item_theme_cont">
+				<h3>General</h3>
+				<div class="menu_body_item" value="disabled" item="theme">
+					<div>
 						<div class="menu_body_item_title">Dark theme</div>
 						<div class="menu_body_item_desc">Choose your preferred theme for the app.</div>
 					</div>
 					<div class="menu_body_item_toggle"></div>
 				</div>
-				<div class="menu_body_item_notification menu_body_item" value="notification">
-					<div class="menu_body_item_notification_cont">
+				<div class="menu_body_item" value="disabled" item="confirm finishing">
+					<div>
+						<div class="menu_body_item_title">Confirm finishing tasks</div>
+						<div class="menu_body_item_desc">Choose whether to confirm before finishing tasks.</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item" value="disabled" item="confirm repeating">
+					<div>
+						<div class="menu_body_item_title">Confirm repeating tasks</div>
+						<div class="menu_body_item_desc">Choose whether to confirm before repeating tasks</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item" value="sunday" item="first day">
+					<div class="selector">
+						<div>
+							<div class="menu_body_item_title">First day of the week</div>
+							<div class="menu_body_item_desc">Sunday</div>
+						</div>
+						<select>
+							<option value="sunday">Sunday</option>
+							<option value="monday">Monday</option>
+							<option value="saturday">Saturday</option>
+						</select>
+					</div>
+				</div>
+				<div class="menu_body_item" value="all" item="startup category">
+					<div class="selector">
+						<div>
+							<div class="menu_body_item_title">List category to show at startup</div>
+							<div class="menu_body_item_desc">All</div>
+						</div>
+						<select>
+							<option value="all">All</option>
+							<option value="quick">Quick</option>
+						</select>
+					</div>
+				</div>
+				<div class="menu_body_item" value="24" item="time format">
+					<div class="selector">
+						<div>
+							<div class="menu_body_item_title">Time format</div>
+							<div class="menu_body_item_desc">24</div>
+						</div>
+						<select>
+							<option value="24">24</option>
+							<option value="12">12</option>
+						</select>
+					</div>
+				</div>
+				<div class="menu_body_item" value="alphabetically" item="sorting order">
+					<div class="selector">
+						<div>
+							<div class="menu_body_item_title">Sorting order</div>
+							<div class="menu_body_item_desc">Due date + Alphabetically (ascending)</div>
+						</div>
+						<select>
+							<option value="alphabetically asc">Due date + Alphabetically (ascending)</option>
+							<option value="alphabetically desc">Due date + Alphabetically (descending)</option>
+							<option value="old">Due date + Old tasks first</option>
+							<option value="new">Due date + New tasks first</option>
+						</select>
+					</div>
+				</div>
+				<h3>Notification</h3>
+				<div class="menu_body_item" value="notification" item="notification">
+					<div>
 						<div class="menu_body_item_title">Notifications</div>
-						<div class="menu_body_item_desc">Choose whether to receive reminder notifications. For effective performance of this feature, add this app in ignore list and  do not close it. You will be notified of any event even when phone is locked.</div>
+						<div class="menu_body_item_desc">Choose whether to receive reminder notifications for tasks</div>
 					</div>
 					<div class="menu_body_item_toggle"></div>
 				</div>
-				<div class="menu_body_item_multiple_day menu_body_item" value="multiple day">
-					<div class="menu_body_item_multiple_day_cont">
-						<div class="menu_body_item_title">Multiple day list</div>
-						<div class="menu_body_item_desc">Choose whether to keep multiple day to-do list.</div>
+				<div class="menu_body_item disabled" value="voice" item="voice">
+					<div>
+						<div class="menu_body_item_title">Use speech synthesis</div>
+						<div class="menu_body_item_desc">Choose whether to read aloud due tasks</div>
 					</div>
 					<div class="menu_body_item_toggle"></div>
 				</div>
-				<div class="menu_body_item_share menu_body_item" value="share">
-					<div class="menu_body_item_title">Share</div>
+				<div class="menu_body_item disabled" value="vibration" item="vibration">
+					<div>
+						<div class="menu_body_item_title">Vibration</div>
+						<div class="menu_body_item_desc">Choose whether to get vibration feedback for due tasks</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item disabled" value="quick notification" item="quick notification">
+					<div>
+						<div class="menu_body_item_title">Quick task notification</div>
+						<div class="menu_body_item_desc">Choose whether to get notified for quick tasks</div>
+					</div>
+					<div class="menu_body_item_toggle"></div>
+				</div>
+				<div class="menu_body_item disabled" value="quick notification time" item="quick notification time">
+					<div class="selector">
+						<div>
+							<div class="menu_body_item_title">Quick task notification time</div>
+							<div class="menu_body_item_desc">08:00</div>
+						</div>
+						<input type="time">
+					</div>
+				</div>
+				<h3>About</h3>
+				<div class="menu_body_item" value="share" item="share">
+					<div class="menu_body_item_title">Spread the joy</div>
 					<div class="menu_body_item_desc">Share this app with friends and family.</div>
 				</div>
-				<div class="menu_body_item_developer menu_body_item" value="developer">
+				<div class="menu_body_item" value="developer" item="version">
+					<div class="menu_body_item_title">Version</div>
+					<div class="menu_body_item_desc"></div>
+				</div>
+				<div class="menu_body_item" value="developer" item="developer">
 					<div class="menu_body_item_title">Developer</div>
 					<div class="menu_body_item_desc">&copy; 2020 - 2022 Mark Codes.</div>
 				</div>
-				<div class="menu_body_item_feedback menu_body_item" value="feedback">
+				<div class="menu_body_item" value="feedback" item="feedback">
 					<div class="menu_body_item_title">Feedback</div>
 					<div class="menu_body_item_desc">Report any issue with this app.</div>
 				</div>
-				<div class="menu_body_item_follow menu_body_item" value="follow">
-					<div class="menu_body_item_title">Follow</div>
-					<div class="menu_body_item_desc">Follow mark codes for more apps.</div>
+				<h3>Follow</h3>
+				<div class="menu_body_item" value="facebook" item="follow">
+					<div class="menu_body_item_title">Facebook</div>
+				</div>
+				<div class="menu_body_item" value="twitter" item="follow">
+					<div class="menu_body_item_title">Twitter</div>
+				</div>
+				<div class="menu_body_item" value="linkedin" item="follow">
+					<div class="menu_body_item_title">LinkedIn</div>
 				</div>
 			</section>
 			<footer class="menu_footer">
 				<div class="menu_footer_text">— Mark Codes —</div>
 			</footer>
 		</article>
-		<script>
-			const ShowInstallPrompt = () => {
-				$(".install").style.display = "block";
-                $(".install_body").classList.remove("hide_install_prompt");
-                $(".install_body").classList.add("show_install_prompt");
-            } 
-			
-			const HideInstallPrompt = () => {
-                $(".install_body").classList.remove("show_install_prompt");
-                $(".install_body").classList.add("hide_install_prompt");
-                setTimeout(() => {$(".install").style.display = "none"}, 600);
-            } 
-            
-            const InstallApp = async () => {
-                HideInstallPrompt();
-                deferredEvent.prompt();
-                const {outcome} = await deferredEvent.userChoice;
-                deferredEvent = null;
-            } 
-            
-			function $ (elem) {
-				return document.querySelector(elem);
-			} 
-			
-			function $$ (elem) {
-				return document.querySelectorAll(elem);
-			} 
-			
-			function $$$ (elem, attrs = []) {
-				elem = document.createElement(elem);
-				for(let i = 0; i < attrs.length; i+=2) {
-					let name = attrs[i];
-					let value = attrs[i+1];
-					if(/^textContent|innerHTML$/gi.test(name))
-						elem[name] = value;
-					else
-						elem.setAttribute(name, value);
-				} 
-					
-				return elem;
-			} 
-			
-			function _$ (elem, property) {
-				let value = window.getComputedStyle(elem, null).getPropertyValue(property);
-				return value;
-			} 
-			
-			Element.prototype.$ = function (elem) {
-				return this.querySelector(elem);
-			} 
-			
-			Element.prototype.$$ = function (elem) {
-				return this.querySelectorAll(elem);
-			} 
-			
-			let version = "49.6.21.86";
-			let deferredEvent;
-			let storage;
-			if(localStorage) 
-				storage = localStorage;
-			
-			function pageComplete () {
-				document.addEventListener("visibilitychange", (e) => {
-					if(document.visibilityState == "visible") {
-						let notification = $(".menu_body_item_notification").classList.contains("switch");
-						SendMsg({type: "notification", notification});
-						SendMsg({type: "update-list", list: Events.list});
-						SendMsg({type: "start-timer"});
-					} 
-				});
-				
-				if(storage) {
-					let theme = storage.getItem("theme");
-					if(theme) {
-						storage.clear();
-					} 
-					
-					theme = storage.getItem("ML-theme");
-					if(theme && JSON.stringify(theme)) {
-						$(".load").classList.add("dark_theme");
-					} 
-				} 
-				$(".menu_header_version").textContent = "Version: " + version;
-				const link = $$$("link");
-				const script = $$$("script");
-				
-				link.rel = "stylesheet";
-				link.href = "./index.css";
-				script.src = "./index.js";
-				
-				script.onload = scriptLoaded;
-				
-				document.head.appendChild(link);
-				document.head.appendChild(script);
-				
-				let date = new Date().toLocaleDateString().split("/");
-				let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
-				$(".main_body_day_events").setAttribute("value", str);
-				$(".main_body_date").setAttribute("value", str);
-			} 
-			
-			function scriptLoaded () {
-				load();
-			} 
-			
-			function reportError (error) {
-				alert("ERROR\n\nWe are sorry for this error. We have taken note of it,\n Please try to close and restart the app or refresh the page. If the error persist please contact us through: email: markcodes789@gmail.com or WhatsApp: +254 798 916984\n\nError: " + error);
-			} 
-			
-			const SendMsg = async (msg) => {
-				let reg = await navigator.serviceWorker.getRegistration();
-				if(reg) {
-					navigator.serviceWorker.controller.postMessage(msg);
-				} 
-				else {
-					location.reload();
-				} 
-			} 
-			
-			const Message = (msg) => {
-				if(msg.data.type == "check") {
-					try {
-						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-						let tag = msg.data.tag;
-						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
-						contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
-						contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "delete") { 
-					try {
-						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-						let tag = msg.data.tag;
-						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-						contDiv.parentNode.removeChild(contDiv);
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "check-unattended") {
-					try {
-						for(let [tag, event] of Events.list) {
-							let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-							contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
-							contDiv.$(".main_body_event_ctrl_check").classList.add("checked");
-							contDiv.$(".main_body_event_ctrl_check").style.pointerEvents = "none";
-							event.checked = true;
-						} 
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "delete-unattended") {
-					try {
-						for(let [tag, event] of Events.list) {
-							let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-							contDiv.parentNode.removeChild(contDiv);
-							Events.list.delete(tag);
-						} 
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "time-up") {
-					try {
-						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-						let tag = msg.data.tag;
-						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-						contDiv.$(".main_body_event_ctrl_edit").classList.add("disable");
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "expired") {
-					try {
-						Events.list = msg.data.list;
-						if(storage) storage.setItem("ML-list", stringify(Events.list));
-						let tag = msg.data.tag;
-						let event = msg.data.event;
-						let contDiv = $(".main_body_event_cont[id='" + tag +"']");
-						contDiv.parentNode.removeChild(contDiv);
-						
-						Notify(event.title + " expired");
-					} catch (error) {
-						alert(error);
-					} 
-				} 
-				else if(msg.data.type == "list") {
-					Events.list = msg.data.list;
-					
-					if(Events.list.size == 0 && storage) {
-						let list = storage.getItem("ML-list");
-						
-						if(list && Array.isArray(JSON.parse(list))) {
-							Events.list = parse(list);
-						} 
-					} 
-					
-					Events.retrieve();
-				} 
-				else if(msg.data.type == "update-list") {
-					Events.list = msg.data.list;
-				} 
-				else if(msg.data.type == "report") {
-					//Notify("Report: " + msg.data.content);
-					SendMsg({type: "report", content: "Got it"});
-				} 
-			} 
-			
-			const InvokeSWUpdateFlow = (reg) => {
-				let refresh = confirm("APP UPDATE\nVersion: " + version + "\n\nNew version of Mi-List available.\n\nWhat's New?\n\t- Fixed some bugs.\n\t- Improved internal operations.\n\nDo you want to update?");
-				if(refresh) {
-					reg.waiting.postMessage({type: "skip-waiting"});
-				} 
-			} 
-			
-			const FinishInstalling = (reg) => {
-				if(reg.waiting) {
-					if(navigator.serviceWorker.controller) {
-						InvokeSWUpdateFlow(reg);
-					} 
-					else {
-						console.log("Service initialized for the first time");
-					} 
-				} 
-				else if(reg.active && !navigator.serviceWorker.controller) {
-					location.reload();
-				} 
-			} 
-			
-			window.addEventListener("beforeinstallprompt", (e) => {
-				e.preventDefault();
-				deferredEvent = e;
-			});
-			
-			window.addEventListener("load", async () => {
-				if("serviceWorker" in navigator) {
-					navigator.serviceWorker.onmessage = Message;
-					const reg = await navigator.serviceWorker.register("./sw.js");
-					reg.update();
-					if(reg.waiting) {
-						await InvokeSWUpdate(reg);
-					} 
-						
-					reg.addEventListener("updatefound", async () => {
-						if(reg.installing) {
-							reg.installing.addEventListener("statechange", () => {
-								FinishInstalling(reg);
-							});
-						} 
-					});
-					
-					let refreshing = false;
-					navigator.serviceWorker.addEventListener("controllerchange", (e) => {
-						if(!refreshing) {
-							location.reload();
-							refreshing = true;
-						} 
-					});
-					
-					if(reg.active) {
-						pageComplete();
-					} 
-				} 
-				else {
-					alert("ERROR\n\n A fundamental function of this app is missing in your browser (Service Worker).\nTo use this app try a different browser or update it.");
-				} 
-			});
-		</script>
+		<script src="./index.js"></script>
 	</body>
 </html>

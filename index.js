@@ -1,620 +1,268 @@
-const srcs = [
-	"black logo.png",
-	"white logo.png",
-	"menu.png",
-	"edit.png",
-	"delete.png",
-	"check.png",
-	"checked.png", 
-	"arrow head.png", 
-	"white arrow.png",
-	"black arrow.png"
-];
-
-const imageProps = [
-	"--black-logo",
-	"--white-logo",
-	"--menu-icon",
-	"--edit-icon",
-	"--delete-icon",
-	"--check-icon",
-	"--checked-icon",
-	"--arrow-head-icon",
-	"--white-arrow-icon",
-	"--black-arrow-icon"
-];
-
-window.onpopstate = function (state) {
-	try {
-		if(_$($(".add"), "display") == "flex") {
-			$(".add").style.display = "none";
-		} 
-		else if(_$($(".menu"), "display") == "block") {
-			$(".menu").style.display = "none";
-			$(".main").style.display = "block";
-		} 
-		else if(_$($(".main"), "display") == "block") {
-			Notify("Press again to exit.");
-			setTimeout(() => {
-				history.pushState(null, "", "");
-			}, 4000);
-			return;
-		} 
-		history.pushState(null, "", "");
-	} catch (error) {
-		reportError(error);
-	} 
+const ShowInstallPrompt = () => {
+	$(".install").style.display = "block";
+    $(".install_body").classList.remove("hide_install_prompt");
+    $(".install_body").classList.add("show_install_prompt");
 } 
 
-async function load (i = 0) {
-    let src = "./src/images/" + srcs[i];
-    let response = await fetch(src);
-    if(response.status == 200) {
-        let arrBuff = await response.arrayBuffer();
-        if(arrBuff.byteLength > 0) {
-            src = await URL.createObjectURL(new Blob([arrBuff], {type: "image/png"}));
-            document.documentElement.style.setProperty(imageProps[i], `url(${src})`);
-            
-            if(i < srcs.length-1)
-                load(i+1);
-            else {
-            	setTimeout(LoadingDone, 500);
-           } 
-        } 
-        else {
-            console.log(response);
-            alert("BUFFERING ERROR!\nFailed to buffer fetched data to an array data.");
-        } 
+const HideInstallPrompt = () => {
+    $(".install_body").classList.remove("show_install_prompt");
+    $(".install_body").classList.add("hide_install_prompt");
+    setTimeout(() => {
+		$(".install").style.display = "none";
+		deferredEvent = null;
+		if(reg.waiting)
+			InvokeSWUpdateFlow();
+	}, 600);
+} 
+
+const InstallApp = async () => {
+    deferredEvent.prompt();
+    const {outcome} = await deferredEvent.userChoice;
+    if(outcome === 'accepted') {
+        Notify.popUpNote("Installation successfully");
     } 
     else {
-        console.log(response);
-        alert("LOADING ERROR!\nFailed to load AppShellFiles - " + src + ". Either you have bad network or you have lost internet connection.");
+        Notify.popUpNote("Installation canceled");
     } 
+    HideInstallPrompt();
+} 
+
+window._$ = (elem, property) => {
+	let value = window.getComputedStyle(elem, null).getPropertyValue(property);
+	return value;
+} 
+
+window.$ = (elem) => {
+    return document.querySelector(elem);
+} 
+
+window.$$ = (elem) => {
+    return document.querySelectorAll(elem);
 }
 
-const LoadingDone = () => { 
-	try {
-		for(let item of $$(".menu_body_item")) {
-			item.addEventListener("click", Menu, false);
+window.$$$ = (type, data = []) => {
+	if(!Array.isArray(data)) {
+		throw new Error("Data object passed is not an array. At $$$ line: 658");
+	} 
+    let elem = document.createElement(type);
+    for(let i = 0; i < data.length; i+=2) {
+    	if(/^(innerHTML|textContent)$/gi.test(data[i]))
+    		elem[data[i]] = data[i+1];
+    	else
+    		elem.setAttribute(data[i], data[i+1]);
+    } 
+    return elem;
+} 
+Element.prototype.$ = function (elem) {
+	return this.querySelector(elem);
+} 
+Element.prototype.$$ = function (elem) {
+	return this.querySelectorAll(elem);
+} 
+
+let deferredEvent;
+let reg;
+
+function pageComplete () {
+	document.addEventListener("visibilitychange", (e) => {
+		if(document.visibilityState == "visible") {
+			/*let notification = $(".menu_body_item_notification").classList.contains("switch");
+			SendMsg({type: "notification", notification});
+			SendMsg({type: "update-list", list: Tasks.list});
+			SendMsg({type: "start-timer"});*/
 		} 
-		$(".main_header_menu").addEventListener("click", () => {
-			$(".menu").style.display = "block";
-			$(".main").style.display = "none";
-		}, false);
-		$(".menu_header_back_icon").addEventListener("click", () => {
-			$(".menu").style.display = "none";
-			$(".main").style.display = "block";
-		});
-		$(".main .add_btn").addEventListener("click", () => {
-			let date = new Date().toLocaleDateString().split("/");
-			let time = new Date().toTimeString().split(" ")[0];
-			$("#add_body_form_date").value = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
-			$("#add_body_form_date").min = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
-			$("#add_body_form_time").value = time.split(":").slice(0,2).join(":");;
-			$(".add").style.display = "grid";
-		});
-		$(".add").addEventListener("click", (event) => {
-			if(event.target.matches(".add") || event.target.matches(".add_body_back_icon")) 
-				$(".add").style.display = "none";
-		});
-		$(".add_body_form .add_btn").addEventListener("click", Events.add, false);
-		
-		// retrieve settings
-		if(storage) {
-			let theme = storage.getItem("ML-theme");
-			if(theme && JSON.parse(theme)) 
-				$(".menu_body_item_theme").click();
-			
-			let notification = storage.getItem("ML-notification");
-			if(notification && JSON.parse(notification))
-				$(".menu_body_item_notification").click();
-			
-			let multipleDay = storage.getItem("ML-multiple-day");
-			if(multipleDay && JSON.parse(multipleDay))
-				$(".menu_body_item_multiple_day").click();
+	});
+	
+	
+	const SheetLink = $$$("link", ["rel", "stylesheet", "href", "./src/app.css"]);
+	const JsLink1 = $$$("script", ["src", "./src/app.js"]);
+	const JsLink2 = $$$("script", ["src", "./src/version.js"]);
+	const JsLink3 = $$$("script", ["src", "./src/localforage.js"]);
+	
+	SheetLink.onload = (event) => LoadedExternalFiles.run(event);
+	JsLink1.onload = (event) => LoadedExternalFiles.run(event);
+	JsLink2.onload = (event) => LoadedExternalFiles.run(event);
+	JsLink3.onload = (event) => LoadedExternalFiles.run(event);
+	
+	document.head.appendChild(SheetLink);
+	document.head.appendChild(JsLink1);
+	document.head.appendChild(JsLink2);
+	document.head.appendChild(JsLink3);
+	
+	let date = new Date().toLocaleDateString().split("/");
+	let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
+} 
+
+class LoadedExternalFiles {
+	static total = 4;
+	static n = 0;
+	static run = async (event) => {
+		this.n++;
+		if(this.n == this.total) {
+			localforage.config({
+				name: "Mi-List"
+			});
+			await localforage.ready();
+			LoadResources();
 		} 
-		
-		SendMsg({type: "get-list"});
-		history.pushState(null, "", "");
-		$(".load").style.display = "none";
-		$(".main").style.display = "block";
-		
-		if(deferredEvent) {
+	} 
+	static error = (error) => {
+		alert("LOADING ERROR \n\n Failed to load AppShells files. Please check your internet connection and try again.");
+	} 
+} 
+
+const KeepAlive = {
+	end: false, 
+	run: async function () {
+		this.end = false;
+		let res = await fetch("./blah.png");
+		if(!this.end) {
+			await new Sleep().wait(2);
+			await this.run();
+		} 
+	}, 
+	stop: async function () {
+		this.end = true;
+	} 
+} 
+
+function reportError (error) {
+	console.log(error);
+	alert("ERROR\n\nWe are sorry for this error. We have taken note of the it.\n\nError: " + error);
+} 
+
+const SendMsg = async (msg) => {
+	let controller = await navigator.serviceWorker.controller;
+	if(controller) {
+		navigator.serviceWorker.controller.postMessage(msg);
+	} 
+} 
+
+const Message = async (msg) => {
+	if(msg.data.type == "update-ui") {
+		await RetrieveCache();
+		await Tasks.render();
+	} 
+	else if(msg.data.type == "due") {
+		if(Settings.voice) {
+			navigator.vibrate(1000);
+			await new Sleep().wait(4);
+			let text = msg.data.task.type == "quick"? msg.data.task.title.value: msg.data.task.task.value;
+			Settings.speech.text = text + " at " + convertTo(msg.data.task.time.value, 12);
+			speechSynthesis.speak(Settings.speech);
+		} 
+	} 
+	else if(msg.data.type == "click") {
+		let task = msg.data.task;
+		await localforage.removeItem("clicked");
+		await Tasks.render(task.category.value);
+		await new Sleep().wait(0.5);
+		for(let item of $$(".main_body_item")) {
+			if(item.getAttribute("taskid") == JSON.stringify(task))
+				return item.click();
+		} 
+	} 
+	else {
+		console.log(msg.data.log);
+	} 
+} 
+
+const InvokeSWUpdateFlow = async () => {
+	if(_$($(".install"), "display") == "block") return;
+	let versionDescription = await Updates.getDescription();
+	let version = Updates.version;
+	let action = await Notify.confirm({ 
+		header: "APP UPDATE", 
+		message: "<label style='display: block; text-align: left;'>Thank you for using Mi-List.<br>There is a new version of this app. All you need is to refresh.<br>New version: " + version + "</label><span>What's New?</span>" + versionDescription + "<label style='display: block; text-align: left;'>Do you want to update?</label>", 
+		type: "Later/Update"
+	});
+	
+	if(action == "Update") {
+		Notify.alertSpecial({
+				header: "Updating Mi-List...",
+				message: "Please Wait as we update the app. This may take a few seconds depending n the speed of your bandwidth."
+		});
+		await KeepAlive.stop();
+		await SendMsg({type: "stop-worker"});
+		await new Sleep().wait(1);
+		await reg.waiting.postMessage({type: "skip-waiting"});
+	} 
+	else {
+		Notify.popUpNote("App update declined.");
+		if(deferredEvent)
 			ShowInstallPrompt();
-		} 
-	} catch (error) {
-		reportError(error);
-	}
-} 
-
-async function Menu (e) {
-	try {
-		switch (e.target.getAttribute("value")) {
-			case "theme":
-				e.target.classList.toggle("switch");
-				$(".main").classList.toggle("dark_theme");
-				$(".add").classList.toggle("dark_theme");
-				$(".menu").classList.toggle("dark_theme");
-				$(".install").classList.toggle("dark_theme");
-				if(storage) 
-					storage.setItem("ML-theme", e.target.classList.contains("switch"));
-				break;
-			
-			case "notification":
-				if("Notification" in window) {
-					let permission = Notification.permission;
-					if(permission == "default") {
-						permission = await Notification.requestPermission();
-					} 
-					if(permission == "granted") {
-						e.target.classList.toggle("switch");
-						let notification = e.target.classList.contains("switch");
-						SendMsg({type: "notification", notification});
-						if(storage) 
-							storage.setItem("ML-notification", notification);
-							
-						if(notification) {
-							//alert("TIP\n\nFor effective performance ");
-							Notify("Event motifications enabled");
-						} 
-						else
-							Notify("Event motifications disabled");
-					} 
-					else {
-						Notify("Permission to access your phone notification denied.");
-					} 
-				} 
-				else {
-					Notify("Your browser doesn't support web app notifications.");
-				} 
-				break;
-			
-			case "multiple day":
-				e.target.classList.toggle("switch");
-				$(".add_body_form_date_cont").style.display = e.target.classList.contains("switch")? "block": "none";
-				if(storage) 
-					storage.setItem("ML-multiple-day", e.target.classList.contains("switch"));
-				break;
-				
-			case "share":
-				if(navigator.canShare) {
-		            navigator.share({
-		                title: "Mi List", 
-		                text: "Hey, I use Mi List to manage my everyday to do list. Try it out\n\n", 
-		                url: "https://mark-code789.github.io/Mi List/index.html"
-		            }).catch( (error) => { 
-		            	let message = error.toString().split(":");
-		                if(message[0] != "AbortError") 
-		                    Notify(`There was an error while sharing.<br>***Description***<br>${message[0]}: ${message[1]}`);
-		            });
-		        } 
-		        else {
-		            Notify("This browser doesn't support in-app sharing.<br>Please use traditional method.");
-		        } 
-				break;
-			case "developer":
-				window.location.href = "https://mark-code789.github.io/Portfolio";
-				break;
-				
-			case "feedback":
-				 window.location.href = "mailto:markcodes789@gmail.com? &subject=Mi%20List%20Feedback";
-				break;
-				
-			case "follow":
-				window.location.href = "https://m.facebook.com/Mark-Codes-101930382417960/";
-				break;
-		} 
-	} catch (error) {
-		reportError(error);
 	} 
 } 
 
-class Events {
-	static event = null;
-	static list = new Map();
-	static edit = (e) => {
-		try {
-			let parent = e.target.parentNode.parentNode;
-			let date = parent.getAttribute("value");
-			let time = parent.$(".main_body_event_time").getAttribute("value"); 
-			let title = parent.$(".main_body_event_title").getAttribute("value");
-			let desc = parent.$(".main_body_event_desc").getAttribute("value");
-			
-			$("#add_body_form_date").value = date;
-			$("#add_body_form_time").value = time;
-			$("#add_body_form_title").value = title;
-			$("#add_body_form_desc").value = desc;
-			this.editingEvent = e.target.parentNode.parentNode;
-			$(".add").style.display = "flex";
-		} catch (error) {
-			reportError(error);
-		} 
-	} 
-	static del = (e) => {
-		try {
-			let parent = e.target.parentNode.parentNode;
-			let id = parseInt(parent.id);
-			this.list.delete(id);
-			
-			if(storage) 
-				storage.setItem("ML-list", stringify(this.list));
-				
-			SendMsg({type: "update-list", list: this.list});
-			parent.classList.remove("added");
+const FinishInstalling = async (reg) => {
+	if(reg.waiting) {
+		if(_$($(".load"), "display") == "none") {
 			setTimeout(() => {
-				parent.parentNode.removeChild(parent);
-				this.removeEmptyLists();
-			}, 500);
-		} catch (error) {
-			reportError(error);
+				if(reg.waiting)
+					InvokeSWUpdateFlow();
+			}, 0.5); /* Timeout to ensure no subsequent activate events */
 		} 
 	} 
-	static check = (e) => {
-		try {
-			let parent = e.target.parentNode.parentNode;
-			let id = parseInt(parent.id);
-			this.list.get(id).checked = true;
-			
-			if(storage) 
-				storage.setItem("ML-list", stringify(this.list));
-			SendMsg({type: "update-list", list: this.list});
-				
-			e.target.classList.add("checked");
-			e.target.style.pointerEvents = "none";
-			parent.$(".main_body_event_ctrl_edit").classList.add("disable");
-		} catch (error) {
-			reportError(error);
+} 
+
+window.addEventListener("beforeinstallprompt", (e) => {
+	e.preventDefault();
+	deferredEvent = e;
+});
+
+window.addEventListener("error", (error) => {
+	event.preventDefault();
+	console.log(error.message + " \n\tat " + error.filename + ": " + error.lineno + ":" + error.colno);
+	let option = confirm("ERROR MESSAGE\n\nThere was an unexpected error. We recommend you refresh the page. If this error persists even after refreshing, please contact via:\n\nTel: +254 798 916984\nWhatsApp: +254 798 916984\nEmail: markcodes789@gmail.com\n\nPress OK to refresh.");
+	if(option) 
+		location.reload();
+});
+
+window.addEventListener("load", async () => {
+	if("serviceWorker" in navigator) {
+		navigator.serviceWorker.onmessage = Message;
+		reg = await navigator.serviceWorker.register("./sw.js");
+		if(reg.waiting) {
+			newSW = reg;
 		} 
-	} 
-	static add = (e) => { 
-		try {
-			let addDate = $("#add_body_form_date").value;
-			let time = $("#add_body_form_time").value;
-			let title = $("#add_body_form_title").value;
-			let desc = $("#add_body_form_desc").value;
-			
-			if(addDate == "") return Notify("Please indicate date of the event");
-			if(time == "") return Notify("Please indicate time of the event");
-			if(title == "") return Notify("Please indicate title of the event");
-			e.preventDefault();
-			
-			if(new Date(addDate + "T" + time).getTime() - Date.now() < 0)
-				return Notify("Time should be " + new Date().toTimeString().split(" ")[0] + " or later.");
-				
-			time = convertTo(time, 12);
-			
-			let mainBody = $(".main_body");
-			let dayDiv = $(".main_body_day_events[value='" + addDate + "']") || $$$("div", ["class", "main_body_day_events", "value", addDate]), 
-				dateDiv = $$$("div", ["class", "main_body_date", "value", addDate]), 
-				contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate]), 
-				timeDiv = $$$("div", ["class", "main_body_event_time", "value", convertTo(time, 24), "textContent", time]),
-				expanderDiv = $$$("div", ["class", "main_body_event_expander"]), 
-				titleDiv = $$$("div", ["class", "main_body_event_title", "value", title, "innerHTML", title]), 
-				descDiv = $$$("div", ["class", "main_body_event_desc", "value", desc, "innerHTML", desc.replaceAll("\n", "<br>")]), 
-				textDiv = $$$("div", ["class", "main_body_event_text_cont"]), 
-				ctrlDiv = $$$("div", ["class", "main_body_event_ctrl_cont"]), 
-				editDiv = $$$("div", ["class", "main_body_event_ctrl_edit"]), 
-				delDiv = $$$("div", ["class", "main_body_event_ctrl_del"]), 
-				checkDiv = $$$("div", ["class", "main_body_event_ctrl_check"]);
-				
-				timeDiv.appendChild(expanderDiv);
-				textDiv.addEventListener("click", this.expand, false);
-				editDiv.addEventListener("click", this.edit, false);
-				delDiv.addEventListener("click", this.del, false);
-				checkDiv.addEventListener("click", this.check, false);
-				
-			let event = {date: addDate, time, title, desc, ms: new Date(addDate + "T" + convertTo(time, 24)).getTime()};
-			let similarEvent = JSON.stringify(Array.from(this.list.values())).includes(JSON.stringify(event));
-			
-			if(this.editingEvent) {
-				let id = this.editingEvent.id;
-				this.list.set(id, event);
+		
+		reg.addEventListener("updatefound", async () => {
+			if(reg.installing) {
+				reg.installing.addEventListener("statechange", () => {
+					FinishInstalling(reg);
+				});
 			} 
-			else if(similarEvent) {
-				return Notify("Similar Event exists.");
+		});
+		
+		let refreshing = false;
+		navigator.serviceWorker.addEventListener("controllerchange", (e) => {
+			if(!refreshing) {
+				location.reload();
+				refreshing = true;
+			} 
+		});
+		try {
+			const registration = await navigator.serviceWorker.ready;
+			if('periodicSync' in registration) {
+				let permission = await navigator.permissions.query({name: 'periodic-background-sync'});
+				if(permission.state == "granted") {
+					try {
+						await registration.periodicSync.register("get-due-tasks", {minInterval: 24 * 60 * 60 * 1000});
+					} catch (error) {
+						console.log(error);
+					} 
+				} 
 			} 
 			else {
-				let id = getKey(this.list);
-				this.list.set(id, event);
-				contDiv.setAttribute("id", id);
-			} 
-					
-			if(storage) {
-				storage.setItem("ML-list", stringify(this.list));
-			} 
-			SendMsg({type: "update-list", list: this.list});
-			
-			let oldDate = $(".main_body_date[value='" + addDate + "']");
-			dateDiv = oldDate? oldDate: dateDiv;
-			
-			if(dateDiv.nextElementSibling && dateDiv.nextElementSibling.classList.contains("main_body_empty_list"))
-				dayDiv.removeChild(dateDiv.nextElementSibling);
-			
-			if(!oldDate) {
-				let today = new Date();
-				let tomorrow = new Date();
-				tomorrow.setDate(today.getDate() + 1);
-				let date = new Date(addDate);
-				let str = date.toLocaleDateString('en-US', {weekday: "long", month: "short", year: "numeric"}).split(" ");
-				dateDiv.textContent = date.toDateString() == today.toDateString()? "Today": date.toDateString() == tomorrow.toDateString()? "Tomorrow": str[2] + ", " + date.getDate() + " " + str[0] + " " + str[1];
 				
-				dayDiv.appendChild(dateDiv);
-			} 
-			textDiv.appendChild(timeDiv);
-			textDiv.appendChild(titleDiv);
-			textDiv.appendChild(descDiv);
-			ctrlDiv.appendChild(editDiv);
-			ctrlDiv.appendChild(delDiv);
-			ctrlDiv.appendChild(checkDiv);
-			contDiv.appendChild(textDiv);
-			contDiv.appendChild(ctrlDiv);
-			
-			let leastDiff = Number.MAX_SAFE_INTEGER;
-			let ms = new Date(addDate + "T" + convertTo(time, 24, true)).getTime();
-			let ref;
-			for(let item of dayDiv.$$(".main_body_event_time")) {
-				let diff = new Date(addDate + "T" + item.getAttribute("value")).getTime() - ms;
-				if(diff > 0 && diff < leastDiff) {
-					ref = item.parentNode.parentNode;
-					leastDiff = diff;
-				} 
-			} 
-			dayDiv.insertBefore(contDiv, ref);
-			setTimeout(() => contDiv.classList.add("added"), 500);
-			if(this.editingEvent) {
-				if(this.editingEvent.parentNode == dayDiv) 
-					dayDiv.replaceChild(contDiv, this.editingEvent);
-				else {
-					this.editingEvent.parentNode.removeChild(this.editingEvent);
-				} 
-			} 
-			
-			if(!dayDiv.parentNode) {
-				leastDiff = Number.MAX_SAFE_INTEGER;
-				let date = new Date(addDate);
-				ref = undefined;
-				for(let list of $$(".main_body_day_events")) {
-					let dayDate = new Date(list.getAttribute("value"))
-					let diff = dayDate.getTime() - date.getTime();
-					if(diff >= 86400000 && diff < leastDiff) {
-						leastDiff = diff;
-						ref = list;
-					} 
-				} 
-				mainBody.insertBefore(dayDiv, ref);
-			} 
-			this.removeEmptyLists();
-			this.editingEvent = null;
-			$(".add_body_back_icon").click();
-		} catch (error) {
-			reportError(error);
-		}
-	} 
-	static retrieve = () => {
-		try {
-			for(let [id, event] of this.list) {
-				let addDate = event.date;
-				let time = event.time
-				let title = event.title;
-				let desc = event.desc; 
-				
-				if(new Date(addDate + "T" + convertTo(time, 24)).getTime() - Date.now() < -86400000)
-					continue;
-				
-				let mainBody = $(".main_body");
-				let dayDiv = $(".main_body_day_events[value='" + addDate + "']") || $$$("div", ["class", "main_body_day_events", "value", addDate]), 
-					dateDiv = $$$("div", ["class", "main_body_date", "value", addDate]), 
-					contDiv = $$$("div", ["class", "main_body_event_cont", "value", addDate, "id", id]), 
-					timeDiv = $$$("div", ["class", "main_body_event_time", "value", convertTo(time, 24), "textContent", time]),
-					expanderDiv = $$$("div", ["class", "main_body_event_expander"]), 
-					titleDiv = $$$("div", ["class", "main_body_event_title", "value", title, "innerHTML", title]), 
-					descDiv = $$$("div", ["class", "main_body_event_desc", "value", desc, "innerHTML", desc.replaceAll("\n", "<br>")]), 
-					textDiv = $$$("div", ["class", "main_body_event_text_cont"]), 
-					ctrlDiv = $$$("div", ["class", "main_body_event_ctrl_cont"]), 
-					editDiv = $$$("div", ["class", "main_body_event_ctrl_edit"]), 
-					delDiv = $$$("div", ["class", "main_body_event_ctrl_del"]), 
-					checkDiv = $$$("div", ["class", "main_body_event_ctrl_check"]);
-					
-					timeDiv.appendChild(expanderDiv);
-					textDiv.addEventListener("click", this.expand, false);
-					editDiv.addEventListener("click", this.edit, false);
-					delDiv.addEventListener("click", this.del, false);
-					checkDiv.addEventListener("click", this.check, false);
-					
-				let oldDate = $(".main_body_date[value='" + addDate + "']");
-				dateDiv = oldDate? oldDate: dateDiv;
-				
-				if(dateDiv.nextElementSibling && dateDiv.nextElementSibling.classList.contains("main_body_empty_list"))
-					dayDiv.removeChild(dateDiv.nextElementSibling);
-				
-				if(!oldDate) {
-					let today = new Date();
-					let tomorrow = new Date();
-					let yesterday = new Date();
-					tomorrow.setDate(today.getDate() + 1);
-					yesterday.setDate(today.getDate() - 1);
-					let date = new Date(addDate);
-					let str = date.toLocaleDateString('en-US', {weekday: "long", month: "short", year: "numeric"}).split(" ");
-					dateDiv.textContent = date.toDateString() == yesterday.toDateString()? "Yesterday": date.toDateString() == today.toDateString()? "Today": date.toDateString() == tomorrow.toDateString()? "Tomorrow": str[2] + ", " + date.getDate() + " " + str[0] + " " + str[1];
-					
-					dayDiv.appendChild(dateDiv);
-				} 
-				textDiv.appendChild(timeDiv);
-				textDiv.appendChild(titleDiv);
-				textDiv.appendChild(descDiv);
-				ctrlDiv.appendChild(editDiv);
-				ctrlDiv.appendChild(delDiv);
-				ctrlDiv.appendChild(checkDiv);
-				contDiv.appendChild(textDiv);
-				contDiv.appendChild(ctrlDiv);
-				
-				let leastDiff = Number.MAX_SAFE_INTEGER;
-				let ms = new Date(addDate + "T" + convertTo(time, 24, true)).getTime();
-				let ref;
-				for(let item of dayDiv.$$(".main_body_event_time")) {
-					let diff = new Date(addDate + "T" + item.getAttribute("value")).getTime() - ms;
-					if(diff > 0 && diff < leastDiff) {
-						ref = item.parentNode.parentNode;
-						leastDiff = diff;
-					} 
-				} 
-				
-				dayDiv.insertBefore(contDiv, ref);
-				setTimeout(() => contDiv.classList.add("added"), 500);
-				if(this.editingEvent) {
-					if(this.editingEvent.parentNode == dayDiv) 
-						dayDiv.replaceChild(contDiv, this.editingEvent);
-					else {
-						this.editingEvent.parentNode.removeChild(this.editingEvent);
-					} 
-				} 
-				
-				if(!dayDiv.parentNode) {
-					leastDiff = Number.MAX_SAFE_INTEGER;
-					let date = new Date(addDate);
-					ref = undefined;
-					for(let list of $$(".main_body_day_events")) {
-						let dayDate = new Date(list.getAttribute("value"))
-						let diff = dayDate.getTime() - date.getTime();
-						if(diff >= 86400000 && diff < leastDiff) {
-							leastDiff = diff;
-							ref = list;
-						} 
-					} 
-					mainBody.insertBefore(dayDiv, ref);
-				} 
-				
-				if(event.checked) {
-					checkDiv.classList.add("checked");
-					checkDiv.style.pointerEvents = "none";
-					editDiv.classList.add("disable");
-				} 
-				else {
-					time = convertTo(time, 24);
-					let diff = new Date(addDate + "T" + time).getTime() - Date.now();
-					if(diff < 0) {
-						editDiv.classList.add("disable");
-					} 
-				} 
-				this.removeEmptyLists();
-			} 
-			SendMsg({type: "update-list", list: this.list});
-			SendMsg({type: "start-timer"});
-		} catch (error) {
-			reportError(error);
-		} 
-	} 
-	static expand = (e) => {
-		try {
-			e.target.parentNode.classList.toggle("expanded");
-		} catch (error) {
-			reportError(error);
-		} 
-	} 
-	static removeEmptyLists = () => {
-		try {
-			let today = new Date();
-			for(let list of $$(".main_body_day_events")) {
-				if(list.children.length < 2) {
-					let eventDate = new Date(list.getAttribute("value"));
-					if(today.toDateString() == eventDate.toDateString())
-						list.appendChild($$$("div", ["class", "main_body_empty_list", "textContent", "You have no event today."]));
-					else
-						list.parentNode.removeChild(list);
-				} 
-			} 
-		} catch (error) {
-			reportError(error);
-		} 
-	} 
-} 
-
-const Notify = (msg) => {
-	try {
-		let popUpNote = $("#pop-up-note");
-	    popUpNote.innerHTML = msg;
-	    popUpNote.style.display = "block";
-	    popUpNote.classList.remove("pop");
-	    void popUpNote.offsetWidth;
-	    popUpNote.classList.add("pop");
-	} catch (error) {
-		reportError(error);
-	} 
-}
-
-const End = (event) => {
-	try {
-	    if(event.animationName === "pop-out") {
-	        let popUpNote = $("#pop-up-note");
-	        popUpNote.style.display = "none";
-	    } 
-	} catch (error) {
-		reportError(error);
-	} 
-} 
-
-const getKey = (map) => {
-	let keys = [];
-	for(let i = 0; i <= map.size; i++) keys.push(i);
-	for(let key of keys) {
-		if(!map.has(key))
-			return key;
-	} 
-} 
-
-const stringify = (map) => {
-	return JSON.stringify(Array.from(map.entries()));
-} 
-
-const parse = (mapString) => {
-	return new Map(JSON.parse(mapString));
-} 
-
-const convertTo = (time, to, includeSec = false) => {
-	try {
-		let hr = parseInt(time.split(":")[0]);
-		let min = time.split(" ")[0].split(":")[1];
-		let sec = time.split(" ")[0].split(":")[2] || "00";
-		let converted = "";
-		if(to == 24) {
-			let prd = time.split(" ")[1];
-			if(prd == "PM" && hr < 12) {
-				converted = String((hr + 12)).padStart(2, "0") + ":" + min + (includeSec? ":" + sec: "");
-			} 
-			else if(prd == "AM" && hr == 12) {
-				converted = "00:" + min + (includeSec? ":" + sec: "");
-			} 
-			else {
-				converted = String(hr).padStart(2, "0") + ":" + min + (includeSec? ":" + sec: "");
 			} 
 		} 
-		else if(to == 12) {
-			if(hr == 0) {
-				converted = "12:" + min + (includeSec? ":" + sec: "") + " AM";
-			} 
-			else if(hr > 12) {
-				converted = String((hr - 12)).padStart(2, "0") + ":" + min + (includeSec? ":" + sec: "") + " PM";
-			} 
-			else if(hr == 12) {
-				converted = String(hr).padStart(2, "0") + ":" + min  + (includeSec? ":" + sec: "") + " PM";
-			} 
-			else {
-				converted = String(hr).padStart(2, "0") + ":" + min  + (includeSec? ":" + sec: "") + " AM";
-			} 
+		catch (error) {
+			console.log (error)
 		} 
-		else if(to == "s") {
-			let prd = time.split(" ")[1];
-			if(prd) 
-			time = convertTo(time, 24, true);
-			time = time.split(":");
-			let hr = parseInt(time[0]);
-			let min = parseInt(time[1]);
-			let sec = parseInt(time[2]);
-			
-			let converted = (hr*3600) + (min * 60) + sec;
-		} 
-		return converted;
-	} catch (error) {
-		reportError(error);
+		pageComplete();
 	} 
-} 
+	else {
+		alert("ERROR\n\n A fundamental function of this app is missing in your browser (Service Worker).\nTo use this app try a different browser or update it.");
+	} 
+});
