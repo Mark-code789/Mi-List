@@ -35,7 +35,7 @@
         }
     ],
     "categories": ["work", "school", "personalization", "lifestyle", "business"], 
-    "id": "28.16.21.79", 
+    "id": "28.16.21.80", 
     "start_url": "./index.html", 
     "display": "standalone",
     "orientation": "natural",
@@ -44,12 +44,42 @@
     "prefer_related_applications": false, 
     "screenshots": [
     	{
-	    	"src": "./src/images/main page.png",
+	    	"src": "./src/images/main tasks page.png",
 	    	"sizes": "720x1500",
 	    	"type": "image/png"
 		}, 
 		{
-	    	"src": "./src/images/add page.png",
+	    	"src": "./src/images/main free page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/categories page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/add default page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/add quick page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/finished page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/settings page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/homescreen page.png",
 	    	"sizes": "720x1500",
 	    	"type": "image/png"
 		}
