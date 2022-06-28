@@ -1,7 +1,7 @@
 {
     "short_name": "Mi List",
     "name": "Mi List",
-    "description": "Standalone Frontend to-do list app",
+    "description": "Manage your tasks as well as create shopping list, wishlist and so on. Get notified when they are due",
     "icons": [
         {
             "src": "./src/images/black favicon48.png",
@@ -34,10 +34,86 @@
             "type": "image/png"
         }
     ],
+    "categories": ["work", "school", "personalization", "lifestyle", "business"], 
     "start_url": "./index.html", 
     "display": "standalone",
     "orientation": "natural",
     "theme_color": "#262050",
     "background_color": "#262050", 
-    "prefer_related_applications": false
+    "prefer_related_applications": false, 
+    "screenshots": [
+    	{
+	    	"src": "./src/images/main page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}, 
+		{
+	    	"src": "./src/images/add page.png",
+	    	"sizes": "720x1500",
+	    	"type": "image/png"
+		}
+    ], 
+    "share_target": {
+    	"action": "./index.html", 
+    	"method": "GET", 
+    	"params": {
+    		"title": "title", 
+    		"text": "text", 
+    		"url": "link"
+    	} 
+    }, 
+    "shortcuts": [
+    	{
+    		"name": "New Default Task", 
+    		"description": "Add new default todo list task", 
+    		"url": "./index.html?action=add_default", 
+    		"icons": [
+    			{
+    				"src": "./src/images/black add.png",
+    				"sizes": "96x96",
+    				"type": "image/png", 
+    				"purpose": "any"
+    			} 
+    		] 
+    	}, 
+    	{
+    		"name": "New Quick Task", 
+    		"description": "Add new quick todo list task", 
+    		"url": "./index.html?action=add_quick", 
+    		"icons": [
+    			{
+    				"src": "./src/images/black add.png",
+    				"sizes": "96x96",
+    				"type": "image/png", 
+    				"purpose": "any"
+    			} 
+    		] 
+    	}, 
+    	{
+    		"name": "Task Categories", 
+    		"description": "View all task categories", 
+    		"url": "./index.html?action=categories", 
+    		"icons": [
+    			{
+    				"src": "./src/images/black categories.png",
+    				"sizes": "96x96",
+    				"type": "image/png", 
+    				"purpose": "any"
+    			} 
+    		] 
+    	}, 
+    	{
+    		"name": "Settings", 
+    		"description": "Go to settings", 
+    		"url": "./index.html?action=settings", 
+    		"icons": [
+    			{
+    				"src": "./src/images/black settings.png",
+    				"sizes": "96x96",
+    				"type": "image/png", 
+    				"purpose": "any"
+    			} 
+    		] 
+    	}
+    ] 
 }
