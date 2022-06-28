@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.78";
+const currentAppVersion = "28.16.21.80";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -95,7 +95,8 @@ const LoadingDone = async () => {
 			let entries = await Tasks.getCategories(false);
 			for(let [category, tasks] of entries) { 
 				await new Promise(resolve => {
-					let option = $$$("div", ["value", category, "innerHTML", `<span>${category}</span><span>${tasks.length > 0? tasks.length: ""}</span>`]);
+					let overdue = tasks.filter((t) => new Date(t.date.value+"T"+t.time.value).getTime() < new Date().getTime());
+					let option = $$$("div", ["value", category, "innerHTML", `<span>${category}</span><span>${tasks.length > 0? tasks.length + (overdue.length? ' <span class=danger>(' + overdue.length + ")</span>": ""): ""}</span>`]);
 					options.insertBefore(option, add);
 					option.addEventListener("click", ClickInputs.category, false);
 					resolve("done");
@@ -135,10 +136,11 @@ const LoadingDone = async () => {
 					let section = $(".categories_body");
 					section.innerHTML = "";
 					for(let [name, tasks] of Tasks.getCategories()) {
+						let overdue = tasks.filter((t) => new Date((t.date? t.date.value+"T"+t.time.value: new Date().toISOString())).getTime() < new Date().getTime());
 						let div = $$$("div", ["class", "categories_body_item", "value", name]);
 						let text = $$$("div");
 						let title = $$$("div", ["class", "categories_body_item_title", "textContent", name]);
-						let desc = $$$("div", ["class", "categories_body_item_desc" + (tasks.length > 0? " has_value": ""), "textContent", tasks.length > 1? tasks.length + " tasks": tasks.length == 1? tasks.length + " task": "no tasks"]);
+						let desc = $$$("div", ["class", "categories_body_item_desc" + (tasks.length > 0? " has_value": ""), "innerHTML", tasks.length > 0? tasks.length + " task" + (tasks.length > 1? "s": "") + (overdue.length? " <span class='danger'>(" + overdue.length + " overdue)</span>": ""): "no tasks"]);
 						let edit = $$$("div", ["class", "edit_icon"]);
 						let del = $$$("div", ["class", "delete_icon"]);
 						edit.addEventListener("click", async (e) => {
@@ -276,7 +278,7 @@ const LoadingDone = async () => {
 					$("#add_body_form_desc").style.height = "calc(2.3ch + 23px)";
 					$("#add_body_form_desc").value = "";
 					$("#add_body_form_date").min = date;
-					$("#add_body_form_date").classList.remove("has_value");
+					$("#add_body_form_date").classList.remove("has_value", "danger");
 					$("#add_body_form_date").setAttribute("valStr", "");
 					$("#add_body_form_time").parentNode.style.display = "none";
 					$("#add_body_form_time").value = time.replace(/\d+:\d+$/g, "00:00");
@@ -529,6 +531,21 @@ const LoadingDone = async () => {
 		// Retrieve settings
 		await RetrieveCache();
 		await Settings.init();
+		
+		let darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
+		if(darkTheme.matches && !Settings.values.theme) {
+			$(".menu_body_item[item='theme']").click();
+		} 
+		else if(!darkTheme.matches && Settings.values.theme) {
+			$(".menu_body_item[item='theme']").click();
+		} 
+		
+		darkTheme.addListener((e) => {
+			if(e.matches && !Settings.values.theme) 
+				$(".menu_body_item[item='theme']").click();
+			else if(!e.matches && Settings.values.theme) 
+				$(".menu_body_item[item='theme']").click();
+		});
 		
 		let startupCategory = Settings.values.startupCategory;
 		$(".showing_category").textContent = startupCategory;
@@ -1376,6 +1393,9 @@ class Tasks {
 					e.target.checked = false;
 				} 
 			} 
+			else {
+				await localforage.setItem("quick", [...this.#quick]);
+			} 
 		} 
 		else if(category) {
 			let finishChoice = "Finish";
@@ -1680,8 +1700,13 @@ class Tasks {
 					text.appendChild(cont);
 					
 					if(category != "finished") {
+						checkbox.checked = task.finished;
 						checkbox.addEventListener("change", (e) => {
 							Tasks.finish(e, "quick", value.title.value, task);
+						}, false);
+						
+						checkbox.addEventListener("click", (e) => {
+							e.stopPropagation();
 						}, false);
 					} 
 					else {

@@ -1,4 +1,5 @@
 :root {
+	--color-scheme: only light;
 	--logo: none;
 	--search-icon: none;
 	--menu-icon: none;
@@ -589,6 +590,13 @@ label[for="main_search_input"] {
 	text-transform: uppercase;
 } 
 
+.task_categories > div > span > span.danger, 
+.finished_tasks > span > span.danger,
+.quick_tasks > span > span.danger,
+.categories_body_item_desc > span.danger {
+	color: #FF5151 !important;
+} 
+
 .main_header_menu_options > div {
 	text-transform: none;
 	padding-left: 20px;
@@ -820,6 +828,7 @@ label[for="main_search_input"] {
 	height: 30px;
 	width: 30px;
 	outline: none;
+	pointer-events: auto;
 } 
 
 .main_body_item input[type="checkbox"]:before {
