@@ -88,9 +88,6 @@ function pageComplete () {
 	document.head.appendChild(JsLink1);
 	document.head.appendChild(JsLink2);
 	document.head.appendChild(JsLink3);
-	
-	let date = new Date().toLocaleDateString().split("/");
-	let str = date[2] + "-" + date[0].padStart(2, "0") + "-" + date[1].padStart(2, "0");
 } 
 
 class LoadedExternalFiles {

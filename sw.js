@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "67";
+let version = "77";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -35,6 +35,9 @@ let appShellFiles = [
 	"./src/images/black favicon16.png", 
 	"./src/images/favicon badge.ico", 
 	"./src/images/badge.png", 
+	"./src/images/black add.png",
+	"./src/images/black categories.png",
+	"./src/images/black settings.png", 
 	"./src/localforage.js", 
 	"./src/version.js", 
 	"./src/app.js", 
@@ -56,7 +59,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res) => {
-			if(res && !/version.js.*$/gi.test(e.request.url)) {
+			if(res && !/html|css|js.*$/gi.test(e.request.url)) {
             	return res;
             }
             
