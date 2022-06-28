@@ -35,6 +35,7 @@
         }
     ],
     "categories": ["work", "school", "personalization", "lifestyle", "business"], 
+    "id": "28.16.21.79", 
     "start_url": "./index.html", 
     "display": "standalone",
     "orientation": "natural",
