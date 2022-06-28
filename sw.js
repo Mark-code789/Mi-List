@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "78";
+let version = "80";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -263,7 +263,7 @@ async function getDueTasks () {
 	else return null;
 	
 	let todayTasks = Tasks.filter((task) => {
-		return new Date(task.date.value).toDateString() == new Date().toDateString();
+		return new Date((task.date? task.date.value: new Date().toISOString())).toDateString() == new Date().toDateString();
 	});
 	if(!todayTasks.length) return null;
 	return await findTask(todayTasks);
