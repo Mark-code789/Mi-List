@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.81";
+const currentAppVersion = "28.16.21.82";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -1011,6 +1011,7 @@ class Settings {
 			$(".menu_body_item[item='quick notification time']").classList.add("disabled");
 		else
 			$(".menu_body_item[item='quick notification time']").classList.remove("disabled");
+		SendMsg({type: "get-due-tasks"});
 	}
 	static voice = (e) => {
 		if("speechSynthesis" in window) {
