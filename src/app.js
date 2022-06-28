@@ -223,6 +223,7 @@ const LoadingDone = async () => {
 		
 		$(".menu_header_back_icon").addEventListener("click", async () => {
 			await localforage.setItem("settings", Settings.values);
+			SendMsg({type: "get-due-tasks"});
 			$(".menu").style.display = "none";
 			$(".main").style.display = "block";
 		}, false);
@@ -1011,7 +1012,6 @@ class Settings {
 			$(".menu_body_item[item='quick notification time']").classList.add("disabled");
 		else
 			$(".menu_body_item[item='quick notification time']").classList.remove("disabled");
-		SendMsg({type: "get-due-tasks"});
 	}
 	static voice = (e) => {
 		if("speechSynthesis" in window) {
