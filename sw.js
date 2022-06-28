@@ -290,10 +290,12 @@ async function findTask (tasks) {
 								{action: 'delete', title: 'Delete', icon: "./src/images/delete.png"}
 							]
 						} 
-						self.registration.showNotification((task.task? task.task.value: task.title.value), options);
+						if(!Settings.quickNotification && task.type == "quick") {
+							self.registration.showNotification((task.task? task.task.value: task.title.value), options);
+							Notified.push(task);
+						} 
 						sendMsg({type: "due", task});
 						tasks.splice(tasks.indexOf(task), 1);
-						Notified.push(task);
 					} 
 				} 
 				else if(taskMs > now) {
