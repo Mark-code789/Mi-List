@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.67";
+const currentAppVersion = "28.16.21.76";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -535,8 +535,7 @@ const LoadingDone = async () => {
 		$(".showing_category").setAttribute("value", startupCategory);
 		await Tasks.render(startupCategory);
 		
-		$(".load").style.display = "none";
-		$(".main").style.display = "block";
+		CheckHREF();
 		
 		history.pushState(null, "", "");
 		
@@ -552,6 +551,49 @@ const LoadingDone = async () => {
 	} catch (error) {
 		reportError(error);
 	}
+} 
+
+const CheckHREF = async () => {
+	let url = new URL(window.location);
+	
+	for(let [action, value] of url.searchParams.entries()) {
+		if(/title|text|link/gi.test(action)) {
+			let text = url.searchParams.get("text") || "";
+			let link = url.searchParams.get("link") || "";
+			text = text + " " + link;
+			$(".load").style.display = "none";
+			$(".add_choice_default").click();
+			$("#add_body_form_desc").value = text;
+			$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: " "}));
+			return;
+		} 
+		if(action == "action") {
+			if(value == "add_default") {
+				$(".load").style.display = "none";
+				$(".add_choice_default").click();
+				return;
+			} 
+			else if(value == "add_quick") {
+				$(".load").style.display = "none";
+				$(".add_choice_quick").click();
+				return;
+			} 
+			else if(value == "categories") {
+				$(".load").style.display = "none";
+				$(".main").style.display = "block";
+				$(".main_header_menu_options div[value='task categories']").click();
+				return;
+			} 
+			else if(value == "settings") {
+				$(".load").style.display = "none";
+				$(".main").style.display = "block";
+				$(".main_header_menu_options div[value='settings']").click();
+				return;
+			} 
+		} 
+	} 
+	$(".load").style.display = "none";
+	$(".main").style.display = "block";
 } 
 
 const RetrieveCache = async () => {
@@ -570,6 +612,13 @@ const RetrieveCache = async () => {
 	value = await localforage.getItem("finished");
 	if(value) await Tasks.init("finished", value);
 	else await localforage.setItem("finished", Tasks.getFinishedTasks());
+	
+	if('localStorage' in window) 
+	for(let [key, value] of Object.entries(localStorage)) {
+		if(key.startsWith("ML")) {
+			localStorage.removeItem(key);
+		} 
+	} 
 } 
 
 window.onpopstate = function (state) {
