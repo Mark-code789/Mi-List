@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.80";
+const currentAppVersion = "28.16.21.81";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -532,7 +532,7 @@ const LoadingDone = async () => {
 		await RetrieveCache();
 		await Settings.init();
 		
-		let darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
+		/*let darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
 		if(darkTheme.matches && !Settings.values.theme) {
 			$(".menu_body_item[item='theme']").click();
 		} 
@@ -540,12 +540,12 @@ const LoadingDone = async () => {
 			$(".menu_body_item[item='theme']").click();
 		} 
 		
-		darkTheme.addListener((e) => {
+		darkTheme.addEventListener("change", (e) => {
 			if(e.matches && !Settings.values.theme) 
 				$(".menu_body_item[item='theme']").click();
 			else if(!e.matches && Settings.values.theme) 
 				$(".menu_body_item[item='theme']").click();
-		});
+		});*/
 		
 		let startupCategory = Settings.values.startupCategory;
 		$(".showing_category").textContent = startupCategory;
@@ -844,6 +844,7 @@ class Settings {
 					(value == "alphabetically asc"? "Alphabetically (Ascending)": 
 					 value == "alphabetically desc"? "Alphabetically (Descending)":
 					 value == "old"? "Old tasks first": "New tasks first");
+					$(`.menu_body_item[item='${item}'] select option[value='${value}']`).selected = true;
 				} 
 				else if(item == "quick notification time") {
 					$(`.menu_body_item[item='${item}'] input`).value = convertTo(value, 24, true);
