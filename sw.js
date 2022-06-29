@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "83";
+let version = "84";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -59,7 +59,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res) => {
-			if(res && !/version.js.*$/gi.test(e.request.url)) {
+			if(res && !/(html|css|js).*$/gi.test(e.request.url)) {
             	return res;
             }
             
