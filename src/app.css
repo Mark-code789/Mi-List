@@ -701,13 +701,6 @@ label[for="main_search_input"] {
 
 .main_body {
 	position: relative;
-	height: calc(100vh - 100px);
-	width: 100%;
-	background: #E5DFF8;
-	overflow: auto;
-	padding-bottom: 100px;
-	border-radius: 4px;
-	box-shadow: inset 0 1px 5px 0 #0008, inset 0 -1px 5px 0 #0008;
 	z-index: 0;
 } 
 
@@ -726,7 +719,12 @@ label[for="main_search_input"] {
 } 
 
 .main_body_item_cont {
-	overflow: visible;
+	height: 100%;
+	width: 100%;
+	overflow-x: visible;
+	overflow-y: auto;
+	padding: 10px 20px;
+	padding-bottom: 100px;
 } 
 
 .main_body_item_cont.empty + .main_body_item_empty {
@@ -764,6 +762,7 @@ label[for="main_search_input"] {
 
 .main_body_item_set {
 	border: none;
+	max-width: 600px;
 	margin: 0 0 20px 0;
 	padding: 0;
 	overflow: visible;
@@ -1042,6 +1041,10 @@ label[for="main_search_input"] {
  *
  */
  
+.categories_body {
+	padding: 10px 20px;
+} 
+ 
 .categories_header_add {
 	position: absolute;
 	top: 50%;
@@ -1058,9 +1061,10 @@ label[for="main_search_input"] {
 } 
 
 .categories_body_item {
-	margin: 10px 0;
+	margin: 10px auto;
 	padding: 10px;
 	width: 100%;
+	max-width: 600px;
 	background: linear-gradient(to bottom, #483D97, #262050);
 	border: 2px solid #5C4EC5;
 	border-radius: 12px;
@@ -1139,8 +1143,6 @@ label[for="main_search_input"] {
 .add_body_form {
 	height: 100%;
 	width: 100%;
-	max-width: 600px;
-	margin: auto;
 	padding-bottom: 100px;
 	overflow: auto;
 } 
@@ -1155,8 +1157,9 @@ label[for="main_search_input"] {
 .add_body_form_task_cont {
 	position: relative;
 	height: max-content;
+	max-width: 600px;
 	padding: 0;
-	margin: 30px 0 0 0;
+	margin: 30px auto 0 auto;
 	z-index: 0;
 } 
 
@@ -1754,22 +1757,37 @@ label[for="main_search_input"] {
 .categories_body,
 .main_body {
 	background: #E5DFF8;
-	color: #262050 !important;
+	color: #262050;
 	height: calc(100vh - 100px);
-	padding: 10px 20px;
+	border-radius: 4px;
 	box-shadow: inset 0 1px 5px 0 #0008, inset 0 -1px 5px 0 #0008;
 	overflow: auto;
 } 
 
+.menu_body {
+	padding: 10px 20px;
+} 
+
+.menu_body h3 {
+	max-width: 600px;
+	margin: 10px auto;
+} 
+
 .menu_body h3:not(.menu_body h3:first-of-type) {
-	margin: 40px 0 10px 0;
+	margin-top: 40px;
 } 
 
 .menu_body_item {
 	position: relative;
-	padding: 10px 60px 10px 0;
+	margin: auto;
+	padding-left: 10px;
+	max-width: 600px;
+} 
+
+.menu_body_item > div:first-of-type {
+	width: 100%;
 	border-bottom: 1px solid #262050;
-	margin-left: 20px;
+	padding: 10px 60px 10px 0;
 } 
 
 .menu_body_item.click:before {

@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.83";
+const currentAppVersion = "28.16.21.84";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -1571,7 +1571,15 @@ class Tasks {
 		arr = arr.flat(Infinity);
 		arr = await Promise.all(
 			arr.sort((a, b) => {
-				if(new Date(a.date.value + "T00:00:00").getTime() > new Date(b.date.value + "T00:00:00").getTime()) {
+				let at = new Date(a.date.value + "T" + convertTo(a.time.value, 24)).getTime();
+				let bt = new Date(b.date.value + "T" + convertTo(b.time.value, 24)).getTime();
+				if(at < Date.now() && bt >= Date.now()) {
+					return -1;
+				} 
+				else if(bt < Date.now() && at >= Date.now()) {
+					return 1;
+				} 
+				else if(new Date(a.date.value + "T00:00:00").getTime() > new Date(b.date.value + "T00:00:00").getTime()) {
 					 return 1;
 				} 
 				else if(new Date(a.date.value + "T00:00:00").getTime() < new Date(b.date.value + "T00:00:00").getTime()) {
@@ -1586,14 +1594,10 @@ class Tasks {
 					else if(a.task.value > b.task.value) return -1;
 				} 
 				else if(Settings.values.sortingOrder == "old") {
-					let at = new Date(a.date.value + "T" + convertTo(a.time.value, 24)).getTime();
-					let bt = new Date(b.date.value + "T" + convertTo(b.time.value, 24)).getTime();
 					if(at < bt) return 1;
 					else if(at > bt) return -1;
 				} 
 				else if(Settings.values.sortingOrder == "new") {
-					let at = new Date(a.date.value + "T" + convertTo(a.time.value, 24)).getTime();
-					let bt = new Date(b.date.value + "T" + convertTo(b.time.value, 24)).getTime();
 					if(at > bt) return 1;
 					else if(at < bt) return -1;
 				} 
