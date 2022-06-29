@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.82";
+const currentAppVersion = "28.16.21.83";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -775,6 +775,7 @@ class CustomInputs {
 class Settings {
 	static values = {
 		theme: false,
+		statusBar: false, 
 		confirmFinishing: false, 
 		confirmRepeating: false, 
 		firstDay: "sunday", 
@@ -804,15 +805,21 @@ class Settings {
 							let permission = Notification.permission;
 							if(permission == "default") {
 								permission = await Notification.requestPermission();
-								if(permission == "denied")
+								if(permission == "denied") {
+									$(".menu_body_item[item='status bar']").classList.remove("switch");
+									this.values.notification = false;
+									this.values.statusBar = false;
 									continue;
+								} 
 							} 
-							else if(permission == "denied")
+							else if(permission == "denied") {
+								$(".menu_body_item[item='status bar']").classList.remove("switch");
+								this.values.notification = false;
+								this.values.statusBar = false;
 								continue;
+							} 
 						} 
 						else {
-							this.values.notification = false;
-							await localforage.setItem("settings", this.values);
 							continue;
 						} 
 						$(".menu_body_item[item='voice']").classList.toggle("disabled");
@@ -863,6 +870,9 @@ class Settings {
 				} 
 			} 
 		} 
+		
+		await localforage.setItem("settings", this.values);
+		SendMsg({type: "init-storage"});
 	} 
 	static input = async (e) => {
 		e.stopPropagation();
@@ -881,6 +891,10 @@ class Settings {
 		switch(e.target.getAttribute("item")) {
 			case "theme":
 			this.theme(e);
+			break;
+			
+			case "status bar":
+			this.statusBar(e);
 			break;
 			
 			case "confirm finishing":
@@ -956,6 +970,15 @@ class Settings {
 		$(".menu").classList.toggle("dark_theme");
 		$(".categories").classList.toggle("dark_theme");
 	}
+	static statusBar = async (e) => {
+		if(!this.values.notification) {
+			return Notify.popUpNote("Enable notifications option below first.");
+		} 
+		e.target.classList.toggle("switch");
+		this.values.statusBar = e.target.classList.contains("switch");
+		await localforage.setItem("settings", this.values);
+		SendMsg({type: "get-due-tasks"});
+	} 
 	static confirmFinishing = (e) => {
 		e.target.classList.toggle("switch");
 		this.values.confirmFinishing = e.target.classList.contains("switch");
@@ -1073,7 +1096,7 @@ class Settings {
 	static follow = (e) => {
 		switch(e.target.getAttribute("value")) {
 			case "facebook":
-			location.href = "https://www.facebook.com/mark.etale.1";
+			location.href = "https://www.facebook.com/Mark-Codes-101930382417960/";
 			break;
 			
 			case "twitter":
@@ -1532,12 +1555,12 @@ class Tasks {
 				await new Sleep().wait(0.5);
 				e.target.parentNode.classList.add("remove");
 				await new Sleep().wait(0.5);
+				SendMsg({type: "get-due-tasks"});
 				this.render();
 			} 
 			else {
 				this.#editingElement = null;
 			} 
-			SendMsg({type: "get-due-tasks"});
 		} 
 	} 
 	
@@ -1638,7 +1661,7 @@ class Tasks {
 				} 
 				
 				let date = new Date(value.date.value+"T"+value.time.value);
-				let setDate = date.getTime() < today.getTime()? "Overdue":
+				let setDate = date.getTime() + 1000 < today.getTime()? "Overdue":
 							  date.toDateString() == today.toDateString()? "Today":
 							  date.toDateString() == tomorrow.toDateString()? "Tomorrow":
 							  thisWeek.includes(date.toDateString())? "This week":
