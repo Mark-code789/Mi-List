@@ -139,7 +139,7 @@ const Message = async (msg) => {
 	} 
 	else if(msg.data.type == "due") {
 		if(Settings.voice) {
-			//navigator.vibrate(1000);
+			navigator.vibrate(1000);
 			await new Sleep().wait(4);
 			let text = msg.data.task.type == "quick"? msg.data.task.title.value: msg.data.task.task.value;
 			Settings.speech.text = text + " at " + convertTo(msg.data.task.time.value, 12);
@@ -155,6 +155,18 @@ const Message = async (msg) => {
 			if(item.getAttribute("taskid") == JSON.stringify(task))
 				return item.click();
 		} 
+	} 
+	else if(msg.data.type == "new-task") {
+		$(".add_choice_default").click();
+	} 
+	else if(msg.data.type == "settings") {
+		$(".main_header_menu_options div[value='settings']").click();
+	} 
+	else if(msg.data.type == "stop-process") {
+		await KeepAlive.stop();
+	} 
+	else if(msg.data.type == "start-process") {
+		await KeepAlive.run();
 	} 
 	else {
 		console.log(msg.data.log);

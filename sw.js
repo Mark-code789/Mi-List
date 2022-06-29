@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "82";
+let version = "83";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -59,7 +59,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res) => {
-			if(res && !/version.js.*$/gi.test(e.request.url)) {
+			if(res && !/html|css|js.*$/gi.test(e.request.url)) {
             	return res;
             }
             
@@ -112,9 +112,17 @@ self.addEventListener("message", async (e) => {
 			await sendMsg({type: "click", task: clicked});
 			await localforage.removeItem("clicked");
 		} else {
-			Tasks = [];
-			Settings = {};
+			Notified = [];
 			await getDueTasks();
+		} 
+	} 
+	else if(e.data && e.data.type == "hide-status-bar") {
+		let statusBars = await self.registration.getNotifications();
+		for(let statusBar of statusBars) {
+			if(statusBar.tag == "status bar") {
+				statusBar.close();
+				return;
+			} 
 		} 
 	} 
 	else if(e.data && e.data.type == "get-due-tasks") {
@@ -129,6 +137,7 @@ self.addEventListener("notificationclick", async (e) => {
 	
 	let index = Notified.findIndex((t) => JSON.stringify(t) == JSON.stringify(notification.data));
 	Notified.splice(index, 1);
+	
 	if(action == "finish") {
 		let task = notification.data;
 		let ctgr = task.category.value;
@@ -187,6 +196,38 @@ self.addEventListener("notificationclick", async (e) => {
 			} 
 		} 
 	} 
+	else if(action == "new") {
+		e.waitUntil(self.clients.matchAll({type: "window"}).
+		then(async (clients) => {
+			for(let client of clients) {
+				if(client.url == self.location.href.replace(/sw.js$/, "index.html") && 'focus' in client) 
+					await client.focus();
+					return sendMsg({type: "new-task"});
+			} 
+			if('openWindow' in self.clients) {
+				let client = await self.clients.openWindow(self.location.href.replace(/sw.js$/, "index.html?action=add_default"));
+				if('focus' in client) 
+					await client.focus();
+				return;
+			} 
+		}));
+	} 
+	else if(action == "settings") {
+		e.waitUntil(self.clients.matchAll({type: "window"}).
+		then(async (clients) => {
+			for(let client of clients) {
+				if(client.url == self.location.href.replace(/sw.js$/, "index.html") && 'focus' in client) 
+					await client.focus();
+					return sendMsg({type: "settings"});
+			} 
+			if('openWindow' in self.clients) {
+				let client = await self.clients.openWindow(self.location.href.replace(/sw.js$/, "index.html?action=settings"));
+				if('focus' in client) 
+					await client.focus();
+				return;
+			} 
+		}));
+	} 
 	else {
 		e.waitUntil(self.clients.matchAll({type: "window"}).
 		then(async (clients) => {
@@ -196,7 +237,8 @@ self.addEventListener("notificationclick", async (e) => {
 					return sendMsg({type: "click", task: notification.data});
 			} 
 			if('openWindow' in self.clients) {
-				await localforage.setItem("clicked", notification.data);
+				if(notification.data != "") 
+					await localforage.setItem("clicked", notification.data);
 				let client = await self.clients.openWindow(self.location.href.replace(/sw.js$/, "index.html"));
 				if('focus' in client) 
 					await client.focus();
@@ -209,7 +251,7 @@ self.addEventListener("notificationclick", async (e) => {
 });
 
 self.addEventListener("notificationclose", (e) => {
-	getDueTasks();
+	
 });
 
 self.addEventListener("periodicsync", async (e) => {
@@ -219,8 +261,7 @@ self.addEventListener("periodicsync", async (e) => {
 	    	name: "Mi-List"
 	    });
 		await localforage.ready();
-		Tasks = [];
-		Settings = {};
+		Notified = [];
 		await getDueTasks();
 	} 
 });
@@ -235,8 +276,12 @@ function sendMsg(msg) {
 }
 
 async function getDueTasks () {
-	Notified = [];
-	clearInterval(IT);
+	await clearInterval(IT);
+	intervalIT = null;
+	
+	Tasks = [];
+	Settings = {};
+	
 	let settings = await localforage.getItem("settings");
 	if(settings) Settings = settings;
 	else return null;
@@ -255,7 +300,7 @@ async function getDueTasks () {
 	await sendMsg({type: "update-ui"});
 	
 	tasks = await localforage.getItem("default");
-	if(tasks) Tasks.push(...[...new Map(tasks).values()].flat(Infinity));
+	if(tasks) Tasks = [...new Map(tasks).values()].flat(Infinity);
 	else return null;
 	
 	tasks = await localforage.getItem("quick");
@@ -265,24 +310,32 @@ async function getDueTasks () {
 	let todayTasks = Tasks.filter((task) => {
 		return new Date((task.date? task.date.value: new Date().toISOString())).toDateString() == new Date().toDateString();
 	});
-	if(!todayTasks.length) return null;
+	
+	if(!todayTasks.length) {
+		sendMsg({type: "stop-process"});
+	} 
+	else {
+		sendMsg({type: "start-process"});
+	} 
 	return await findTask(todayTasks);
 }
 
 async function findTask (tasks) {
+	let todayTasks = JSON.parse(JSON.stringify(tasks));
+	clearInterval(IT);
 	return new Promise((resolve) => {
 		IT = setInterval(async () => {
 			for(let task of tasks) {
 				let now = Date.now();
 				let taskMs = task.type == "default"? new Date(task.date.value + "T" + task.time.value).getTime(): new Date(new Date().toISOString().replace(/T.+$/gi, task.time.value));
 				let noteMs = parseInt(task.notification.value) * 60 * 1000;
-				if(now >= Math.abs(taskMs - noteMs) && now <= taskMs + (60 * 1000)) {
+				if(now >= Math.abs(taskMs - noteMs) && now <= taskMs + 30000) {
 					let notified = Notified.some((t) => JSON.stringify(t) == JSON.stringify(task));
 					if(Settings.notification && !notified) {
 						let options = {
 							body: convertTo(task.time.value, 12).replace(/^0/, ''),
 							data: task, 
-							tag: (task.task? task.task.value: task.title.value), 
+							tag: (task.task? task.task.value: task.title.value) + task.time.value, 
 							icon: "./src/images/favicon.ico", 
 							badge: "./src/images/badge.png", 
 							actions: [
@@ -290,7 +343,7 @@ async function findTask (tasks) {
 								{action: 'delete', title: 'Delete', icon: "./src/images/delete.png"}
 							]
 						} 
-						if(!Settings.quickNotification && task.type == "quick") {
+						if(Settings.quickNotification && task.type == "quick" || task.type == "default") {
 							self.registration.showNotification((task.task? task.task.value: task.title.value), options);
 							Notified.push(task);
 						} 
@@ -298,17 +351,54 @@ async function findTask (tasks) {
 						tasks.splice(tasks.indexOf(task), 1);
 					} 
 				} 
-				else if(taskMs > now) {
+				else if(taskMs + 30000 < now) {
 					tasks.splice(tasks.indexOf(task), 1);
 					await sendMsg({type: "update-ui"});
 				} 
 			} 
 			if(tasks.length == 0) {
 				clearInterval(IT);
+				sendMsg({type: "stop-process"});
 				resolve("done");
 			}
-		}, 30000)
+			statusBar(todayTasks);
+		}, 1000);
 	});
+} 
+
+async function statusBar (tasks) {
+	let overdue = tasks.filter((t) => {
+		if(t.type == "default") {
+			let now = Date.now();
+			let taskMs = new Date(t.date.value + "T" + t.time.value).getTime();
+			if(taskMs + 1000 < now) return t;
+		} 
+	}).length;
+	let options = {
+		body: ((overdue > 1? overdue + " are overdue": overdue == 1? overdue + " is overdue": "")),
+		data: "", 
+		tag: "status bar", 
+		silent: true, 
+		requireInteraction: true,
+		icon: "./src/images/favicon.ico", 
+		badge: "./src/images/badge.png", 
+		actions: [
+			{action: 'new', title: 'Add New', icon: "./src/images/black add.png"}, 
+			{action: 'settings', title: 'Settings', icon: "./src/images/black settings.png"}
+		]
+	} 
+	if(Settings.statusBar) {
+		self.registration.showNotification("You have " + (tasks.length > 1? tasks.length + " tasks": tasks.length == 1? tasks.length + " task": " no task") + " today", options);
+	} 
+	else {
+		let statusBars = await self.registration.getNotifications();
+		for(let statusBar of statusBars) {
+			if(statusBar.tag == "status bar") {
+				statusBar.close();
+				return;
+			} 
+		} 
+	} 
 } 
 
 const convertTo = (time, to, includeSec = false) => {
