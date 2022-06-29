@@ -59,7 +59,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request, {ignoreSearch: true}).then((res) => {
-			if(res && !/html|css|js.*$/gi.test(e.request.url)) {
+			if(res && !/version.js.*$/gi.test(e.request.url)) {
             	return res;
             }
             
@@ -356,11 +356,6 @@ async function findTask (tasks) {
 					await sendMsg({type: "update-ui"});
 				} 
 			} 
-			if(tasks.length == 0) {
-				clearInterval(IT);
-				sendMsg({type: "stop-process"});
-				resolve("done");
-			}
 			statusBar(todayTasks);
 		}, 1000);
 	});
@@ -388,7 +383,7 @@ async function statusBar (tasks) {
 		]
 	} 
 	if(Settings.statusBar) {
-		self.registration.showNotification("You have " + (tasks.length > 1? tasks.length + " tasks": tasks.length == 1? tasks.length + " task": " no task") + " today", options);
+		self.registration.showNotification("You have " + (tasks.length > 1? tasks.length + " tasks": tasks.length == 1? tasks.length + " task": "no task") + " today", options);
 	} 
 	else {
 		let statusBars = await self.registration.getNotifications();
