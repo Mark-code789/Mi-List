@@ -1996,7 +1996,7 @@ label[for="main_search_input"] {
 	color: #E5DFF8 !important;
 }
 
-.dark_theme .menu_body_item {
+.dark_theme .menu_body_item > div {
 	border-color: #E5DFF8;
 }
 
