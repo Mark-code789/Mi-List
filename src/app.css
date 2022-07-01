@@ -17,6 +17,7 @@
 	--repeat-add-icon: none;
 	--home-icon: none;
 	--finished-icon: none;
+	--share-icon: none;
 	--rest-icon: none;
 	--clickX: 0;
 }
@@ -962,7 +963,7 @@ label[for="main_search_input"] {
 
 .main .add_choice {
 	display: none;
-	width: 70px;
+	width: fit-content;
 	border-radius: 35px;
 	font-size: 1.2em;
 	color: #262050;
@@ -1118,7 +1119,21 @@ label[for="main_search_input"] {
  
 .add {
 	display: none;
-}
+} 
+
+.add_header_share {
+	position: absolute;
+	top: 50%;
+	right: 20px;
+	transform: translateY(-50%);
+	height: 30px;
+	width: 50px;
+	padding: 0 15px;
+	background-image: var(--share-icon);
+	background-size: 23px;
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+} 
 
 .add_body, 
 .install_body {
@@ -1732,10 +1747,10 @@ label[for="main_search_input"] {
 	background: linear-gradient(to bottom, #483D97, #262050);
 } 
 
-.main_search_back_icon,
-.menu_header_back_icon,
-.add_header_back_icon,
-.categories_header_back_icon {
+.main_search_back,
+.menu_header_back,
+.add_header_back,
+.categories_header_back {
 	position: absolute;
 	top: 10px;
 	left: 20px;

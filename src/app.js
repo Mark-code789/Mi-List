@@ -16,6 +16,7 @@ const srcs = [
 	"repeat add.png", 
 	"home.png", 
 	"finished.png", 
+	"share.png",
 	"rest.png", 
 ];
 
@@ -37,6 +38,7 @@ const imageProps = [
 	"--repeat-add-icon",
 	"--home-icon",
 	"--finished-icon",
+	"--share-icon", 
 	"--rest-icon"
 ]
 
@@ -65,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.17.23.92";
+const currentAppVersion = "28.17.24.93";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -220,14 +222,14 @@ const LoadingDone = async () => {
 			e.target.classList.remove("show");
 		}, false);
 		
-		$(".menu_header_back_icon").addEventListener("click", async () => {
+		$(".menu_header_back").addEventListener("click", async () => {
 			await localforage.setItem("settings", Settings.values);
 			SendMsg({type: "get-due-tasks"});
 			$(".menu").style.display = "none";
 			$(".main").style.display = "block";
 		}, false);
 		
-		$(".main_search_back_icon").addEventListener("click", () => {
+		$(".main_search_back").addEventListener("click", () => {
 			$(".main_search").style.display = "none";
 			$(".main_body .add_btn:not(.add_choice)").style.display = "flex";
 			Tasks.render();
@@ -244,17 +246,15 @@ const LoadingDone = async () => {
 		$(".main .add_btn:not(.add_choice)").addEventListener("click", (e) => {
 			e.target.style.display = "none";
 			$(".main .add_choice").style.display = "flex";
-			$(".main .add_choice").style.width = "fit-content";
 			$(".main .add_choice").focus();
 		}, false);
 		
 		$(".main .add_choice").addEventListener("blur", (e) => {
-			e.target.style.width = "70px";
 			e.target.style.display = "none";
 			$(".main .add_btn:not(.add_choice)").style.display = "flex";
 		});
 		
-		$(".categories_header_back_icon").addEventListener("click", (event) => {
+		$(".categories_header_back").addEventListener("click", (event) => {
 			$(".categories").style.display = "none";
 			$(".main").style.display = "block";
 		}, false);
@@ -305,11 +305,31 @@ const LoadingDone = async () => {
 			}, false);
 		} 
 		
-		$(".add_header_back_icon").addEventListener("click", (event) => {
+		$(".add_header_back").addEventListener("click", (event) => {
 			$(".add").style.display = "none";
 			$(".main").style.display = "block";
 			SendMsg({type: "get-due-tasks"});
 			Tasks.render();
+		}, false);
+		
+		$(".add_header_share").addEventListener("click", (event) => {
+			if(navigator.canShare) {
+				let text = _$($(".default_task"), "display") == "block"? $("#add_body_form_desc").value: $("#add_body_form_title").value + "\n\t\u25E6 " + Array.from($$(".add_body_form_quick_tasks span")).map((item) => item.textContent).join("\n\t\u25E6 ");
+				let date = _$($(".default_task"), "display") == "block"? new Date($("#add_body_form_date").value).toDateString(): "";
+				let time = _$($(".default_task"), "display") == "block"? convertTo($("#add_body_form_time").value, 24): "";
+				
+				text = "\u2022 " + text + (date.length? ` (${date.replace(/^\w+\b/g, '')}, ${time})`: '');
+	            navigator.share({
+	                text
+	            }).catch( (error) => { 
+	            	let message = error.toString().split(":");
+	                if(message[0] != "AbortError") 
+	                    Notify.popUpNote(`There was an error while sharing.\n***Description***\n${message[0]}: ${message[1]}`);
+	            });
+	        } 
+	        else {
+	            Notify.popUpNote("This browser doesn't support sharing from the app. Please use your traditional sharing method.");
+	        } 
 		}, false);
 		
 		$("#add_body_form_desc").addEventListener("keyup", (e) => {
@@ -1087,15 +1107,25 @@ class Settings {
             message: "<label style='display: block; text-align: left;'>Current version: " + currentAppVersion + "</label><span>Updates of this version</span>" + currentVersionDescription + "<label style='display: block; text-align: left;'>Thank you for using Mi List. If you experience any difficulty or an error please contact me via the feedback button in the settings.</label>", 
 			type: "Check for update/OK"
 		});
-		if(update == "Check for update" && reg.waiting) {
+		
+		if(update = "Check for update") {
+			if(!navigator.onLine) return Notify.popUpNote("Please connect to an internet and try again.");
 			Notify.alertSpecial({
-					header: "Updating Mi-List...",
-					message: "Please Wait as we update the app. This may take a few seconds depending n the speed of your bandwidth."
+					header: "Checking for update...",
+					message: "Please Wait as we run the check."
 			});
-			reg.waiting.postMessage({type: "skip-waiting"});
-		} 
-		else if(update == "Check for update") {
-			Notify.popUpNote("Your app is up to date.");
+			reg = await navigator.serviceWorker.register("./sw.js");
+			Notify.cancel();
+			if(reg.waiting) {
+				Notify.alertSpecial({
+						header: "Updating Mi-List...",
+						message: "Please Wait as we update the app. This may take a few seconds depending n the speed of your bandwidth."
+				});
+				reg.waiting.postMessage({type: "skip-waiting"});
+			} 
+			else {
+				Notify.popUpNote("Your app is up to date.");
+			} 
 		} 
 	}
 	static developer = (e) => {
