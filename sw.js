@@ -33,7 +33,7 @@ let appShellFiles = [
 	"./src/images/black favicon48.png", 
 	"./src/images/black favicon32.png", 
 	"./src/images/black favicon16.png", 
-	"./src/images/favicon badge.ico", 
+	"./src/images/favicon.ico", 
 	"./src/images/badge.png", 
 	"./src/images/black add.png",
 	"./src/images/black categories.png",
