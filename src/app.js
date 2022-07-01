@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.89";
+const currentAppVersion = "28.16.22.90";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -1252,7 +1252,7 @@ class Tasks {
 			let values = this.#categories.get(category.value);
 			let value = {
 				type: "default", 
-				task: {value: task.value.trim().replace(/^\w/g, (t) => t.toUpperCase()}, 
+				task: {value: task.value.trim().replace(/^\w/g, (t) => t.toUpperCase())}, 
 				date: {value: date.value}, 
 				time: {value: time.value},
 				notification: {value: notification.value},
