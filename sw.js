@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "92";
+let version = "94";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
