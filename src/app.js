@@ -65,10 +65,9 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.22.90";
+const currentAppVersion = "28.17.23.92";
 const LoadingDone = async () => { 
 	try {
-		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
 			item.addEventListener("click", Settings.input, true);
 			if(item.classList.contains("menu_body_item")) {
@@ -1083,9 +1082,21 @@ class Settings {
 	}
 	static version = async (e) => {
 		let currentVersionDescription= await Updates.getDescription(currentAppVersion);
-		Notify.alert({
+		let update = await Notify.confirm({
             header: "MI LIST VERSION", 
-            message: "<label style='display: block; text-align: left;'>Current version: " + currentAppVersion + "</label><span>Updates of this version</span>" + currentVersionDescription + "<label style='display: block; text-align: left;'>Thank you for using Mi List. If you experience any difficulty or an error please contact me via the feedback button in the settings.</label>"});
+            message: "<label style='display: block; text-align: left;'>Current version: " + currentAppVersion + "</label><span>Updates of this version</span>" + currentVersionDescription + "<label style='display: block; text-align: left;'>Thank you for using Mi List. If you experience any difficulty or an error please contact me via the feedback button in the settings.</label>", 
+			type: "Check for update/OK"
+		});
+		if(update == "Check for update" && reg.waiting) {
+			Notify.alertSpecial({
+					header: "Updating Mi-List...",
+					message: "Please Wait as we update the app. This may take a few seconds depending n the speed of your bandwidth."
+			});
+			reg.waiting.postMessage({type: "skip-waiting"});
+		} 
+		else if(update == "Check for update") {
+			Notify.popUpNote("Your app is up to date.");
+		} 
 	}
 	static developer = (e) => {
 		location.href = "https://mark-code789.github.io/Portfolio";

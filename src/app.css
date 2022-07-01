@@ -258,8 +258,8 @@ article {
     list-style-position: outside;
 } 
 
-#notification-window #note .note_body > ul,
-#notification-window #note .note_body > ol {
+#notification-window #note .note_body > ul ul,
+#notification-window #note .note_body > ol ol {
 	margin: 10px 0;
 } 
 
