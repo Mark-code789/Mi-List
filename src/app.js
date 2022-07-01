@@ -65,7 +65,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.16.21.84";
+const currentAppVersion = "28.16.21.89";
 const LoadingDone = async () => { 
 	try {
 		$(".menu_body_item[item='version'] .menu_body_item_desc").textContent = currentAppVersion;
@@ -1250,18 +1250,19 @@ class Tasks {
 			let category = $("#add_body_form_category");
 			let repeat = $("#add_body_form_repeat");
 			let values = this.#categories.get(category.value);
-			if(values.some((t) => {return t.task.value == task.getAttribute("value")})) {
-				return Notify.popUpNote("Similar task already added");
-			} 
 			let value = {
 				type: "default", 
-				task: {value: task.value.trim()}, 
+				task: {value: task.value.trim().replace(/^\w/g, (t) => t.toUpperCase()}, 
 				date: {value: date.value}, 
 				time: {value: time.value},
 				notification: {value: notification.value},
 				category: {value: category.value},
 				repeat: {value: repeat.value}
 			};
+			let similar = await Promise.resolve(values.some((t) => JSON.stringify(t) == JSON.stringify(value)));
+			if(similar) {
+				return Notify.popUpNote("Similar task already added");
+			} 
 			values.push(value);
 			await localforage.setItem("default", [...this.#categories.entries()]);
 		} 
@@ -1279,7 +1280,9 @@ class Tasks {
 				return;
 			} 
 			
-			if(this.#quick.some((t) => {return t.title.value == title.value})) {
+			let similar = await Promise.resolve(this.#quick.some((t) => t.title.value == title.value.trim()));
+			
+			if(similar) {
 				return Notify.popUpNote("Similar task with this title already added");
 			} 
 			
@@ -1393,7 +1396,8 @@ class Tasks {
 		if(category == "quick") {
 			task.finished = e.target.checked;
 			let tasks = this.#quick.find((t) => t.title.value == keyword);
-			if(tasks.tasks.value.every((t) => t.finished)) {
+			let allFinished = await tasks.tasks.value.every((t) => t.finished);
+			if(allFinished) {
 				let finishChoice = "Finish";
 				if(Settings.values.confirmFinishing)
 				finishChoice = await Notify.confirm({header: "Confirm Finish", 
@@ -1426,12 +1430,12 @@ class Tasks {
 			let finishChoice = "Finish";
 			if(Settings.values.confirmFinishing)
 			finishChoice = await Notify.confirm({header: "Confirm Finish", 
-												 message: "Are you sure you want to finish " + keyword + " task?", 
+												 message: "Are you sure you want to finish " + JSON.parse(keyword).task.value + " task?", 
 												 type: "Cancel/Finish"});
 												
 			if(finishChoice == "Finish") {
 				let values = this.#categories.get(category);
-				task = values.find((t) => t.task.value == keyword);
+				task = await values.find((t) => JSON.stringify(t) == keyword);
 				let index = values.indexOf(task);
 				values.splice(index, 1);
 				let finished = this.#finished.get("default");
@@ -1522,31 +1526,31 @@ class Tasks {
 		let deleteChoice = "Delete";
 		if(!this.#editingElement) 
 			deleteChoice = await Notify.confirm({header: "Confirm Delete",
-												 message: type == "finished"? "Are you sure you want to delete this task?" :"Are you sure you want to delete '" + keyword + "' task from " + category + " category?", 
+												 message: type == "finished"? "Are you sure you want to delete this task?" :"Are you sure you want to delete '" + (JSON.parse(keyword).task? JSON.parse(keyword).task.value: keyword) + "' task from " + category + " category?", 
 												 type: "Cancel/Delete"});
 												
 		if(deleteChoice == "Delete") {
 			if(category == "quick") {
 				if(type == "finished") {
-					let index = this.#finished.get("quick").findIndex((task) => {return task.title.value == keyword});
+					let index = await this.#finished.get("quick").findIndex((task) => {return task.title.value == keyword});
 					this.#finished.get("quick").splice(index, 1);
 					await localforage.setItem("finished", [...this.#finished.entries()]);
 				} 
 				else {
-					let index = this.#quick.findIndex((task) => {return task.title.value == keyword});
+					let index = await this.#quick.findIndex((task) => {return task.title.value == keyword});
 					this.#quick.splice(index, 1);
 					await localforage.setItem("quick", [...this.#quick]);
 				} 
 			} 
 			else {
 				if(type == "finished") {
-					let index = this.#finished.get("default").findIndex((task) => {return task.task.value == keyword});
+					let index = await this.#finished.get("default").findIndex((task) => JSON.stringify(task) == keyword);
 					this.#finished.get("default").splice(index, 1);
 					await localforage.setItem("finished", [...this.#finished.entries()]);
 				} 
 				else {
 					let values = this.#categories.get(category);
-					let index = values.findIndex((task) => {return task.task.value == keyword});
+					let index = await values.findIndex((task) => JSON.stringify(task) == keyword);
 					values.splice(index, 1);
 					await localforage.setItem("default", [...this.#categories.entries()]);
 				} 
@@ -1703,7 +1707,7 @@ class Tasks {
 					
 				if(category != "finished") {
 					checkbox.addEventListener("change", (e) => {
-						Tasks.finish(e, value.category.value, value.task.value);
+						Tasks.finish(e, value.category.value, JSON.stringify(value));
 					}, false);
 					
 					checkbox.addEventListener("click", (e) => {
@@ -1711,7 +1715,7 @@ class Tasks {
 					}, false);
 				} 
 				del.addEventListener("click", (e) => {
-					Tasks.delete(e, value.category.value, value.task.value, category);
+					Tasks.delete(e, value.category.value, JSON.stringify(value), category);
 				}, false);
 				div.addEventListener("click", Tasks.edit, false);
 			} 
