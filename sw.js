@@ -335,7 +335,7 @@ async function findTask (tasks) {
 						let options = {
 							body: convertTo(task.time.value, 12).replace(/^0/, ''),
 							data: task, 
-							tag: (task.task? task.task.value: task.title.value) + task.time.value, 
+							tag: JSON.stringify(task), 
 							icon: "./src/images/favicon.ico", 
 							badge: "./src/images/badge.png", 
 							actions: [
