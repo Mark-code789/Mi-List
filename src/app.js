@@ -292,6 +292,9 @@ const LoadingDone = async () => {
 					for(let category of Tasks.getCategoryNames(false)) {
 						let option = $$$("option", ["value", category, "textContent", category.replaceAll(/^\w|\s\w/g, (t) => t.toUpperCase())]);
 						options.appendChild(option);
+						if(category == "general") {
+							option.selected = true;
+						} 
 					} 
 				} 
 				else if(e.target.classList.contains("add_choice_quick")) {
@@ -306,6 +309,7 @@ const LoadingDone = async () => {
 		} 
 		
 		$(".add_header_back").addEventListener("click", (event) => {
+			Tasks.editingOff();
 			$(".add").style.display = "none";
 			$(".main").style.display = "block";
 			SendMsg({type: "get-due-tasks"});
@@ -333,18 +337,21 @@ const LoadingDone = async () => {
 		}, false);
 		
 		$("#add_body_form_desc").addEventListener("keyup", (e) => {
-			$(".add_body_form_height_finder").innerHTML = e.target.value.replaceAll(/\n/g, '<br>') + "." || "Enter task here";
+			$(".add_body_form_height_finder").innerHTML = e.target.value.trim().replaceAll(/\n/g, '<br>') + "." || "Enter task here";
 			e.target.style.height = _$($(".add_body_form_height_finder"), "height");
 		}, false);
 		
 		$("#add_body_form_date").addEventListener("change", (e) => {
+			e.target.classList.remove("danger");
 			if(e.target.value == "") {
-				e.target.classList.remove("has_value", "danger");
+				e.target.classList.remove("has_value");
 				$("#add_body_form_time").value = "";
-				$("#add_body_form_time").classList.remove("has_value");
+				$("#add_body_form_time").classList.remove("has_value", "danger");
+				e.target.min = new Date().toISOString().split("T")[0];
+				e.target.parentNode.nextElementSibling.style.display = "none";
 			} 
 			else {
-				let date = new Date(e.target.value);
+				let date = new Date(e.target.value + "T" + ($("#add_body_form_time").value || "00:00"));
 				let str = date.toLocaleDateString('en-US', {weekday: "short", month: "long", year: "numeric"}).split(" ");
 				str = `${str[2]}, ${str[0]} ${date.getDate()}, ${str[1]}`;
 				let today = new Date();
@@ -354,12 +361,27 @@ const LoadingDone = async () => {
 				e.target.classList.add("has_value");
 				e.target.setAttribute("valStr", valStr);
 				e.target.parentNode.nextElementSibling.style.display = "block";
+				if(date.getTime() < Date.now() && $("#add_body_form_time").classList.contains("has_value") || 
+					new Date(date.toISOString().split("T")[0]).getTime() < new Date(new Date().toISOString().split("T")[0])) {
+					e.target.classList.add("danger");
+					if($("#add_body_form_time").classList.contains("has_value")) 
+						$("#add_body_form_time").classList.add("danger");
+					else
+						e.target.parentNode.nextElementSibling.style.display = "none";
+				} 
+				else {
+					e.target.classList.remove("danger");
+					$("#add_body_form_time").classList.remove("danger");
+				} 
 			} 
 		}, false);
 		
 		$("#add_body_form_time").addEventListener("change", (e) => {
+			e.target.classList.remove("danger");
+			e.target.parentNode.style.display = "block";
 			if(e.target.value == "") {
 				e.target.classList.remove("has_value");
+				$("#add_body_form_date").classList.remove("danger");
 			} 
 			else {
 				let date = new Date($("#add_body_form_date.has_value").value + "T" + convertTo(e.target.value, 24)).getTime();
@@ -389,6 +411,7 @@ const LoadingDone = async () => {
 					$("#add_body_form_time").value = "";
 					$("#add_body_form_time").setAttribute("valStr", "");
 					$("#add_body_form_time").classList.remove("has_value", "danger");
+					$("#add_body_form_date").min = new Date().toISOString().split("T")[0];
 				} 
 				else {
 					$("#add_body_form_date").classList.remove("danger");
@@ -1347,6 +1370,10 @@ class Tasks {
 		$(".add").style.display = "none";
 	} 
 	
+	static editingOff = async (e) => {
+		this.#editingElement = null;
+	} 
+	
 	static edit = async (e) => {
 		e.stopPropagation();
 		if(e.target.classList.contains("quick")) {
@@ -1596,7 +1623,6 @@ class Tasks {
 					let values = this.#categories.get(category);
 					let index = await values.findIndex((task) => JSON.stringify(task) == keyword);
 					values.splice(index, 1);
-					console.log(index);
 					await localforage.setItem("default", [...this.#categories.entries()]);
 				} 
 			} 
@@ -1731,7 +1757,7 @@ class Tasks {
 				let text = $$$("div");
 				let checkbox = $$$("input", ["type", "checkbox"]);
 				let title = $$$("div", ["class", "main_body_item_title", "value", value.task.value, "innerHTML", value.task.value]);
-				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+\b/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
+				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+\s/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
 				let ctgr = $$$("div", ["class", "main_body_item_category", "value", value.category.value, "textContent", value.category.value]);
 				let del = $$$("div", ["class", "main_body_item_delete"]);
 				text.appendChild(title);
