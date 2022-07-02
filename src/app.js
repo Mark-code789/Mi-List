@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "28.17.24.93";
+const currentAppVersion = "29.18.26.95";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1108,7 +1108,7 @@ class Settings {
 			type: "Check for update/OK"
 		});
 		
-		if(update = "Check for update") {
+		if(update == "Check for update") {
 			if(!navigator.onLine) return Notify.popUpNote("Please connect to an internet and try again.");
 			Notify.alertSpecial({
 					header: "Checking for update...",
@@ -1165,6 +1165,7 @@ class Tasks {
 	static #quick = [];
 	static #tasks = [];
 	static #editingElement = null;
+	static #sleep = null;
 	
 	static reset = async () => {
 		this.#categories = new Map([
@@ -1267,6 +1268,8 @@ class Tasks {
 	static add = async (e) => {
 		if(this.#editingElement) {
 			this.#editingElement.$(".main_body_item_delete").click();
+			this.#sleep = this.#sleep || new Sleep();
+			await this.#sleep.start();
 		} 
 		if(e.target.parentNode.parentNode.classList.contains("default_task")) {
 			let task = $("#add_body_form_desc");
@@ -1593,6 +1596,7 @@ class Tasks {
 					let values = this.#categories.get(category);
 					let index = await values.findIndex((task) => JSON.stringify(task) == keyword);
 					values.splice(index, 1);
+					console.log(index);
 					await localforage.setItem("default", [...this.#categories.entries()]);
 				} 
 			} 
@@ -1605,6 +1609,7 @@ class Tasks {
 			} 
 			else {
 				this.#editingElement = null;
+				this.#sleep.end();
 			} 
 		} 
 	} 
@@ -1685,6 +1690,8 @@ class Tasks {
 				let today = new Date();
 				let tomorrow = new Date();
 				tomorrow.setDate(today.getDate() + 1);
+				let nextMonth = new Date();
+				nextMonth.setMonth(today.getMonth() + 1);
 				
 				let sundayWeek = [0, 1, 2, 3, 4, 5, 6];
 				let mondayWeek = [1, 2, 3, 4, 5, 6, 0];
@@ -1714,7 +1721,9 @@ class Tasks {
 							  date.toDateString() == today.toDateString()? "Today":
 							  date.toDateString() == tomorrow.toDateString()? "Tomorrow":
 							  thisWeek.includes(date.toDateString())? "This week":
-							  nextWeek.includes(date.toDateString())? "Next week": value.date.valStr;
+							  nextWeek.includes(date.toDateString())? "Next week":
+							  date.getMonth() == today.getMonth()? "This month":
+							  date.getMonth() == nextMonth.getMonth()? "Next month": value.date.valStr;
 				
 				let fieldset = $(`.main_body_item_set[value='${setDate}']`) || $$$("fieldset", ["class", "main_body_item_set " + (setDate == "Overdue"? "danger": ""), "value", setDate]);
 				let legend = fieldset.$("legend") || $$$("legend", ["textContent", setDate]);
@@ -1722,7 +1731,7 @@ class Tasks {
 				let text = $$$("div");
 				let checkbox = $$$("input", ["type", "checkbox"]);
 				let title = $$$("div", ["class", "main_body_item_title", "value", value.task.value, "innerHTML", value.task.value]);
-				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)) + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
+				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+\b/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
 				let ctgr = $$$("div", ["class", "main_body_item_category", "value", value.category.value, "textContent", value.category.value]);
 				let del = $$$("div", ["class", "main_body_item_delete"]);
 				text.appendChild(title);
@@ -1839,7 +1848,7 @@ class Tasks {
 				return value.title.value.toLowerCase().includes(e.target.value.toLowerCase()) ||
 					   value.tasks.value.map((t) => t.value).join("").toLowerCase().includes(e.target.value.toLowerCase());
 		});
-		this.render(undefined, filtered);
+		this.render(undefined, filtered.reverse());
 		if(filtered.length) {
 			e.target.nextElementSibling.style.display = "inline-block";
 			$(".main_body_item_cont").classList.remove("empty", "empty_all");
