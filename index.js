@@ -109,9 +109,13 @@ const KeepAlive = {
 	end: false, 
 	run: async function () {
 		this.end = false;
-		let res = await fetch("./blah.png");
-		if(!this.end) {
-			await new Sleep().wait(2);
+		try {
+			let res = await fetch("./src/images/badge.png");
+			if(!this.end) {
+				await new Sleep().wait(2);
+				await this.run();
+			} 
+		} catch (error) {
 			await this.run();
 		} 
 	}, 
