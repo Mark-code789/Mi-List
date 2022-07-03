@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "29.18.28.97";
+const currentAppVersion = "29.18.29.98";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1281,11 +1281,11 @@ class Tasks {
 		} 
 		return [...this.#quick, ...this.#categories.values()].flat(Infinity).length;
 	} 
-	static searchMode = () => {
+	static searchMode = async () => {
 		if($(".main_header_categories .showing_category").getAttribute("value") == "finished")
-			this.#tasks = [...this.#finished.values()].flat(Infinity);
+			this.#tasks = await this.sort("finished");
 		else 
-			this.#tasks = [...this.#quick, ...this.#categories.values()].flat(Infinity);
+			this.#tasks = await this.sort("general");
 		$(".main_search_input_clear").style.display = "none";
 	} 
 	
