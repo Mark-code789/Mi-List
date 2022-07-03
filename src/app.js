@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "29.18.29.98";
+const currentAppVersion = "30.18.30.99";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -189,7 +189,7 @@ const LoadingDone = async () => {
 					$(".menu_body_item[item='share'").click();
 				} 
 				else if(value == "follow") {
-					let choice = await CustomInputs.get("choice", ["Facebook", "Twitter", "LinkedIn"]);
+					let choice = await CustomInputs.get("choice", "Follow on", ["Facebook", "Twitter", "LinkedIn"]);
 					if(choice)
 					$(`.menu_body_item[value='${choice}']`).click();
 				} 
@@ -733,7 +733,7 @@ class ClickInputs {
 class CustomInputs {
 	static sleep;
 	static value;
-	static get = async (type, values) => {
+	static get = async (type, ...values) => {
 		if(type == "slider") {
 			$(".custom .slider").style.display = "block";
 			this.active = $(".custom .slider");
@@ -748,9 +748,10 @@ class CustomInputs {
 			this.active = $(".custom .number");
 		} 
 		else if(type == "choice") {
+			$(".custom .choice h2").textContent = values[0];
 			let choices = $(".custom .choices");
 			choices.innerHTML = "";
-			for(let value of values) {
+			for(let value of values[1]) {
 				let choice = $$$("div", ["textContent", value, "value", value.toLowerCase(), "type", "choice"]);
 				choice.addEventListener("click", this.gotten, true);
 				choices.appendChild(choice);
@@ -999,6 +1000,10 @@ class Settings {
 			this.feedback(e);
 			break;
 			
+			case "more apps":
+			this.moreApps(e);
+			break;
+			
 			case "follow":
 			this.follow(e);
 			break;
@@ -1157,6 +1162,13 @@ class Settings {
 	static feedback = (e) => {
 		location.href = "mailto:markcodes789@gmail.com?subject=" + navigator.userAgent + " - version: " + currentAppVersion;
 	}
+	static moreApps = async (e) => {
+		let choice = await CustomInputs.get("choice", "More Apps", ["Checkers", "Smart Recharge"]);
+		if(!choice) return;
+		console.log(choice);
+		if(choice == "checkers") location.href = "https://mark-code789.github.io/Checkers";
+		else if(choice == "smart recharge") location.href = "https://mark-code789.github.io/Smart-Recharge";
+	} 
 	static follow = (e) => {
 		switch(e.target.getAttribute("value")) {
 			case "facebook":

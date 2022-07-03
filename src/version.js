@@ -10,7 +10,8 @@ class Updates {
 		["29.18.25.94", ["Added task sharing option."]], 
 		["29.18.27.96", ["Fixed edit task error.", "Added this and next month task ordering headings.", "Fixed app updating error.", "Squashed some more bags."]], 
 		["29.18.28.97", ["Fixed a small UI bug"]], 
-		["29.18.29.98", ["Fixed a small UI bug"]]
+		["29.18.29.98", ["Fixed a small UI bug"]], 
+		["30.18.30.99", ["Added more apps options in the settings", "Notification not showing sometimes"]]
 	]);
 	static getDescription = (version) => {
 		let versionDescription = "<ul>";
