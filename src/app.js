@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "29.18.27.96";
+const currentAppVersion = "29.18.28.97";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -240,7 +240,7 @@ const LoadingDone = async () => {
 		$(".main_search_input_clear").addEventListener("click", (e) => {
 			e.target.previousElementSibling.value = "";
 			e.target.previousElementSibling.focus();
-			e.target.previousElementSibling.dispatchEvent(new Event("keyup"));
+			e.target.previousElementSibling.dispatchEvent(new KeyboardEvent("keyup", {key: ""}));
 		}, false);
 		
 		$(".main .add_btn:not(.add_choice)").addEventListener("click", (e) => {
@@ -1286,6 +1286,7 @@ class Tasks {
 			this.#tasks = [...this.#finished.values()].flat(Infinity);
 		else 
 			this.#tasks = [...this.#quick, ...this.#categories.values()].flat(Infinity);
+		$(".main_search_input_clear").style.display = "none";
 	} 
 	
 	static add = async (e) => {
@@ -1757,7 +1758,7 @@ class Tasks {
 				let text = $$$("div");
 				let checkbox = $$$("input", ["type", "checkbox"]);
 				let title = $$$("div", ["class", "main_body_item_title", "value", value.task.value, "innerHTML", value.task.value]);
-				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+\s/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
+				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+(?=\s)/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
 				let ctgr = $$$("div", ["class", "main_body_item_category", "value", value.category.value, "textContent", value.category.value]);
 				let del = $$$("div", ["class", "main_body_item_delete"]);
 				text.appendChild(title);
@@ -1874,20 +1875,23 @@ class Tasks {
 				return value.title.value.toLowerCase().includes(e.target.value.toLowerCase()) ||
 					   value.tasks.value.map((t) => t.value).join("").toLowerCase().includes(e.target.value.toLowerCase());
 		});
-		this.render(undefined, filtered.reverse());
+		this.render(undefined, filtered);
 		if(filtered.length) {
 			e.target.nextElementSibling.style.display = "inline-block";
 			$(".main_body_item_cont").classList.remove("empty", "empty_all");
 			$(".main_body_item_empty").innerHTML = "";
 		} 
-		else if(e.target.value != "") {
-			e.target.nextElementSibling.style.display = "inline-block";
+		e.target.nextElementSibling.style.display = e.target.value != ""? "inline-block": "none";
+		if(!filtered.length && e.target.value != "") {
 			$(".main_body_item_cont").classList.remove("empty_all");
 			$(".main_body_item_cont").classList.add('empty');
 			$(".main_body_item_empty").innerHTML = `Nothing found for <span>${e.target.value}</span>.`;
 		} 
-		else {
-			e.target.nextElementSibling.style.display = "none";
+		else if(filtered.length && e.target.value == "") {
+			$(".main_body_item_cont").classList.remove("empty", "empty_all");
+			$(".main_body_item_empty").innerHTML = "";
+		} 
+		else if(!filtered.length) {
 			$(".main_body_item_cont").classList.remove("empty_all");
 			$(".main_body_item_cont").classList.add('empty');
 			$(".main_body_item_empty").innerHTML = "";
