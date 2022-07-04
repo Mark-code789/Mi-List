@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "30.18.30.99";
+const currentAppVersion = "30.18.32.100";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1142,7 +1142,7 @@ class Settings {
 					header: "Checking for update...",
 					message: "Please Wait as we run the check."
 			});
-			reg = await navigator.serviceWorker.register("./sw.js");
+			reg = await navigator.serviceWorker.register("../sw.js");
 			Notify.cancel();
 			if(reg.waiting) {
 				Notify.alertSpecial({
