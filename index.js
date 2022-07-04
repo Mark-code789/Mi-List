@@ -116,7 +116,7 @@ const KeepAlive = {
 				await this.run();
 			} 
 		} catch (error) {
-			await this.run();
+			
 		} 
 	}, 
 	stop: async function () {
@@ -262,11 +262,11 @@ window.addEventListener("load", async () => {
 					} 
 				} 
 				else {
-					console.log("permission denied");
+					
 				} 
 			} 
 			else {
-				console.log("no reg");
+				
 			} 
 		} 
 		catch (error) {
