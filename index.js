@@ -204,13 +204,12 @@ const InvokeSWUpdateFlow = async () => {
 	} 
 } 
 
-const FinishInstalling = async (reg) => {
+const FinishInstalling = async () => {
 	if(reg.waiting) {
 		if(_$($(".load"), "display") == "none") {
-			setTimeout(() => {
-				if(reg.waiting)
-					InvokeSWUpdateFlow();
-			}, 0.5); /* Timeout to ensure no subsequent activate events */
+			await navigator.serviceWorker.ready
+			if(reg.waiting)
+				InvokeSWUpdateFlow();
 		} 
 	} 
 } 
@@ -239,7 +238,7 @@ window.addEventListener("load", async () => {
 		reg.addEventListener("updatefound", async () => {
 			if(reg.installing) {
 				reg.installing.addEventListener("statechange", () => {
-					FinishInstalling(reg);
+					FinishInstalling();
 				});
 			} 
 		});
@@ -252,19 +251,22 @@ window.addEventListener("load", async () => {
 			} 
 		});
 		try {
-			const registration = await navigator.serviceWorker.ready;
-			if('periodicSync' in registration) {
+			if('periodicSync' in reg) {
+				reg = await navigator.serviceWorker.ready;
 				let permission = await navigator.permissions.query({name: 'periodic-background-sync'});
 				if(permission.state == "granted") {
 					try {
-						await registration.periodicSync.register("get-due-tasks", {minInterval: 24 * 60 * 60 * 1000});
+						await reg.periodicSync.register("get-due-tasks", {minInterval: 24 * 60 * 60 * 1000});
 					} catch (error) {
 						console.log(error);
 					} 
 				} 
+				else {
+					console.log("permission denied");
+				} 
 			} 
 			else {
-				
+				console.log("no reg");
 			} 
 		} 
 		catch (error) {
