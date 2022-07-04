@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "30.18.32.100";
+const currentAppVersion = "30.18.33.101";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1140,20 +1140,9 @@ class Settings {
 			if(!navigator.onLine) return Notify.popUpNote("Please connect to an internet and try again.");
 			Notify.alertSpecial({
 					header: "Checking for update...",
-					message: "Please Wait as we run the check."
+					message: "Please wait as we run the check."
 			});
-			reg = await navigator.serviceWorker.register("../sw.js");
-			Notify.cancel();
-			if(reg.waiting) {
-				Notify.alertSpecial({
-						header: "Updating Mi-List...",
-						message: "Please Wait as we update the app. This may take a few seconds depending n the speed of your bandwidth."
-				});
-				reg.waiting.postMessage({type: "skip-waiting"});
-			} 
-			else {
-				Notify.popUpNote("Your app is up to date.");
-			} 
+			location.reload();
 		} 
 	}
 	static developer = (e) => {

@@ -1,5 +1,5 @@
 class Updates {
-	static version = "30.18.32.100";
+	static version = "30.18.33.101";
 	static updatesLog = new Map([
 		["27.6.5.35", ["Fixed some errors."]], 
 		["28.16.21.84", ["Added quick tasks option.", "Added custom notification settings for each task.", "Added more settings options.", "Added task category.", "Added text to speech synthesis output.", "Changed task design.", "Fixed some errors."]], 
@@ -13,6 +13,7 @@ class Updates {
 		["29.18.29.98", ["Fixed a small UI bug"]], 
 		["30.18.30.99", ["Added more apps options in the settings", "Notification not showing sometimes"]],
 		["30.18.32.100", ["Fixed a small bug"]],
+		["30.18.33.101", ["Fixed a small bug"]]
 	]);
 	static getDescription = (version) => {
 		let versionDescription = "<ul>";
