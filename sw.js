@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "102";
+let version = "103";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -58,6 +58,8 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
+	if(/(html|css|js).*$/i.test(e.request.url))
+	console.log(e.request.url);
 	e.respondWith (
 		caches.match(e.request.url.split("?")[0].replace(/html\/.*$/i, 'html').replace(/mi.list\/$/i, (t) => t + "index.html"), {cacheName, ignoreSearch: true}).then( async (res) => {
 			if(res && !/version.js.*$/gi.test(e.request.url)) {
