@@ -227,6 +227,11 @@ article {
     text-align: left;
 } 
 
+#notification-window #note .note_body label {
+    display: block;
+    text-align: left;
+} 
+
 #notification-window #note .note_body img {
 	display: block;
 	max-width: 100%;

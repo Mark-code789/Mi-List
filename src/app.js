@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "30.18.33.101";
+const currentAppVersion = "31.18.34.102";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -423,6 +423,11 @@ const LoadingDone = async () => {
 			}, false);
 		} 
 		
+		$("#add_body_form_quick_input").addEventListener("keyup", (e) => {
+			if(e.key == "Enter")
+				 $(".add_body_form_quick_add").click();
+		});
+		
 		$(".add_body_form_quick_add").addEventListener("click", (e) => {
 			let input = $("#add_body_form_quick_input");
 			let value = input.value;
@@ -565,6 +570,9 @@ const LoadingDone = async () => {
 		for(let form of $$(".add_body_form")) {
 			form.addEventListener("submit", (e) => {
 				e.preventDefault();
+				if(e.target.parentNode.classList.contains("quick_task")) {
+					$(".add_body_form_quick_add").click();
+				} 
 			}, false);
 		} 
 		
@@ -739,7 +747,19 @@ class CustomInputs {
 			this.active = $(".custom .slider");
 		} 
 		else if(type == "text") {
-			$("#text_input").value = values || "";
+			if(values.length > 1) {
+				$("#text_input").placeholder = values[1][2];
+				$("#text_input").value =  values[1][1];
+				$("label[for='text_input']").innerHTML = values[1][0];
+				$(".custom .text h2").innerHTML = values[0];
+			} 
+			else {
+				$("#text_input").placeholder = "Enter category name";
+				$("#text_input").value =  "";
+				$("label[for='text_input']").innerHTML = "Enter the name of category below";
+				$(".custom .text h2").innerHTML = "Task category name";
+			} 
+			
 			$(".custom .text").style.display = "block";
 			this.active = $(".custom .text");
 		} 
@@ -992,6 +1012,10 @@ class Settings {
 			this.version(e);
 			break;
 			
+			case "support":
+			this.support(e);
+			break;
+			
 			case "developer":
 			this.developer(e);
 			break;
@@ -1006,6 +1030,10 @@ class Settings {
 			
 			case "follow":
 			this.follow(e);
+			break;
+			
+			case "advanced":
+			this.advanced(e);
 			break;
 		} 
 	} 
@@ -1145,6 +1173,13 @@ class Settings {
 			location.reload();
 		} 
 	}
+	static support = (e) => {
+		Notify.alert({
+			header: "SUPPORT LINES",
+			message: "<label>If you have been impressed by this work, support me and let's achieve milestone through coding and programming.<br><br>" +
+					 "Support line: <b>0798916984</b><br>Name: <b>Mark Etale</b></label>"
+		});
+	} 
 	static developer = (e) => {
 		location.href = "https://mark-code789.github.io/Portfolio";
 	}
@@ -1173,6 +1208,15 @@ class Settings {
 			break;
 		} 
 	}
+	static advanced = async (e) => {
+		let pwd = await CustomInputs.get("text", "Advanced Settings", ["Enter password", "", "password"]);
+		if(!pwd) return;
+		if(pwd.trim().toLowerCase() == "marxeto123.") {
+			eruda.init();
+		} 
+		else
+			console.log("wrong password");
+	} 
 } 
 
 class Tasks {
@@ -1599,7 +1643,7 @@ class Tasks {
 		let deleteChoice = "Delete";
 		if(!this.#editingElement) 
 			deleteChoice = await Notify.confirm({header: "Confirm Delete",
-												 message: type == "finished"? "Are you sure you want to delete this task?" :"Are you sure you want to delete '" + (JSON.parse(keyword).task? JSON.parse(keyword).task.value: keyword) + "' task from " + category + " category?", 
+												 message: type == "finished"? "Are you sure you want to delete this task?" :"Are you sure you want to delete '" + (category != "quick"? JSON.parse(keyword).task.value: keyword) + "' task from " + category + " category?", 
 												 type: "Cancel/Delete"});
 												
 		if(deleteChoice == "Delete") {
