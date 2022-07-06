@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.34.102";
+const currentAppVersion = "31.18.35.103";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1588,9 +1588,9 @@ class Tasks {
 			let newDate = new Date(date.toDateString());
 			newDate.setDate(newDate.getDate() + 1);
 			if(weekdays.includes(newDate.getDay())) 
-			date = newDate;
+			date.setDate(newDate.getDate());
 			else 
-			date.setDate(date.getDate() + (date.getDay() == 6? 2: 1));
+			date.setDate(date.getDate() + (date.getDay() < 7? 8 - date.getDay(): 1));
 			break;
 			
 			case "weekly":
