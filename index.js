@@ -111,12 +111,11 @@ const KeepAlive = {
 		this.end = false;
 		try {
 			let res = await fetch("./src/images/badge.png");
-			if(!this.end) {
-				await new Sleep().wait(2);
-				await this.run();
-			} 
-		} catch (error) {
-			
+		} catch (error) {} 
+		
+		if(!this.end) {
+			await new Sleep().wait(2);
+			await this.run();
 		} 
 	}, 
 	stop: async function () {
@@ -256,7 +255,7 @@ window.addEventListener("load", async () => {
 				let permission = await navigator.permissions.query({name: 'periodic-background-sync'});
 				if(permission.state == "granted") {
 					try {
-						await reg.periodicSync.register("get-due-tasks", {minInterval: 24 * 60 * 60 * 1000});
+						await reg.periodicSync.register("get-due-tasks", {minInterval: 60 * 1000});
 					} catch (error) {
 						console.log(error);
 					} 

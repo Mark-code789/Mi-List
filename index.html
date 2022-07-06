@@ -9,6 +9,15 @@
         <link rel="icon" href="./src/images/black favicon32.png" type="image/png" sizes="32x32">
         <link rel="icon" href="./src/images/black favicon96.png" type="image/png" sizes="96x96">
         <link rel="stylesheet" href="./index.css"/>
+        <script src="./eruda/eruda.min.js"></script>
+        <script>
+        	if(/(html|mi.list)\/$/i.test(new URL(window.location).pathname)) {
+        		location.replace(location.href.includes("html")? location.href.replace(/\/.*$/, ""): location.href + 'index.html');
+       	 } 
+        	let url = new URL(window.location);
+        	if(url.searchParams.has("eruda"))
+				eruda.init()
+		</script>
 	</head>
 	<body>
 		<article class="install" hidden>
@@ -168,7 +177,7 @@
 						<input type="text" id="add_body_form_quick_input" placeholder="Enter task here"/>
 						<button type="button" class="add_body_form_quick_add">E<span>+</span></button>
 					</div>
-					<button class="add_btn"></button>
+					<button type="button" class="add_btn"></button>
 				</form>
 			</section>
 			<footer class="add_footer">
@@ -359,6 +368,12 @@
 						<div class="menu_body_item_desc">Check for your current app version as well for updates.</div>
 					</div>
 				</div>
+				<div class="menu_body_item" value="support" item="support">
+					<div>
+						<div class="menu_body_item_title">Support</div>
+						<div class="menu_body_item_desc">Support my work.</div>
+					</div>
+				</div>
 				<div class="menu_body_item" value="developer" item="developer">
 					<div>
 						<div class="menu_body_item_title">Developer</div>
@@ -391,6 +406,12 @@
 				<div class="menu_body_item" value="linkedin" item="follow">
 					<div>
 						<div class="menu_body_item_title">LinkedIn</div>
+					</div>
+				</div>
+				<h3>Advanced</h3>
+				<div class="menu_body_item" value="advanced" item="advanced">
+					<div>
+						<div class="menu_body_item_title">Debug</div>
 					</div>
 				</div>
 			</section>

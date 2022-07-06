@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "101";
+let version = "102";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -39,6 +39,7 @@ let appShellFiles = [
 	"./src/images/black categories.png",
 	"./src/images/black settings.png", 
 	"./src/localforage.js", 
+	"./eruda/eruda.min.js",
 	"./src/version.js", 
 	"./src/app.js", 
 	"./src/app.css",
@@ -58,7 +59,7 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
-		caches.match(e.request, {ignoreSearch: true}).then((res) => {
+		caches.match(e.request.url.split("?")[0].replace(/html\/.*$/i, 'html').replace(/mi.list\/$/i, (t) => t + "index.html"), {cacheName, ignoreSearch: true}).then( async (res) => {
 			if(res && !/version.js.*$/gi.test(e.request.url)) {
             	return res;
             }
@@ -69,7 +70,7 @@ self.addEventListener("fetch", (e) => {
             	} 
             	
                 return caches.open(cacheName).then((cache) => {
-                    cache.put(e.request, res2.clone());
+                    cache.put(e.request.url.split("?")[0], res2.clone());
                     return res2;
                 }).catch((error) => {
 					return res2;
@@ -82,13 +83,11 @@ self.addEventListener("fetch", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-    const keepList = [cacheName];
-    
     e.waitUntil(
-        caches.keys().then((keyList) => {
-            return Promise.all(keyList.map((key) => {
-                if(keepList.indexOf(key) === -1) {
-                    return caches.delete(key);
+        caches.keys().then((cacheNames) => {
+            return Promise.all(cacheNames.map((name) => {
+                if(name !== cacheName) {
+                    return caches.delete(name);
                 } 
             }))
         })
@@ -255,14 +254,18 @@ self.addEventListener("notificationclose", (e) => {
 });
 
 self.addEventListener("periodicsync", async (e) => {
-	console.log("Sync event");
 	if(e.tag == "get-due-tasks") {
-		localforage.config({
-	    	name: "Mi-List"
-	    });
-		await localforage.ready();
-		Notified = [];
-		await getDueTasks();
+		e.waitUntil(async () => {
+			localforage.config({
+		    	name: "Mi-List"
+		    });
+			await localforage.ready();
+			let syncs = await localforage.getItem("syncs") || [];
+			syncs.push(new Date().toString());
+			await localforage.setItem("syncs", syncs);
+			Notified = [];
+			await getDueTasks();
+		});
 	} 
 });
 
