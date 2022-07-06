@@ -233,7 +233,9 @@ self.addEventListener("notificationclick", async (e) => {
 			for(let client of clients) {
 				if(client.url == self.location.href.replace(/sw.js$/, "index.html") && 'focus' in client) 
 					await client.focus();
-					return sendMsg({type: "click", task: notification.data});
+					if(notification.data != "") 
+						sendMsg({type: "click", task: notification.data});
+					return;
 			} 
 			if('openWindow' in self.clients) {
 				if(notification.data != "") 
