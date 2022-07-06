@@ -1,5 +1,5 @@
 # Mi-List
-to-do list application
+To-Do list PWA application
 ## Purpose 
 This application is a standard web application that is used to manage personal to-do list tasks. 
 It is purely assembled in vanilla javascript, HTML and CSS. The uses localforage.js library to store tasks and other objects passing them from main window and service worker. 
