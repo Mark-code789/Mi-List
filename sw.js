@@ -62,7 +62,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request.url.split("?")[0].replace(/html\/.*$/i, 'html').replace(/mi.list\/$/i, (t) => t + "index.html"), {cacheName, ignoreSearch: true}).then( async (res) => {
-			if(res && !/(html|css|js).*$/gi.test(e.request.url)) {
+			if(res && !/version.js.*$/gi.test(e.request.url)) {
             	return res;
             }
             
