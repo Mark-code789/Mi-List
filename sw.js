@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "104";
+let version = "105";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -24,6 +24,8 @@ let appShellFiles = [
 	"./src/images/repeat add.png", 
 	"./src/images/home.png", 
 	"./src/images/finished.png", 
+	"./src/images/share.png", 
+	"./src/images/clipboard.png", 
 	"./src/images/rest.png", 
 	"./src/images/black favicon512.png", 
 	"./src/images/black favicon256.png", 
