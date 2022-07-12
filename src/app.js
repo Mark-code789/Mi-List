@@ -67,7 +67,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.35.103";
+const currentAppVersion = "31.18.35.104";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -322,7 +322,7 @@ const LoadingDone = async () => {
 				let date = _$($(".default_task"), "display") == "block"? new Date($("#add_body_form_date").value).toDateString(): "";
 				let time = _$($(".default_task"), "display") == "block"? convertTo($("#add_body_form_time").value, 24): "";
 				
-				text = "\u2022 " + text + (date.length? ` (${date.replace(/^\w+\b/g, '')}, ${time})`: '');
+				text = "\u2022 " + text + (date.length? ` (${date.replace(/^\w+\b/g, '').trim()}, ${time})`: '');
 	            navigator.share({
 	                text
 	            }).catch( (error) => { 
@@ -337,7 +337,8 @@ const LoadingDone = async () => {
 		}, false);
 		
 		$("#add_body_form_desc").addEventListener("keyup", (e) => {
-			$(".add_body_form_height_finder").innerHTML = e.target.value.trim().replaceAll(/\n/g, '<br>') + "." || "Enter task here";
+			$(".add_body_form_height_finder").innerHTML = e.target.value.replaceAll(/\n/g, '<br>') + "." || "Enter task here";
+			console.log($(".add_body_form_height_finder").innerHTML);
 			e.target.style.height = _$($(".add_body_form_height_finder"), "height");
 		}, false);
 		
@@ -583,21 +584,6 @@ const LoadingDone = async () => {
 		await RetrieveCache();
 		await Settings.init();
 		
-		/*let darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
-		if(darkTheme.matches && !Settings.values.theme) {
-			$(".menu_body_item[item='theme']").click();
-		} 
-		else if(!darkTheme.matches && Settings.values.theme) {
-			$(".menu_body_item[item='theme']").click();
-		} 
-		
-		darkTheme.addEventListener("change", (e) => {
-			if(e.matches && !Settings.values.theme) 
-				$(".menu_body_item[item='theme']").click();
-			else if(!e.matches && Settings.values.theme) 
-				$(".menu_body_item[item='theme']").click();
-		});*/
-		
 		let startupCategory = Settings.values.startupCategory;
 		$(".showing_category").textContent = startupCategory;
 		$(".showing_category").setAttribute("value", startupCategory);
@@ -628,11 +614,41 @@ const CheckHREF = async () => {
 		if(/title|text|link/gi.test(action)) {
 			let text = url.searchParams.get("text") || "";
 			let link = url.searchParams.get("link") || "";
-			text = text + " " + link;
+			//text = text + " " + link;
 			$(".load").style.display = "none";
-			$(".add_choice_default").click();
-			$("#add_body_form_desc").value = text;
-			$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: " "}));
+			
+			if(text.includes("\u25E6")) {
+				$(".add_choice_quick").click();
+				text = text.split("\u2022")[1].trim();
+				let title = text.split("\n")[0].trim();
+				$("#add_body_form_title").value = title;
+				text = text.split("\n").slice(1).join("");
+				for(let task of text.split("\u25E6")) {
+					$("#add_body_form_quick_input").value = task.trim();
+					$(".add_body_form_quick_add").click();
+				} 
+			} 
+			else if(text.includes("\u2022")) {
+				$(".add_choice_default").click();
+				text = text.split("\u2022")[1].trim();
+				let task = text.split("(")[0].trim();
+				let date_time = text.split("(")[1].trim();
+				date_time = date_time.replace(")", "");
+				let date = date_time.split(",")[0].trim();
+				let time = date_time.split(",")[1].trim();
+				date = new Date(date).toISOString().split("T")[0];
+				$("#add_body_form_desc").value = task;
+				$("#add_body_form_date").value = date;
+				$("#add_body_form_date").dispatchEvent(new Event("change"));
+				$("#add_body_form_time").value = time;
+				$("#add_body_form_time").dispatchEvent(new Event("change"));
+				$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: ""}));
+			} 
+			else {
+				$(".add_choice_default").click();
+				$("#add_body_form_desc").value = text + " " + link;
+				$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: ""}));
+			} 
 			return;
 		} 
 		if(action == "action") {
@@ -1046,8 +1062,19 @@ class Settings {
 		$(".categories").classList.toggle("dark_theme");
 	}
 	static statusBar = async (e) => {
-		if(!this.values.notification) {
-			return Notify.popUpNote("Enable notifications option below first.");
+		if('Notification' in window) {
+			let permission = Notification.permission;
+			if(permission == "default") {
+				permission = await Notification.requestPermission();
+				if(permission == "denied")
+					return Notify.popUpNote("permission denied");
+			} 
+			else if(permission == "denied") {
+				return Notify.popUpNote("Notification access denied");
+			} 
+		} 
+		else {
+			return Notify.popUpNote("Your browser doesn't support notifications");
 		} 
 		e.target.classList.toggle("switch");
 		this.values.statusBar = e.target.classList.contains("switch");
@@ -1189,7 +1216,6 @@ class Settings {
 	static moreApps = async (e) => {
 		let choice = await CustomInputs.get("choice", "More Apps", ["Checkers", "Smart Recharge"]);
 		if(!choice) return;
-		console.log(choice);
 		if(choice == "checkers") location.href = "https://mark-code789.github.io/Checkers";
 		else if(choice == "smart recharge") location.href = "https://mark-code789.github.io/Smart-Recharge";
 	} 
@@ -1215,7 +1241,7 @@ class Settings {
 			eruda.init();
 		} 
 		else
-			console.log("wrong password");
+			Notify.popUpNote("Wrong password.");
 	} 
 } 
 
@@ -1506,6 +1532,7 @@ class Tasks {
 		this.#editingElement = e.target;
 		$(".add").style.display = "block";
 		$(".main").style.display = "none";
+		$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: ""}));
 	} 
 	
 	static finish = async (e, category, keyword, task) => {
@@ -1562,7 +1589,8 @@ class Tasks {
 				await new Sleep().wait(0.5);
 				if(task.repeat.value != "no repeat") {
 					let rptTask = await Tasks.repeat(task);
-					if(rptTask) 
+					let similar = await values.some((t) => JSON.stringify(t) == JSON.stringify(rptTask));
+					if(rptTask && !similar) 
 						values.push(rptTask);
 				} 
 				await localforage.setItem("default", [...this.#categories.entries()]);
@@ -1577,6 +1605,7 @@ class Tasks {
 	} 
 	
 	static repeat = async (task) => {
+		task = JSON.parse(JSON.stringify(task));
 		let date = new Date(task.date.value);
 		switch(task.repeat.value) {
 			case "daily":
