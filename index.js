@@ -230,9 +230,6 @@ window.addEventListener("load", async () => {
 	if("serviceWorker" in navigator) {
 		navigator.serviceWorker.onmessage = Message;
 		reg = await navigator.serviceWorker.register("./sw.js");
-		if(reg.waiting) {
-			newSW = reg;
-		} 
 		
 		reg.addEventListener("updatefound", async () => {
 			if(reg.installing) {

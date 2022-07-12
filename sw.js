@@ -1,6 +1,6 @@
 importScripts("./src/localforage.js");
 
-let version = "103";
+let version = "104";
 let cacheName = "Mi List-v: " + version;
 let Settings = {};
 let Tasks = [];
@@ -60,7 +60,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
 	e.respondWith (
 		caches.match(e.request.url.split("?")[0].replace(/html\/.*$/i, 'html').replace(/mi.list\/$/i, (t) => t + "index.html"), {cacheName, ignoreSearch: true}).then( async (res) => {
-			if(res && !/version.js.*$/gi.test(e.request.url)) {
+			if(res && !/(html|css|js).*$/gi.test(e.request.url)) {
             	return res;
             }
             
@@ -158,6 +158,12 @@ self.addEventListener("notificationclick", async (e) => {
 			let categories = await localforage.getItem("default");
 			categories = new Map(categories);
 			let tasks = categories.get(ctgr);
+			if(task.repeat.value != "no repeat") {
+				let rptTask = await repeat(task);
+				let similar = await tasks.some((t) => JSON.stringify(t) == JSON.stringify(rptTask));
+				if(rptTask && !similar) 
+					tasks.push(rptTask);
+			} 
 			let index = tasks.findIndex((t) => JSON.stringify(t) == JSON.stringify(task));
 			if(~index) {
 				tasks.splice(index, 1);
@@ -312,15 +318,24 @@ async function getDueTasks () {
 	if(tasks) Tasks.push(...tasks);
 	else return null;
 	
-	let todayTasks = Tasks.filter((task) => {
+	let notifications = await self.registration.getNotifications();
+	for(let notification of notifications) {
+		if(notification.tag != "status bar") {
+			notification.close();
+		} 
+	} 
+	
+	let todayTasks = await Tasks.filter((task) => {
 		return new Date((task.date? task.date.value: new Date().toISOString())).toDateString() == new Date().toDateString();
 	});
 	
-	if(!todayTasks.length) {
-		sendMsg({type: "stop-process"});
-	} 
-	else {
-		sendMsg({type: "start-process"});
+	if(!Settings.statusBar) {
+		if(!todayTasks.length) {
+			sendMsg({type: "stop-process"});
+		} 
+		else {
+			sendMsg({type: "start-process"});
+		} 
 	} 
 	return await findTask(todayTasks);
 }
@@ -401,6 +416,64 @@ async function statusBar (tasks) {
 	} 
 } 
 
+const repeat = async (task) => {
+	task = JSON.parse(JSON.stringify(task));
+	let date = new Date(task.date.value);
+	switch(task.repeat.value) {
+		case "daily":
+		date.setDate(date.getDate() + 1);
+		break;
+		
+		case "weekdays":
+		let weekdays = [1, 2, 3, 4, 5];
+		let newDate = new Date(date.toDateString());
+		newDate.setDate(newDate.getDate() + 1);
+		if(weekdays.includes(newDate.getDay())) 
+		date.setDate(newDate.getDate());
+		else 
+		date.setDate(date.getDate() + (date.getDay() < 7? 8 - date.getDay(): 1));
+		break;
+		
+		case "weekly":
+		date.setDate(date.getDate() + 7);
+		break;
+		
+		case "monthly":
+		date.setMonth(date.getMonth() + 1);
+		break;
+		
+		case "yearly":
+		date.setFullYear(date.getFullYear() + 1);
+		break;
+		
+		default:
+		let rpt = task.repeat.value.split(" ");
+		if(rpt[1] == "days") 
+		date.setDate(date.getDate() + parseInt(rpt[0]));
+		else if(rpt[1] == "weeks") 
+		date.setDate(date.getDate() + (parseInt(rpt[0]) * 7));
+		else if(rpt[1] == "months") 
+		date.setMonth(date.getMonth() + parseInt(rpt[0]));
+		else if(rpt[1] == "years") 
+		date.setFullYear(date.getFullYear() + parseInt(rpt[0]));
+	} 
+	
+	task.date.value = date.toISOString().split("T")[0];
+	task.date.valStr = toDateString(date);
+	
+	return task;
+}
+
+const toDateString = (date) => {
+	let today = new Date();
+	let yesterday = new Date();
+	yesterday.setDate(today.getDate() - 1);
+	let tomorrow = new Date();
+	tomorrow.setDate(today.getDate() + 1);
+	let str = date.toDateString() == yesterday.toDateString()? "Yesterday": date.toDateString() == today.toDateString()? "Today": date.toDateString() == tomorrow.toDateString()? "Tomorrow": date.toDateString();
+	return str;
+}
+
 const convertTo = (time, to, includeSec = false) => {
 	try {
 		let hr = parseInt(time.split(":")[0]);
@@ -449,4 +522,3 @@ const convertTo = (time, to, includeSec = false) => {
 		reportError(error);
 	} 
 }
-
