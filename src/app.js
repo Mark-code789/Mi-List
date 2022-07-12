@@ -17,6 +17,7 @@ const srcs = [
 	"home.png", 
 	"finished.png", 
 	"share.png",
+	"clipboard.png",
 	"rest.png", 
 ];
 
@@ -39,6 +40,7 @@ const imageProps = [
 	"--home-icon",
 	"--finished-icon",
 	"--share-icon", 
+	"--clipboard-icon",
 	"--rest-icon"
 ]
 
@@ -67,7 +69,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.35.104";
+const currentAppVersion = "31.18.35.105";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -336,9 +338,36 @@ const LoadingDone = async () => {
 	        } 
 		}, false);
 		
+		$(".add_header_clipboard").addEventListener("click", async (event) => {
+			let permission = "denied";
+			try {
+				permission = await navigator.permissions.query({name: "clipboard-read"});
+				permission = permission.state;
+			} catch (error) {}
+			
+			if(permission == "granted") {
+				let text = await navigator.clipboard.readText();
+				if(text) {
+					let choice = await Notify.confirm({
+						header: "Found in clipboard", 
+						message: `${text} <br><br>Found in clipboard do you want to add as a task?`,
+						type: "Cancel/Add"
+					});
+					if(choice == "Add") {
+						await CheckHREF(window.location.href.split("?")[0] + `?text=${text}`);
+					} 
+				} 
+				else {
+					Notify.popUpNote("Nothing found in clipboard.");
+				} 
+			} 
+			else {
+				Notify.popUpNote("Permission to read clipboard denied.");
+			} 
+		});
+		
 		$("#add_body_form_desc").addEventListener("keyup", (e) => {
 			$(".add_body_form_height_finder").innerHTML = e.target.value.replaceAll(/\n/g, '<br>') + "." || "Enter task here";
-			console.log($(".add_body_form_height_finder").innerHTML);
 			e.target.style.height = _$($(".add_body_form_height_finder"), "height");
 		}, false);
 		
@@ -455,7 +484,7 @@ const LoadingDone = async () => {
 					list.parentNode.removeChild(list);
 				});
 			} 
-			input.scrollIntoView(true);
+			input.parentNode.scrollTop = 0;
 		});
 		
 		$(".add_body_form_notification_custom").addEventListener("click", async (e) => {
@@ -607,23 +636,23 @@ const LoadingDone = async () => {
 	}
 } 
 
-const CheckHREF = async () => {
-	let url = new URL(window.location);
+const CheckHREF = async (locator) => {
+	let url = new URL(locator || window.location);
 	
 	for(let [action, value] of url.searchParams.entries()) {
 		if(/title|text|link/gi.test(action)) {
 			let text = url.searchParams.get("text") || "";
 			let link = url.searchParams.get("link") || "";
-			//text = text + " " + link;
+			text = text.trim();
+			link = link.trim();
 			$(".load").style.display = "none";
-			
 			if(text.includes("\u25E6")) {
 				$(".add_choice_quick").click();
 				text = text.split("\u2022")[1].trim();
-				let title = text.split("\n")[0].trim();
+				let title = text.split("\u25E6")[0].trim();
 				$("#add_body_form_title").value = title;
-				text = text.split("\n").slice(1).join("");
-				for(let task of text.split("\u25E6")) {
+				text = text.split("\u25E6").slice(1);
+				for(let task of text) {
 					$("#add_body_form_quick_input").value = task.trim();
 					$(".add_body_form_quick_add").click();
 				} 
@@ -646,7 +675,7 @@ const CheckHREF = async () => {
 			} 
 			else {
 				$(".add_choice_default").click();
-				$("#add_body_form_desc").value = text + " " + link;
+				$("#add_body_form_desc").value = (text + " " + link).trim();
 				$("#add_body_form_desc").dispatchEvent(new KeyboardEvent("keyup", {key: ""}));
 			} 
 			return;
@@ -678,11 +707,28 @@ const CheckHREF = async () => {
 	} 
 	$(".load").style.display = "none";
 	$(".main").style.display = "block";
+	try {
+		if(reg.waiting) return;
+		let text = await navigator.clipboard.readText();
+		if(text && Settings.values.clipboard) {
+			let choice = await Notify.confirm({
+				header: "Found in clipboard", 
+				message: `${text}<br><br>Found in clipboard do you want to add as a task?`,
+				type: "Cancel/Add"
+			});
+			if(choice == "Add") {
+				await CheckHREF(window.location.href.split("?")[0] + `?text=${text}`);
+			} 
+		} 
+	} catch (error) {}
 } 
 
 const RetrieveCache = async () => {
 	let settings = await localforage.getItem("settings");
-	if(settings) Settings.values = settings;
+	if(settings) {
+		let map = new Map(Array.from(Object.entries(Settings.values)).concat(Array.from(Object.entries(settings))));
+		Settings.values = Object.fromEntries(map);
+	} 
 	else await localforage.setItem("settings", Settings.values);
 	
 	let value = await localforage.getItem("default");
@@ -854,6 +900,7 @@ class CustomInputs {
 class Settings {
 	static values = {
 		theme: false,
+		clipboard: true, 
 		statusBar: false, 
 		confirmFinishing: false, 
 		confirmRepeating: false, 
@@ -878,6 +925,29 @@ class Settings {
 						$(".add").classList.toggle("dark_theme");
 						$(".menu").classList.toggle("dark_theme");
 						$(".categories").classList.toggle("dark_theme");
+					} 
+					if(item == "clipboard") {
+						let permission = "denied";
+						try {
+							permission = await navigator.permissions.query({name: "clipboard-read"});
+							permission = permission.state;
+						} catch (error) {}
+						
+						if(permission == "prompt") {
+							this.values.clipboard = false;
+							$(`.menu_body_item[item='${item}']`).classList.remove("switch");
+							continue;
+						} 
+						else if(permission == "denied") {
+							this.values.clipboard = false;
+							$(`.menu_body_item[item='${item}']`).classList.remove("switch");
+							continue;
+						} 
+						else if(permission == "granted" && !value) {
+							this.values.clipboard = false;
+							$(`.menu_body_item[item='${item}']`).classList.remove("switch");
+							continue;
+						} 
 					} 
 					if(item == "notification") {
 						if(value && 'Notification' in window) {
@@ -972,6 +1042,10 @@ class Settings {
 			this.theme(e);
 			break;
 			
+			case "clipboard":
+			this.clipboard(e);
+			break;
+			
 			case "status bar":
 			this.statusBar(e);
 			break;
@@ -1061,6 +1135,22 @@ class Settings {
 		$(".menu").classList.toggle("dark_theme");
 		$(".categories").classList.toggle("dark_theme");
 	}
+	static clipboard = async (e) => {
+		let permission = "denied";
+		try {
+			permission = await navigator.permissions.query({name: "clipboard-read"});
+			permission = permission.state;
+		} catch (error) {}
+		
+		if(permission == "granted") {
+			e.target.classList.toggle("switch");
+			this.values.clipboard = e.target.classList.contains("switch");
+		} 
+		else {
+			e.target.classList.remove("switch");
+			this.values.clipboard = false;
+		} 
+	} 
 	static statusBar = async (e) => {
 		if('Notification' in window) {
 			let permission = Notification.permission;

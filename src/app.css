@@ -18,6 +18,7 @@
 	--home-icon: none;
 	--finished-icon: none;
 	--share-icon: none;
+	--clipboard-icon: none;
 	--rest-icon: none;
 	--clickX: 0;
 }
@@ -1126,13 +1127,14 @@ label[for="main_search_input"] {
 	display: none;
 } 
 
-.add_header_share {
+.add_header_share,
+.add_header_clipboard {
 	position: absolute;
 	top: 50%;
 	right: 20px;
 	transform: translateY(-50%);
 	height: 30px;
-	width: 50px;
+	width: 30px;
 	padding: 0 15px;
 	background-image: var(--share-icon);
 	background-size: 23px;
@@ -1140,6 +1142,14 @@ label[for="main_search_input"] {
 	background-position: 100% 50%;
 } 
 
+.add_header_share {
+	right: 70px;
+} 
+
+.add_header_clipboard {
+	background-image: var(--clipboard-icon);
+} 
+	
 .add_body, 
 .install_body {
 	background: #262050;
