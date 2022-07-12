@@ -1211,7 +1211,7 @@ class Settings {
 		location.href = "https://mark-code789.github.io/Portfolio";
 	}
 	static feedback = (e) => {
-		location.href = "mailto:markcodes789@gmail.com?subject=" + navigator.userAgent + " - version: " + currentAppVersion;
+		location.href = "Mi-List: mailto:markcodes789@gmail.com?subject=" + navigator.userAgent + " - version: " + currentAppVersion;
 	}
 	static moreApps = async (e) => {
 		let choice = await CustomInputs.get("choice", "More Apps", ["Checkers", "Smart Recharge"]);
