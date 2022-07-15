@@ -1386,8 +1386,9 @@ label[for="main_search_input"] {
 
 .quick_task fieldset {
 	min-height: 50px;
+	max-width: 600px;
 	padding: 0;
-	margin: 30px 0 0 0;
+	margin: 30px auto 0 auto; 
 	border-color: #A48AF8;
 	color: #262050;
 } 
