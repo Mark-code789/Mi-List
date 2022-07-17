@@ -767,7 +767,8 @@ label[for="main_search_input"] {
 	font-weight: 500;
 } 
 
-.main_body_item_set {
+.main_body_item_set,
+.categories_body_item {
 	border: none;
 	max-width: 600px;
 	margin: 0 0 20px 0;

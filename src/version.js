@@ -18,6 +18,7 @@ class Updates {
 		["31.18.35.103", ["Fixed weekdays repeat."]], 
 		["31.18.35.104", ["Made possible sharing of tasks on different Mi-List app.", "Fixed task repeat failure when finished from notification window.", "Fixed some minor bugs."]], 
 		["31.18.35.105", ["Added found in clipboard."]], 
+		["31.18.35.107", ["Fixed some errors."]], 
 	]);
 	static getDescription = (version) => {
 		let versionDescription = "<ul>";
