@@ -69,7 +69,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.35.107";
+const currentAppVersion = "31.18.36.108";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1883,6 +1883,8 @@ class Tasks {
 				tomorrow.setDate(today.getDate() + 1);
 				let nextMonth = new Date();
 				nextMonth.setMonth(today.getMonth() + 1);
+				let nextYear = new Date();
+				nextYear.setFullYear(today.getFullYear() + 1);
 				
 				let sundayWeek = [0, 1, 2, 3, 4, 5, 6];
 				let mondayWeek = [1, 2, 3, 4, 5, 6, 0];
@@ -1913,8 +1915,10 @@ class Tasks {
 							  date.toDateString() == tomorrow.toDateString()? "Tomorrow":
 							  thisWeek.includes(date.toDateString())? "This week":
 							  nextWeek.includes(date.toDateString())? "Next week":
-							  date.getMonth() == today.getMonth()? "This month":
-							  date.getMonth() == nextMonth.getMonth()? "Next month": value.date.valStr;
+							  date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth()? "This month":
+							  date.getFullYear() == today.getFullYear() && date.getMonth() == nextMonth.getMonth()? "Next month": 
+							  date.getFullYear() == today.getFullYear()? "Later this year": 
+							  date.getFullYear() == nextYear.getFullYear()? "Later next year": "Later in " + date.getFullYear();
 				
 				let fieldset = $(`.main_body_item_set[value='${setDate}']`) || $$$("fieldset", ["class", "main_body_item_set " + (setDate == "Overdue"? "danger": ""), "value", setDate]);
 				let legend = fieldset.$("legend") || $$$("legend", ["textContent", setDate]);

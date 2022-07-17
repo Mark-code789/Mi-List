@@ -1,5 +1,5 @@
 class Updates {
-	static version = "31.18.35.104";
+	static version = "31.18.36.108";
 	static updatesLog = new Map([
 		["27.6.5.35", ["Fixed some errors."]], 
 		["28.16.21.84", ["Added quick tasks option.", "Added custom notification settings for each task.", "Added more settings options.", "Added task category.", "Added text to speech synthesis output.", "Changed task design.", "Fixed some errors."]], 
@@ -18,7 +18,7 @@ class Updates {
 		["31.18.35.103", ["Fixed weekdays repeat."]], 
 		["31.18.35.104", ["Made possible sharing of tasks on different Mi-List app.", "Fixed task repeat failure when finished from notification window.", "Fixed some minor bugs."]], 
 		["31.18.35.105", ["Added found in clipboard."]], 
-		["31.18.35.107", ["Fixed some errors."]], 
+		["31.18.36.108", ["Fixed some errors."]], 
 	]);
 	static getDescription = (version) => {
 		let versionDescription = "<ul>";
