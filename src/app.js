@@ -69,7 +69,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.36.110";
+const currentAppVersion = "31.18.36.111";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -817,9 +817,12 @@ class CustomInputs {
 			} 
 			else {
 				$("#text_input").placeholder = "Enter category name";
-				$("#text_input").value =  "";
+				$("#text_input").value =  values[0] || "";
 				$("label[for='text_input']").innerHTML = "Enter the name of category below";
 				$(".custom .text h2").innerHTML = "Task category name";
+				if(values.length) {
+					$("#text_input").select();
+				} 
 			} 
 			
 			$(".custom .text").style.display = "block";
