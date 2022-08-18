@@ -765,6 +765,7 @@ label[for="main_search_input"] {
 	transform: translateX(-50%);
 	font-size: 1em;
 	font-weight: 500;
+	white-space: nowrap;
 } 
 
 .main_body_item_set,

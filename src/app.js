@@ -69,7 +69,7 @@ const LoadResources = async (i = 0) => {
         Notify.alert({header: "LOADING ERROR", message: "Failed to load AppShellFiles. Either you have bad network or you have lost internet connection."});
     } 
 }
-const currentAppVersion = "31.18.36.108";
+const currentAppVersion = "31.18.36.110";
 const LoadingDone = async () => { 
 	try {
 		for(let item of $$(".menu_body_item, .menu_body_item select, .menu_body_item input")) {
@@ -1925,7 +1925,7 @@ class Tasks {
 				let div = $$$("div", ["class", "main_body_item " + (category == "finished"? "finished": ""), "taskid", JSON.stringify(value)]);
 				let text = $$$("div");
 				let checkbox = $$$("input", ["type", "checkbox"]);
-				let title = $$$("div", ["class", "main_body_item_title", "value", value.task.value, "innerHTML", value.task.value]);
+				let title = $$$("div", ["class", "main_body_item_title", "value", value.task.value, "innerHTML", value.task.value.replaceAll(/\n/g, '<br>')]);
 				let desc = $$$("div", ["class", "main_body_item_desc", "value", value.date.value + "&" + value.time.value + "&" + value.repeat.value + "&" + value.notification.value, "innerHTML", toDateString(new Date(value.date.value)).replace(/^\w+(?=\s)/g, (w) => w + ",") + ", " + convertTo(value.time.value, Settings.values.timeFormat) + (value.repeat.value != "no repeat"? "<span></span>": "")]);
 				let ctgr = $$$("div", ["class", "main_body_item_category", "value", value.category.value, "textContent", value.category.value]);
 				let del = $$$("div", ["class", "main_body_item_delete"]);
